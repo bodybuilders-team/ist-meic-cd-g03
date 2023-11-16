@@ -1,16 +1,15 @@
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+from matplotlib.pyplot import figure, savefig, show
+from matplotlib.pyplot import subplots
+from numpy import log
+from numpy import ndarray
+from pandas import Series
 from pandas import read_csv, DataFrame
-from matplotlib.pyplot import savefig, show
+from scipy.stats import norm, expon, lognorm
+
 from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, plot_multibar_chart, set_chart_labels, \
     plot_multiline_chart
-from numpy import ndarray
-from matplotlib.figure import Figure
-from matplotlib.pyplot import savefig, show, subplots
-from pandas import Series
-from matplotlib.pyplot import figure, savefig, show
-from numpy import log
-from pandas import Series
-from scipy.stats import norm, expon, lognorm
-from matplotlib.axes import Axes
 
 pos_covid_filename = "../data/class_pos_covid.csv"
 pos_covid_file_tag = "class_pos_covid"
@@ -30,7 +29,7 @@ pos_covid_variables_types: dict[str, list] = get_variable_types(pos_covid_data)
 pos_covid_numeric: list[str] = pos_covid_variables_types["numeric"]
 if [] != pos_covid_numeric:
     pos_covid_data[pos_covid_numeric].boxplot(rot=45)
-    savefig(f"images/{pos_covid_file_tag}_global_boxplot.png")
+    savefig(f"images/distribution/{pos_covid_file_tag}_global_boxplot.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -39,7 +38,7 @@ credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_
 credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
 if [] != credit_score_numeric:
     credit_score_data[credit_score_numeric].boxplot(rot=45)
-    savefig(f"images/{credit_score_file_tag}_global_boxplot.png")
+    savefig(f"images/distribution/{credit_score_file_tag}_global_boxplot.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -62,7 +61,7 @@ if [] != pos_covid_numeric:
         axs[i, j].set_title("Boxplot for %s" % pos_covid_numeric[n])
         axs[i, j].boxplot(pos_covid_data[pos_covid_numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{pos_covid_file_tag}_single_boxplots.png")
+    savefig(f"images/distribution/{pos_covid_file_tag}_single_boxplots.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -81,7 +80,7 @@ if [] != credit_score_numeric:
         axs[i, j].set_title("Boxplot for %s" % credit_score_numeric[n])
         axs[i, j].boxplot(credit_score_data[credit_score_numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{credit_score_file_tag}_single_boxplots.png")
+    savefig(f"images/distribution/{credit_score_file_tag}_single_boxplots.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -152,7 +151,7 @@ if [] != pos_covid_numeric:
         ylabel="nr outliers",
         percentage=False,
     )
-    savefig(f"images/{pos_covid_file_tag}_outliers_standard.png")
+    savefig(f"images/distribution/{pos_covid_file_tag}_outliers_standard.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -168,7 +167,7 @@ if [] != credit_score_numeric:
         ylabel="nr outliers",
         percentage=False,
     )
-    savefig(f"images/{credit_score_file_tag}_outliers_standard.png")
+    savefig(f"images/distribution/{credit_score_file_tag}_outliers_standard.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -193,7 +192,7 @@ if [] != pos_covid_numeric:
         )
         axs[i, j].hist(pos_covid_data[pos_covid_numeric[n]].dropna().values, "auto")
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{pos_covid_file_tag}_single_histograms_numeric.png")
+    savefig(f"images/distribution/{pos_covid_file_tag}_single_histograms_numeric.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -214,7 +213,7 @@ if [] != credit_score_numeric:
         )
         axs[i, j].hist(credit_score_data[credit_score_numeric[n]].dropna().values, "auto")
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{credit_score_file_tag}_single_histograms_numeric.png")
+    savefig(f"images/distribution/{credit_score_file_tag}_single_histograms_numeric.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -261,7 +260,7 @@ if [] != pos_covid_numeric:
     for n in range(len(pos_covid_numeric)):
         histogram_with_distributions(axs[i, j], pos_covid_data[pos_covid_numeric[n]].dropna(), pos_covid_numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{pos_covid_file_tag}_histogram_numeric_distribution.png")
+    savefig(f"images/distribution/{pos_covid_file_tag}_histogram_numeric_distribution.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -275,7 +274,7 @@ if [] != credit_score_numeric:
         histogram_with_distributions(axs[i, j], credit_score_data[credit_score_numeric[n]].dropna(),
                                      credit_score_numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{credit_score_file_tag}_histogram_numeric_distribution.png")
+    savefig(f"images/distribution/{credit_score_file_tag}_histogram_numeric_distribution.png")
     show()
 else:
     print("There are no numeric variables.")

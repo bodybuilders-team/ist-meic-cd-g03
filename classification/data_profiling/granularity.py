@@ -1,9 +1,7 @@
 from matplotlib.pyplot import savefig, show
 from pandas import read_csv, DataFrame
-from pandas import read_csv, DataFrame
 
-from utils.dslabs_functions import get_variable_types, derive_date_variables, \
-    analyse_date_granularity, analyse_property_granularity
+from utils.dslabs_functions import analyse_property_granularity
 
 # ------------------
 # Granularity analysis for dataset "class_pos_covid"
@@ -22,7 +20,7 @@ data_ext: DataFrame = derive_date_variables(pos_covid_data, variables_types["dat
 
 for v_date in variables_types["date"]:
     analyse_date_granularity(pos_covid_data, v_date, ["year", "quarter", "month", "day"])
-    savefig(f"images/{pos_covid_file_tag}_granularity_{v_date}.png")
+    savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{v_date}.png")
     show()
 '''
 
@@ -32,7 +30,7 @@ for v_date in variables_types["date"]:
 '''
 property = 'location'
 analyse_property_granularity(pos_covid_data, property, ["State"])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 '''
 
@@ -42,7 +40,7 @@ show()
 
 property = 'HealthDays'
 analyse_property_granularity(pos_covid_data, property, ["PhysicalHealthDays", 'MentalHealthDays'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -51,7 +49,7 @@ show()
 
 property = 'PreviousHealthProblems'
 analyse_property_granularity(pos_covid_data, property, ["HadHeartAttack", 'HadAngina', 'HadStroke', 'HadAsthma', 'HadSkinCancer', 'HadCOPD', 'HadDepressiveDisorder', 'HadKidneyDisease', 'HadArthritis', 'HadDiabetes'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -60,7 +58,7 @@ show()
 
 property = 'ExistingDifficulties'
 analyse_property_granularity(pos_covid_data, property, ['BlindOrVisionDifficulty', 'DifficultyConcentrating', 'DifficultyWalking', 'DifficultyDressingBathing', 'DifficultyErrands'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -69,7 +67,7 @@ show()
 
 property = 'Smokes'
 analyse_property_granularity(pos_covid_data, property, ['SmokerStatus', 'ECigaretteUsage'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -78,7 +76,7 @@ show()
 
 property = 'BodyStats'
 analyse_property_granularity(pos_covid_data, property, ['AgeCategory', 'HeightInMeters', 'WeightInKilograms', 'BMI'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -87,7 +85,7 @@ show()
 
 property = 'Vaccination'
 analyse_property_granularity(pos_covid_data, property, ['FluVaxLast12', 'PneumoVaxEver', 'TetanusLast10Tdap'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
 
 # ------------------
@@ -104,5 +102,5 @@ credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", ind
 
 property = 'Vaccination'
 analyse_property_granularity(pos_covid_data, property, ['FluVaxLast12', 'PneumoVaxEver', 'TetanusLast10Tdap'])
-savefig(f"images/{pos_covid_file_tag}_granularity_{property}.png")
+savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.png")
 show()
