@@ -1,6 +1,6 @@
-# ist-meic-cd-gXX
+# ist-meic-cd-g03
 
-> Data Science project of group ?? - MEIC @ IST 2023/2024.
+> Data Science project of group 03 - MEIC @ IST 2023/2024.
 
 ## Authors
 
@@ -13,5 +13,5 @@ Professors: Cláudia Antunes
 
 @IST<br>
 Master in Computer Science and Computer Engineering<br>
-Data Science - Group ??<br>
+Data Science - Group 03<br>
 Winter Semester of 2023/2024
