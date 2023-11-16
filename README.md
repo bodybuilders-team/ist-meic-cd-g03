@@ -9,7 +9,7 @@
 - [110893 Nyckollas Brandão](https://github.com/Nyckoka)
 - [110916 Miguel Rocha](https://github.com/MiguelRocha2001)
 
-Professors: Cláudia Antunes
+Professor: Cláudia Antunes
 
 @IST<br>
 Master in Computer Science and Computer Engineering<br>
