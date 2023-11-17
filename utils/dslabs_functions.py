@@ -2,24 +2,24 @@
 file:       dslabs_functions.py
 version:    2023.1
 '''
-from math import pi, sin, cos
-from itertools import product
 from datetime import datetime
+from itertools import product
+from math import pi, sin, cos
 from numbers import Number
-from numpy import arange, ndarray, set_printoptions
-from matplotlib.font_manager import FontProperties
+
 from matplotlib.axes import Axes
-from matplotlib.pyplot import gca, gcf, savefig, subplots
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
+from matplotlib.figure import Figure
+from matplotlib.font_manager import FontProperties
+from matplotlib.pyplot import gca, gcf, savefig, subplots
+from numpy import arange, ndarray, set_printoptions
 # from matplotlib.dates import _reset_epoch_test_example, set_epoch
-from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime
-from pandas.api.types import is_numeric_dtype
-from sklearn.preprocessing import OneHotEncoder
+from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
 from sklearn.metrics import confusion_matrix, RocCurveDisplay
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import OneHotEncoder
 
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
@@ -252,6 +252,28 @@ def analyse_date_granularity(data, var, levels, file_tag=''):
         plot_bar_chart(counts.index.to_list(), counts.values, ax=axs[0][i], title=levels[i], xlabel=levels[i],
                        ylabel='nr records', percentage=False)
     savefig(f'images/{file_tag}_granularity_{var}.png')
+
+
+def analyse_property_granularity(
+        data: DataFrame, property: str, vars: list[str]
+) -> ndarray:
+    cols: int = len(vars)
+    fig: Figure
+    axs: ndarray
+    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(f"Granularity study for {property}")
+    for i in range(cols):
+        counts: Series[int] = data[vars[i]].value_counts()
+        plot_bar_chart(
+            counts.index.to_list(),
+            counts.to_list(),
+            ax=axs[0, i],
+            title=vars[i],
+            xlabel=vars[i],
+            ylabel="nr records",
+            percentage=False,
+        )
+    return axs
 
 
 # ---------------------------------------
