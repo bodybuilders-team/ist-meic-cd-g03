@@ -22,7 +22,7 @@ print(f"Credit Score Data: {credit_score_data.shape[0]} records, {credit_score_d
 figure(figsize=(4, 2))
 pos_covid_values: dict[str, int] = {"nr records": pos_covid_data.shape[0], "nr variables": pos_covid_data.shape[1]}
 plot_bar_chart(list(pos_covid_values.keys()), list(pos_covid_values.values()), title="Nr of records vs nr variables")
-savefig(f"images/dimensionality/{pos_covid_file_tag}_records_variables.png")
+savefig(f"images/dimensionality/{pos_covid_file_tag}_records_variables.svg")
 show()
 
 figure(figsize=(4, 2))
@@ -31,7 +31,7 @@ credit_score_values: dict[str, int] = {"nr records": credit_score_data.shape[0],
 plot_bar_chart(
     list(credit_score_values.keys()), list(credit_score_values.values()), title="Nr of records vs nr variables"
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_records_variables.png")
+savefig(f"images/dimensionality/{credit_score_file_tag}_records_variables.svg")
 show()
 
 # ------------------
@@ -49,7 +49,7 @@ figure(figsize=(4, 2))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"images/dimensionality/{pos_covid_file_tag}_variable_types.png")
+savefig(f"images/dimensionality/{pos_covid_file_tag}_variable_types.svg")
 show()
 
 credit_score_variable_types: dict[str, list] = get_variable_types(credit_score_data)
@@ -62,7 +62,7 @@ figure(figsize=(4, 2))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_variable_types.png")
+savefig(f"images/dimensionality/{credit_score_file_tag}_variable_types.svg")
 show()
 
 # ------------------
@@ -83,7 +83,7 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"images/dimensionality/{pos_covid_file_tag}_mv.png")
+savefig(f"images/dimensionality/{pos_covid_file_tag}_mv.svg")
 show()
 
 credit_score_mv: dict[str, int] = {}
@@ -100,5 +100,5 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_mv.png")
+savefig(f"images/dimensionality/{credit_score_file_tag}_mv.svg")
 show()

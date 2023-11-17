@@ -32,7 +32,7 @@ if [] != pos_covid_vars:
         for j in range(i + 1, len(pos_covid_vars)):
             var2: str = pos_covid_vars[j]
             plot_multi_scatters_chart(pos_covid_data, var1, var2, ax=axs[i, j - 1])
-    savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_study.png")
+    savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_study.svg")
     show()
 else:
     print("Sparsity class: there are no variables.")
@@ -51,7 +51,7 @@ if [] != credit_score_vars:
         for j in range(i + 1, len(credit_score_vars)):
             var2: str = credit_score_vars[j]
             plot_multi_scatters_chart(credit_score_data, var1, var2, ax=axs[i, j - 1])
-    savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_study.png")
+    savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_study.svg")
     show()
 else:
     print("Sparsity class: there are no variables.")
@@ -71,7 +71,7 @@ if [] != pos_covid_vars:
         for j in range(i + 1, len(pos_covid_vars)):
             var2: str = pos_covid_vars[j]
             plot_multi_scatters_chart(pos_covid_data, var1, var2, target, ax=axs[i, j - 1])
-    savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_per_class_study.png")
+    savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_per_class_study.svg")
     show()
 else:
     print("Sparsity per class: there are no variables.")
@@ -87,7 +87,7 @@ if [] != credit_score_vars:
         for j in range(i + 1, len(credit_score_vars)):
             var2: str = credit_score_vars[j]
             plot_multi_scatters_chart(credit_score_data, var1, var2, target, ax=axs[i, j - 1])
-    savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_per_class_study.png")
+    savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_per_class_study.svg")
     show()
 else:
     print("Sparsity per class: there are no variables.")
@@ -113,7 +113,7 @@ heatmap(
     vmin=0,
     vmax=1,
 )
-savefig(f"images/sparsity/{pos_covid_file_tag}_correlation_analysis.png")
+savefig(f"images/sparsity/{pos_covid_file_tag}_correlation_analysis.svg")
 show()
 
 credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
@@ -130,5 +130,5 @@ heatmap(
     vmin=0,
     vmax=1,
 )
-savefig(f"images/sparsity/{credit_score_file_tag}_correlation_analysis.png")
+savefig(f"images/sparsity/{credit_score_file_tag}_correlation_analysis.svg")
 show()
