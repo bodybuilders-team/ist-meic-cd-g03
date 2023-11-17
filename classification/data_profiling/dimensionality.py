@@ -1,4 +1,4 @@
-from matplotlib.pyplot import figure, savefig, show
+import matplotlib.pyplot as plt
 from pandas import read_csv, DataFrame
 
 from utils.chart_utils import plot_bar_chart
@@ -19,21 +19,26 @@ credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", ind
 print(f"Pos Covid Data: {pos_covid_data.shape[0]} records, {pos_covid_data.shape[1]} variables")
 print(f"Credit Score Data: {credit_score_data.shape[0]} records, {credit_score_data.shape[1]} variables")
 
-figure(figsize=(4, 2))
+plt.figure()
 pos_covid_values: dict[str, int] = {"nr records": pos_covid_data.shape[0], "nr variables": pos_covid_data.shape[1]}
 plot_bar_chart(list(pos_covid_values.keys()), list(pos_covid_values.values()), title="Nr of records vs nr variables")
-savefig(f"images/dimensionality/{pos_covid_file_tag}_records_variables.svg")
-show()
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{pos_covid_file_tag}_records_variables.svg")
+plt.show()
+plt.clf()
 
-figure(figsize=(4, 2))
+plt.figure()
 credit_score_values: dict[str, int] = {"nr records": credit_score_data.shape[0],
                                        "nr variables": credit_score_data.shape[1]}
 plot_bar_chart(
     list(credit_score_values.keys()), list(credit_score_values.values()), title="Nr of records vs nr variables"
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_records_variables.svg")
-show()
 
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{credit_score_file_tag}_records_variables.svg")
+plt.show()
+
+plt.clf()
 # ------------------
 # Nr. of variables per type
 # ------------------
@@ -45,26 +50,30 @@ counts: dict[str, int] = {}
 for tp in pos_covid_variable_types.keys():
     counts[tp] = len(pos_covid_variable_types[tp])
 
-figure(figsize=(4, 2))
+plt.figure()
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"images/dimensionality/{pos_covid_file_tag}_variable_types.svg")
-show()
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{pos_covid_file_tag}_variable_types.svg")
+plt.show()
 
+plt.clf()
 credit_score_variable_types: dict[str, list] = get_variable_types(credit_score_data)
 print(f"Credit Score Data: {len(credit_score_variable_types)} variable types")
 counts: dict[str, int] = {}
 for tp in credit_score_variable_types.keys():
     counts[tp] = len(credit_score_variable_types[tp])
 
-figure(figsize=(4, 2))
+plt.figure()
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_variable_types.svg")
-show()
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{credit_score_file_tag}_variable_types.svg")
+plt.show()
 
+plt.clf()
 # ------------------
 # Nr. missing values per variable
 # ------------------
@@ -75,7 +84,7 @@ for var in pos_covid_data.columns:
     if nr > 0:
         pos_covid_mv[var] = nr
 
-figure()
+plt.figure(figsize=(8, 4))
 plot_bar_chart(
     list(pos_covid_mv.keys()),
     list(pos_covid_mv.values()),
@@ -83,16 +92,19 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"images/dimensionality/{pos_covid_file_tag}_mv.svg")
-show()
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{pos_covid_file_tag}_mv.svg")
+plt.show()
 
+plt.clf()
 credit_score_mv: dict[str, int] = {}
 for var in credit_score_data.columns:
     nr: int = credit_score_data[var].isna().sum()
     if nr > 0:
         credit_score_mv[var] = nr
 
-figure()
+plt.figure()
 plot_bar_chart(
     list(credit_score_mv.keys()),
     list(credit_score_mv.values()),
@@ -100,5 +112,7 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"images/dimensionality/{credit_score_file_tag}_mv.svg")
-show()
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.savefig(f"images/dimensionality/{credit_score_file_tag}_mv.svg")
+plt.show()
