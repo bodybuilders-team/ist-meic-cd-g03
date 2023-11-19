@@ -11,6 +11,13 @@ credit_score_filename = "../data/class_credit_score.csv"
 credit_score_file_tag = "class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
 
+# Only to analyse the dataset
+''' 
+analyse_property_granularity(pos_covid_data, "Test", ['INSERT_VARIABLE'])
+plt.tight_layout()
+plt.show()
+'''
+
 # ------------------
 # Granularity analysis for dataset "class_pos_covid"
 # ------------------
@@ -93,6 +100,63 @@ analyse_property_granularity(pos_covid_data, property, ["PhysicalHealthDays", 'M
 plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_{property}.svg")
 plt.show()"""
 
+# Sleep Hours: agregation: SleepHours and AtLeastEight
+
+def is_at_least_eigh_hours(hours: float) -> bool:
+    if (hours > 24):
+        return None
+    elif (hours >= 8):
+        return True
+    else:
+        return False
+
+def derive_sleep(df: DataFrame) -> DataFrame:
+    df['AtLeastEightHours'] = pos_covid_data['SleepHours'].apply(is_at_least_eigh_hours)
+    df.dropna(subset=['AtLeastEightHours'], inplace=True)
+    return df
+
+data_ext: DataFrame = derive_sleep(pos_covid_data)
+analyse_property_granularity(data_ext, "Sleep", ["SleepHours", "AtLeastEightHours"])
+plt.tight_layout()
+plt.savefig(f"images/{credit_score_file_tag}_granularity_sleep.svg")
+plt.show()
+
+# Smoke Status - agregations: SmokerStatus and NeverSmoked
+def never_smoked(smoker_status: str) -> bool:
+    return smoker_status == 'Never smoked'
+
+def derive_smoker_status(df: DataFrame) -> DataFrame:
+    df['NeverSmoked'] = pos_covid_data['SmokerStatus'].apply(never_smoked)
+    return df
+
+data_ext: DataFrame = derive_smoker_status(pos_covid_data)
+analyse_property_granularity(data_ext, "SmokeStatus", ["SmokerStatus", "NeverSmoked"])
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_granularity_smoke.svg")
+plt.show()
+
+
+# age - agregations: age groups
+
+def get_age_group(age: str) -> str:
+    if (age == 'Age 18 to 24' or age == 'Age 25 to 29'):
+        return 'YoungAdult'
+    elif (age == 'Age 30 to 34' or age == 'Age 35 to 39' or age == 'Age 40 to 45'):
+        return 'MiddleAgedAdult'
+    else:
+        return 'OldAgedAdult'
+
+def derive_age(df: DataFrame) -> DataFrame:
+    df['AgeGroup'] = df['AgeCategory'].apply(get_age_group)
+    df.dropna(subset=['AgeGroup'], inplace=True)
+    return df
+
+data_ext: DataFrame = derive_age(pos_covid_data)
+analyse_property_granularity(data_ext, "Age", ['AgeCategory', 'AgeGroup'])
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_granularity_age.svg")
+plt.show()
+
 # ------------------
 # Granularity analysis for dataset "class_credit_score"
 # ------------------
@@ -145,4 +209,47 @@ data_ext: DataFrame = derive_month(credit_score_data)
 analyse_property_granularity(data_ext, "Month", ["Month", "Quarter", "Semester"])
 plt.tight_layout()
 plt.savefig(f"images/{credit_score_file_tag}_granularity_month.svg")
+plt.show()
+
+# age - agregations: age groups
+
+def is_age_valid(age: str) -> bool:
+    if (not age.isnumeric() or int(age) > 120):
+        return False
+    return True
+
+def get_age_group(age: str) -> str:
+    if (not is_age_valid(age)):
+        return None
+    age = int(age)
+    if (age <= 0):
+        return None
+    if (age <= 16):
+        return 'Child'
+    elif (age <= 30):
+        return 'YoungAdult'
+    elif (age <= 45):
+        return 'MiddleAgedAdult'
+    else:
+        return 'OldAgedAdult'
+
+def is_adult(age: str) -> bool:
+    if (not is_age_valid(age)):
+        return False
+    age = int(age)
+    if (age < 18):
+        return False
+    else:
+        return True
+
+def derive_age(df: DataFrame) -> DataFrame:
+    df['AgeGroup'] = df['Age'].apply(get_age_group)
+    df['IsAdult'] = df['Age'].apply(is_adult) 
+    df.dropna(subset=['AgeGroup', 'IsAdult'], inplace=True)
+    return df
+
+data_ext: DataFrame = derive_age(credit_score_data)
+analyse_property_granularity(data_ext, "Age", ['Age', 'AgeGroup', 'IsAdult'])
+plt.tight_layout()
+plt.savefig(f"images/{credit_score_file_tag}_granularity_age.svg")
 plt.show()
