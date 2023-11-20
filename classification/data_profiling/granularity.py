@@ -1,19 +1,21 @@
 import matplotlib.pyplot as plt
+from numpy import NaN
 from pandas import read_csv, DataFrame
+import math
 
 from utils.dslabs_functions import analyse_property_granularity
 
 pos_covid_filename = "../data/class_pos_covid.csv"
 pos_covid_file_tag = "class_pos_covid"
-pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
+pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values=['', float('nan')])
 
 credit_score_filename = "../data/class_credit_score.csv"
 credit_score_file_tag = "class_credit_score"
-credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
+credit_score_data: DataFrame = read_csv(credit_score_filename, na_values='', index_col="ID")
 
 # Only to analyse the dataset
-''' 
-analyse_property_granularity(pos_covid_data, "Test", ['INSERT_VARIABLE'])
+'''
+analyse_property_granularity(pos_covid_data, "Test", ['TetanusLast10Tdap'])
 plt.tight_layout()
 plt.show()
 '''
@@ -155,6 +157,52 @@ data_ext: DataFrame = derive_age(pos_covid_data)
 analyse_property_granularity(data_ext, "Age", ['AgeCategory', 'AgeGroup'])
 plt.tight_layout()
 plt.savefig(f"images/{pos_covid_file_tag}_granularity_age.svg")
+plt.show()
+
+# Body mass index - agregation: Height, Weight, BMI, classification and IsHealthy
+
+def get_body_class(bmi: float) -> str:
+    if (bmi < 18.5):
+        return 'Underweight'
+    elif (bmi < 25):
+        return 'Normal'
+    elif (bmi < 30):
+        return 'Overweight'
+    elif (bmi < 35):
+        return 'Obesity'
+    elif (bmi > 40):
+        return 'Extreme Obesity'
+
+def get_has_healthy_body(body_class: str):
+    return 'Healthy' if (body_class == 'Normal') else 'NotHealthy'
+
+def derive_body_status(df: DataFrame) -> DataFrame:
+    df['BodyClassification'] = df['BMI'].apply(get_body_class)
+    df['HasHealthyBody'] = df['BodyClassification'].apply(get_has_healthy_body)
+    #df.dropna(subset=['AgeGroup'], inplace=True)
+    return df
+
+data_ext: DataFrame = derive_body_status(pos_covid_data)
+analyse_property_granularity(data_ext, "Body Staus", ['HasHealthyBody', 'BodyClassification', 'BMI'])
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_granularity_body_status.svg")
+plt.show()
+
+# Tetanus protection - agregation: TetanusLast10Tdap and IsProtectedAgainstTetanus
+
+def get_is_protected_against_tetanus(tetanus_last_10_T_dap: str) -> bool:
+    # some records come as <class 'float'>: nan
+    if (not isinstance(tetanus_last_10_T_dap, str)): return False
+    return 'Yes' in tetanus_last_10_T_dap
+
+def derive_tetanus_protection(df: DataFrame) -> DataFrame:
+    df['TetanusProtection'] = df['TetanusLast10Tdap'].apply(get_is_protected_against_tetanus)
+    return df
+
+data_ext: DataFrame = derive_tetanus_protection(pos_covid_data)
+analyse_property_granularity(data_ext, "Tetanus Protection", ['TetanusLast10Tdap', 'TetanusProtection'])
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_granularity_tetanus_protection.svg")
 plt.show()
 
 # ------------------
