@@ -7,7 +7,7 @@ from utils.dslabs_functions import analyse_property_granularity, plot_bar_chart,
 
 pos_covid_filename = "../data/class_pos_covid.csv"
 pos_covid_file_tag = "class_pos_covid"
-pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values=['', float('nan')])
+pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values=[''])
 
 credit_score_filename = "../data/class_credit_score.csv"
 credit_score_file_tag = "class_credit_score"
@@ -86,9 +86,29 @@ def derive_state(df: DataFrame) -> DataFrame:
 
 
 data_ext_state: DataFrame = derive_state(pos_covid_data)
-analyse_property_granularity(data_ext_state, "State", ["Region", "State"])
+vars = ['Region', 'State']
+cols: int = len(vars)
+fig: plt.Figure
+axs: np.ndarray
+fig, axs = plt.subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+fig.suptitle(f"Granularity study for Region")
+for i in range(cols):
+    counts = data_ext_state[vars[i]].value_counts()
+    vertical_bar_label = True if (i == 1) else False
+    plot_bar_chart(
+        counts.index.to_list(),
+        counts.to_list(),
+        ax=axs[0, i],
+        title=vars[i],
+        xlabel=vars[i],
+        ylabel="nr records",
+        percentage=False,
+        vertical_bar_label=vertical_bar_label
+    )
+    if (i == 1):
+        axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
-plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_state.svg")
+plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_region.svg")
 plt.show()
 
 # Health Days
@@ -111,16 +131,34 @@ def is_at_least_eigh_hours(hours: float) -> bool | None:
 
 def derive_sleep(df: DataFrame) -> DataFrame:
     df['AtLeastEightHours'] = pos_covid_data['SleepHours'].apply(is_at_least_eigh_hours)
-    df.dropna(subset=['AtLeastEightHours'], inplace=True)
     return df
 
 
-data_ext: DataFrame = derive_sleep(pos_covid_data)
-analyse_property_granularity(data_ext, "Sleep", ["AtLeastEightHours", "SleepHours"])
+data_ext_state: DataFrame = derive_sleep(pos_covid_data)
+vars = ['AtLeastEightHours', 'SleepHours']
+cols: int = len(vars)
+fig: plt.Figure
+axs: np.ndarray
+fig, axs = plt.subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+fig.suptitle(f"Granularity study for Sleep")
+for i in range(cols):
+    counts = data_ext_state[vars[i]].value_counts()
+    vertical_bar_label = True if (i == 1) else False
+    plot_bar_chart(
+        counts.index.to_list(),
+        counts.to_list(),
+        ax=axs[0, i],
+        title=vars[i],
+        xlabel=vars[i],
+        ylabel="nr records",
+        percentage=False,
+        vertical_bar_label=vertical_bar_label
+    )
+    if (i == 1):
+        axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
-plt.savefig(f"images/granularity/{credit_score_file_tag}_granularity_sleep.svg")
+plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_sleep.svg")
 plt.show()
-
 
 # Smoke Status - aggregations: SmokerStatus and NeverSmoked
 def never_smoked(smoker_status: str) -> bool:
@@ -160,7 +198,6 @@ def is_adult(age: str) -> bool:
 def derive_age(df: DataFrame) -> DataFrame:
     df['AgeGroup'] = df['AgeCategory'].apply(get_age_group)
     df['IsAdult'] = df['AgeCategory'].apply(is_adult)
-    df.dropna(subset=['AgeGroup'], inplace=True)
     return df
 
 
@@ -193,7 +230,6 @@ def get_has_healthy_body(body_class: str):
 def derive_body_status(df: DataFrame) -> DataFrame:
     df['BodyClassification'] = df['BMI'].apply(get_body_class)
     df['HasHealthyBody'] = df['BodyClassification'].apply(get_has_healthy_body)
-    # df.dropna(subset=['AgeGroup'], inplace=True)
     return df
 
 
@@ -321,9 +357,9 @@ def get_age_group(age: str) -> str | None:
         return 'OldAgedAdult'
 
 
-def is_adult(age: str) -> bool:
+def is_adult(age: str) -> bool | None:
     if not is_age_valid(age):
-        return False
+        return None
     age = int(age)
     if age < 18:
         return False
@@ -334,7 +370,6 @@ def is_adult(age: str) -> bool:
 def derive_age(df: DataFrame) -> DataFrame:
     df['AgeGroup'] = df['Age'].apply(get_age_group)
     df['IsAdult'] = df['Age'].apply(is_adult)
-    df.dropna(subset=['AgeGroup', 'IsAdult'], inplace=True)
     return df
 
 
@@ -372,7 +407,6 @@ def get_occupation_group(occupation: str) -> str:
 
 def derive_occupation(df: DataFrame) -> DataFrame:
     df['OccupationGroup'] = df['Occupation'].apply(get_occupation_group)
-    df.dropna(subset=['OccupationGroup'], inplace=True)
     return df
 
 
