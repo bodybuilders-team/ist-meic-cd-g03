@@ -322,3 +322,40 @@ analyse_property_granularity(data_ext, "Age", ['IsAdult', 'AgeGroup', 'Age'])
 plt.tight_layout()
 plt.savefig(f"images/granularity/{credit_score_file_tag}_granularity_age.svg")
 plt.show()
+
+
+# Occupation - aggregations: occupation groups
+
+def get_occupation_group(occupation: str) -> str:
+    if occupation in ['Scientist', 'Engineer', 'Developer', 'Doctor']:
+        return 'STEM'
+    elif occupation in ['Teacher']:
+        return 'Education'
+    elif occupation in ['Entrepreneur', 'Manager']:
+        return 'Business'
+    elif occupation in ['Lawyer']:
+        return 'Legal'
+    elif occupation in ['Media Manager', 'Journalist']:
+        return 'Media'
+    elif occupation in ['Accountant']:
+        return 'Finance'
+    elif occupation in ['Musician', 'Writer']:
+        return 'Creative'
+    elif occupation in ['Architect']:
+        return 'Design'
+    elif occupation in ['Mechanic']:
+        return 'Other'
+    else:
+        return 'Unknown'
+
+
+def derive_occupation(df: DataFrame) -> DataFrame:
+    df['OccupationGroup'] = df['Occupation'].apply(get_occupation_group)
+    df.dropna(subset=['OccupationGroup'], inplace=True)
+    return df
+
+
+data_ext: DataFrame = derive_occupation(credit_score_data)
+analyse_property_granularity(data_ext, "Occupation", ['OccupationGroup', 'Occupation'])
+plt.tight_layout()
+plt.savefig(f"images/granularity/{credit_score_file_tag}_granularity_occupation.svg")
