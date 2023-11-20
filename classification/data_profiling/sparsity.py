@@ -23,7 +23,7 @@ credit_score_vars: list = credit_score_data.columns.to_list()
 # Sparsity analysis
 # ------------------
 
-if [] != pos_covid_vars:
+if pos_covid_vars:
     n: int = len(pos_covid_vars) - 1
     fig: Figure
     axs: ndarray
@@ -41,7 +41,7 @@ if [] != pos_covid_vars:
 else:
     print("Sparsity class: there are no variables.")
 
-if [] != credit_score_vars:
+if credit_score_vars:
     n: int = len(credit_score_vars) - 1
     fig: Figure
     axs: ndarray
@@ -63,7 +63,7 @@ else:
 # Sparsity per class analysis
 # ------------------
 
-if [] != pos_covid_vars:
+if pos_covid_vars:
     target = "CovidPos"
 
     n: int = len(pos_covid_vars) - 1
@@ -81,7 +81,7 @@ if [] != pos_covid_vars:
 else:
     print("Sparsity per class: there are no variables.")
 
-if [] != credit_score_vars:
+if credit_score_vars:
     target = "Credit_Score"
 
     n: int = len(credit_score_vars) - 1

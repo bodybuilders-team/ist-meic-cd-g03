@@ -1,12 +1,11 @@
+import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.pyplot import subplots
-import matplotlib.pyplot as plt
 from numpy import log
 from numpy import ndarray
 from pandas import Series
 from pandas import read_csv, DataFrame
 from scipy.stats import norm, expon, lognorm
-from matplotlib.ticker import SymmetricalLogLocator
 
 from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, plot_multibar_chart, set_chart_labels, \
     plot_multiline_chart
@@ -27,17 +26,18 @@ credit_score_summary = credit_score_data.describe()
 
 pos_covid_variables_types: dict[str, list] = get_variable_types(pos_covid_data)
 pos_covid_numeric: list[str] = pos_covid_variables_types["numeric"]
-if [] != pos_covid_numeric:
+if pos_covid_numeric:
     pos_covid_data[pos_covid_numeric].boxplot(rot=45)
     plt.tight_layout()
     plt.savefig(f"images/distribution/{pos_covid_file_tag}_global_boxplot.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
 # credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
 # credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
-# if [] != credit_score_numeric:
+# if credit_score_numeric:
 #     frame = credit_score_data[credit_score_numeric]
 #     frame = frame[frame > -10e15]
 #     frame = frame[frame < 10e15]
@@ -49,13 +49,14 @@ else:
 #     plt.tight_layout()
 #     plt.savefig(f"images/distribution/{credit_score_file_tag}_global_boxplot.svg")
 #     plt.show()
+#     plt.clf()
 # else:
 #     print("There are no numeric variables.")
 
 # TODO: Fix this, should show a plot like above
 credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
 credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
-if [] != credit_score_numeric:
+if credit_score_numeric:
     frame = credit_score_data[credit_score_numeric]
 
     ax = frame.boxplot(rot=45)
@@ -65,15 +66,15 @@ if [] != credit_score_numeric:
     plt.tight_layout()
     plt.savefig(f"images/distribution/{credit_score_file_tag}_global_boxplot.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
 # ------------------
 # Single variable boxplots
 # ------------------
 
-if [] != pos_covid_numeric:
+if pos_covid_numeric:
     rows, cols = define_grid(len(pos_covid_numeric))
     fig: plt.figure
     axs: ndarray
@@ -88,11 +89,11 @@ if [] != pos_covid_numeric:
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.savefig(f"images/distribution/{pos_covid_file_tag}_single_boxplots.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
-if [] != credit_score_numeric:
+if credit_score_numeric:
     rows: int
     cols: int
     rows, cols = define_grid(len(credit_score_numeric))
@@ -108,10 +109,10 @@ if [] != credit_score_numeric:
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.savefig(f"images/distribution/{credit_score_file_tag}_single_boxplots.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
 # ------------------
 # Outliers
 # ------------------
@@ -184,7 +185,7 @@ else:
 
 plt.clf()
 
-if [] != credit_score_numeric:
+if credit_score_numeric:
     outliers: dict[str, int] = count_outliers(credit_score_data, credit_score_numeric)
     plt.figure(figsize=(12, HEIGHT))
 
@@ -199,15 +200,15 @@ if [] != credit_score_numeric:
     plt.tight_layout()
     plt.savefig(f"images/distribution/{credit_score_file_tag}_outliers_standard.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
 # ------------------
 # Histograms
 # ------------------
 
-if [] != pos_covid_numeric:
+if pos_covid_numeric:
     fig, axs = subplots(
         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
     )
@@ -227,10 +228,10 @@ if [] != pos_covid_numeric:
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.savefig(f"images/distribution/{pos_covid_file_tag}_single_histograms_numeric.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
 # if [] != credit_score_numeric:
 #     fig, axs = subplots(
 #         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
@@ -251,11 +252,11 @@ plt.clf()
 #         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
 #     plt.savefig(f"images/distribution/{credit_score_file_tag}_single_histograms_numeric.svg")
 #     plt.show()
+#     plt.clf()
 # else:
 #     print("There are no numeric variables.")
 #
 
-plt.clf()
 # ------------------
 # Distributions
 # ------------------
@@ -289,7 +290,7 @@ def histogram_with_distributions(ax: Axes, series: Series, var: str):
     )
 
 
-if [] != pos_covid_numeric:
+if pos_covid_numeric:
     fig, axs = subplots(
         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
     )
@@ -300,11 +301,12 @@ if [] != pos_covid_numeric:
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.savefig(f"images/distribution/{pos_covid_file_tag}_histogram_numeric_distribution.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
 plt.clf()
-if [] != credit_score_numeric:
+if credit_score_numeric:
     fig: plt.Figure
     fig, axs = subplots(
         rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
@@ -317,8 +319,8 @@ if [] != credit_score_numeric:
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.savefig(f"images/distribution/{credit_score_file_tag}_histogram_numeric_distribution.svg")
     plt.show()
+    plt.clf()
 else:
     print("There are no numeric variables.")
 
-plt.clf()
 # TODO: Things related to Symbolic Variables
