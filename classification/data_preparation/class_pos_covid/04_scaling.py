@@ -1,4 +1,4 @@
-from matplotlib.pyplot import subplots, show
+import matplotlib.pyplot as plt
 from pandas import read_csv, DataFrame, Series
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
@@ -30,7 +30,7 @@ df_zscore.to_csv(f"../../data/{pos_covid_file_tag}_scaled_zscore.csv", index="id
 # Approach 2: MinMax Scaler
 # ------------------
 
-transform: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(data)
+transform: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(pos_covid_data)
 df_minmax = DataFrame(transform.transform(pos_covid_data), index=pos_covid_data.index)
 df_minmax[target] = target_data
 df_minmax.columns = vars
@@ -38,11 +38,11 @@ df_minmax.to_csv(f"../../data/{pos_covid_file_tag}_scaled_minmax.csv", index="id
 
 # To see the results:
 
-fig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)
+fig, axs = plt.subplots(1, 3, figsize=(20, 10), squeeze=False)
 axs[0, 1].set_title("Original data")
 pos_covid_data.boxplot(ax=axs[0, 0])
 axs[0, 0].set_title("Z-score normalization")
 df_zscore.boxplot(ax=axs[0, 1])
 axs[0, 2].set_title("MinMax normalization")
 df_minmax.boxplot(ax=axs[0, 2])
-show()
+plt.show()
