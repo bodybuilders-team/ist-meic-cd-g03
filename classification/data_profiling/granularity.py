@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
-from pandas import read_csv, DataFrame
+from pandas import read_csv, DataFrame, Series
 
-from utils.dslabs_functions import analyse_property_granularity
+import numpy as np
+
+from utils.dslabs_functions import analyse_property_granularity, plot_bar_chart, HEIGHT
 
 pos_covid_filename = "../data/class_pos_covid.csv"
 pos_covid_file_tag = "class_pos_covid"
@@ -216,7 +218,26 @@ def derive_tetanus_protection(df: DataFrame) -> DataFrame:
 
 
 data_ext: DataFrame = derive_tetanus_protection(pos_covid_data)
-analyse_property_granularity(data_ext, "Tetanus Protection", ['TetanusProtection', 'TetanusLast10Tdap'])
+
+vars = ['TetanusProtection', 'TetanusLast10Tdap']
+cols: int = len(vars)
+fig: plt.Figure
+axs: np.ndarray
+fig, axs = plt.subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+fig.suptitle(f"Granularity study for Tetanus Protection")
+for i in range(cols):
+    counts = data_ext[vars[i]].value_counts()
+    plot_bar_chart(
+        counts.index.to_list(),
+        counts.to_list(),
+        ax=axs[0, i],
+        title=vars[i],
+        xlabel=vars[i],
+        ylabel="nr records",
+        percentage=False,
+    )
+    if(i == 1):
+        axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
 plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_tetanus_protection.svg")
 plt.show()

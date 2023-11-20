@@ -33,6 +33,7 @@ if pos_covid_vars:
         for j in range(i + 1, len(pos_covid_vars)):
             var2: str = pos_covid_vars[j]
             plot_multi_scatters_chart(pos_covid_data, var1, var2, ax=axs[i, j - 1])
+    plt.tight_layout()
     print("Saving image for covid pos sparsity study...")
     plt.savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_study.png")
     print("Image saved")
