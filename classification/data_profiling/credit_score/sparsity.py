@@ -90,7 +90,7 @@ if credit_score_vars and run_credit_score_correlation_analysis:
         vmax=1,
     )
     plt.tight_layout()
-    plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.svg")
+    plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.png")
     plt.show()
     plt.clf()
 else:

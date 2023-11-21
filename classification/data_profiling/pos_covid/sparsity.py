@@ -90,7 +90,7 @@ if pos_covid_vars and run_pos_covid_correlation_analysis:
         vmax=1,
     )
     plt.tight_layout()
-    plt.savefig(f"{pos_covid_savefig_path_prefix}_correlation_analysis.svg")
+    plt.savefig(f"{pos_covid_savefig_path_prefix}_correlation_analysis.png")
     plt.show()
     plt.clf()
 else:
