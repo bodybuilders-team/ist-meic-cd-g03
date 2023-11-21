@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from pandas import read_csv, DataFrame, Series
-
 import numpy as np
+from pandas import read_csv, DataFrame
 
 from utils.dslabs_functions import analyse_property_granularity, plot_bar_chart, HEIGHT
 
@@ -102,10 +101,9 @@ for i in range(cols):
         title=vars[i],
         xlabel=vars[i],
         ylabel="nr records",
-        percentage=False,
-        vertical_bar_label=vertical_bar_label
+        percentage=False
     )
-    if (i == 1):
+    if i == 1:
         axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
 plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_region.svg")
@@ -151,14 +149,14 @@ for i in range(cols):
         title=vars[i],
         xlabel=vars[i],
         ylabel="nr records",
-        percentage=False,
-        vertical_bar_label=vertical_bar_label
+        percentage=False
     )
-    if (i == 1):
+    if i == 1:
         axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
 plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_sleep.svg")
 plt.show()
+
 
 # Smoke Status - aggregations: SmokerStatus and NeverSmoked
 def never_smoked(smoker_status: str) -> bool:
@@ -180,20 +178,20 @@ plt.show()
 # Age - aggregations: age groups
 
 def get_age_group(age: str) -> str:
-    if (age == 'Age 18 to 24' or age == 'Age 25 to 29'):
+    if age == 'Age 18 to 24' or age == 'Age 25 to 29':
         return 'YoungAdult'
-    elif (age == 'Age 30 to 34' or age == 'Age 35 to 39' or age == 'Age 40 to 45'):
+    elif age == 'Age 30 to 34' or age == 'Age 35 to 39' or age == 'Age 40 to 45':
         return 'MiddleAgedAdult'
     else:
         return 'OldAgedAdult'
 
 
 def is_adult(age: str) -> bool:
-    if (
-            age == 'Age 18 to 24' or age == 'Age 25 to 29' or age == 'Age 30 to 34' or age == 'Age 35 to 39' or age == 'Age 40 to 45'):
+    if age == 'Age 18 to 24' or age == 'Age 25 to 29' or age == 'Age 30 to 34' or age == 'Age 35 to 39' or age == 'Age 40 to 45':
         return True
     else:
         return False
+
 
 def derive_age(df: DataFrame) -> DataFrame:
     df['AgeGroup'] = df['AgeCategory'].apply(get_age_group)
@@ -272,7 +270,7 @@ for i in range(cols):
         ylabel="nr records",
         percentage=False,
     )
-    if(i == 1):
+    if i == 1:
         axs[0, i].set_xticks(counts.index.to_list(), labels=counts.index.to_list(), rotation=90)
 plt.tight_layout()
 plt.savefig(f"images/granularity/{pos_covid_file_tag}_granularity_tetanus_protection.svg")

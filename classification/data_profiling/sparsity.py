@@ -23,7 +23,7 @@ credit_score_vars: list = credit_score_data.columns.to_list()
 # Sparsity analysis
 # ------------------
 
-if pos_covid_vars:
+"""if pos_covid_vars:
     n: int = len(pos_covid_vars) - 1
     fig: Figure
     axs: ndarray
@@ -37,10 +37,10 @@ if pos_covid_vars:
     print("Saving image for covid pos sparsity study...")
     plt.savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_study.png")
     print("Image saved")
-    plt.show()
+    #plt.show()
     plt.clf()
 else:
-    print("Sparsity class: there are no variables.")
+    print("Sparsity class: there are no variables.")"""
 
 if credit_score_vars:
     n: int = len(credit_score_vars) - 1
@@ -53,9 +53,9 @@ if credit_score_vars:
             var2: str = credit_score_vars[j]
             plot_multi_scatters_chart(credit_score_data, var1, var2, ax=axs[i, j - 1])
     print("Saving image for credit score sparsity study...")
-    plt.savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_study.png")
+    plt.savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_study.png", dpi=50)
     print("Image saved")
-    plt.show()
+    # plt.show()
     plt.clf()
 else:
     print("Sparsity class: there are no variables.")
@@ -77,7 +77,7 @@ if pos_covid_vars:
     print("Saving image for covid pos sparsity per class study...")
     plt.savefig(f"images/sparsity/{pos_covid_file_tag}_sparsity_per_class_study.png")
     print("Image saved")
-    plt.show()
+    #plt.show()
     plt.clf()
 else:
     print("Sparsity per class: there are no variables.")
@@ -95,7 +95,7 @@ if credit_score_vars:
     print("Saving image for credit score sparsity per class study...")
     plt.savefig(f"images/sparsity/{credit_score_file_tag}_sparsity_per_class_study.png")
     print("Image saved")
-    plt.show()
+    #plt.show()
     plt.clf()
 else:
     print("Sparsity per class: there are no variables.")

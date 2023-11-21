@@ -1,7 +1,7 @@
 from numpy import ndarray
 from pandas import DataFrame
 
-from dslabs_functions import CLASS_EVAL_METRICS, run_NB, run_KNN
+from utils.dslabs_functions import CLASS_EVAL_METRICS, run_NB, run_KNN
 
 
 def evaluate_approach(train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy") -> dict[
