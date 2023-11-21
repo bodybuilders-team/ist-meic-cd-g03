@@ -1,34 +1,13 @@
-from numpy import ndarray
-from pandas import DataFrame, read_csv, concat
-from sklearn.preprocessing import OneHotEncoder
+from pandas import DataFrame, read_csv
 
-from utils.dslabs_functions import get_variable_types
-
-"""
-Variables encoding is the first step to apply, and it is only required in the presence of
-symbolic variables. This operation shall result directly from the granularity analysis performed
-in the data profiling step. Among the techniques available you find transforming into numeric
-and dummification. Different choices have usually to be made for each variable, however
-only a choice per variable shall be applied, without applying more than one alternative
-"""
+from utils.dslabs_functions import dummify
 
 pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 
-# print binary variables and their values
-vars: dict[str, list] = get_variable_types(pos_covid_data)
-print(vars["binary"])
-for v in vars["binary"]:
-    print(v, pos_covid_data[v].unique())
-
-print("--------------")
-# print ordinal variables and their values
-for v in vars["symbolic"]:
-    print(v, pos_covid_data[v].unique())
-
 # ------------------
-# Ordinal Encoding
+# Ordinal Encoding: Binary and Categorical variables with order
 # ------------------
 
 yes_no: dict[str, int] = {"no": 0, "No": 0, "yes": 1, "Yes": 1}
@@ -42,18 +21,19 @@ general_health_type_values: dict[str, int] = {
     "Poor": 4,
 }
 
-# I think dummification is not a good idea, because it will create a lot of columns
-states = ['Alabama' 'Alaska' 'Arizona' 'Arkansas' 'California' 'Colorado'
-          'Connecticut' 'Delaware' 'District of Columbia' 'Florida' 'Georgia'
-          'Hawaii' 'Idaho' 'Illinois' 'Indiana' 'Iowa' 'Kansas' 'Kentucky'
-          'Louisiana' 'Maine' 'Maryland' 'Massachusetts' 'Michigan' 'Minnesota'
-          'Mississippi' 'Missouri' 'Montana' 'Nebraska' 'Nevada' 'New Hampshire'
-          'New Jersey' 'New Mexico' 'New York' 'North Carolina' 'North Dakota'
-          'Ohio' 'Oklahoma' 'Oregon' 'Pennsylvania' 'Rhode Island' 'South Carolina'
-          'South Dakota' 'Tennessee' 'Texas' 'Utah' 'Vermont' 'Virginia'
-          'Washington' 'West Virginia' 'Wisconsin' 'Wyoming' 'Guam' 'Puerto Rico'
-          'Virgin Islands']
-state_type_values: dict[str, int] = {state: i for i, state in enumerate(states)}
+# TODO: I think dummification is not a good idea, because it will create a lot of columns, but it is the correct thing to do
+# states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+#           'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
+#           'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+#           'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+#           'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+#           'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+#           'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+#           'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
+#           'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'Guam', 'Puerto Rico',
+#           'Virgin Islands'
+#           ]
+# state_type_values: dict[str, int] = {state: i for i, state in enumerate(states)}
 
 last_checkup_time_type_values: dict[str, int] = {
     "Within past year (anytime less than 12 months ago)": 0,
@@ -139,20 +119,19 @@ encoding: dict[str, dict[str, int]] = {
     "PneumoVaxEver": yes_no,
     "HighRiskLastYear": yes_no,
     "CovidPos": yes_no,
-    # Categorical variables
+    # Categorical variables with order
     "GeneralHealth": general_health_type_values,
-    "State": state_type_values,
+    # "State": state_type_values,
     "LastCheckupTime": last_checkup_time_type_values,
     "RemovedTeeth": removed_teeth_type_values,
     "HadDiabetes": had_diabetes_type_values,
     "SmokerStatus": smoker_status_type_values,
     "ECigaretteUsage": e_cigarette_usage_type_values,
     "AgeCategory": age_category_type_values,
-    "TetausLast10Tdap": tetaus_last_10_tdap_type_values
+    "TetanusLast10Tdap": tetaus_last_10_tdap_type_values
 }
 df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
-df.head()
-
+print(df.head(5))
 
 # ------------------
 # Dummification
@@ -165,20 +144,8 @@ df.head()
 #  'Multiracial, Non-Hispanic' nan 'Hispanic'
 #  'Other race only, Non-Hispanic']
 
-def dummify(df: DataFrame, vars_to_dummify: list[str]) -> DataFrame:
-    other_vars: list[str] = [c for c in df.columns if not c in vars_to_dummify]
 
-    enc = OneHotEncoder(
-        handle_unknown="ignore", sparse_output=False, dtype="bool", drop="if_binary"
-    )
-    trans: ndarray = enc.fit_transform(df[vars_to_dummify])
+df = dummify(df, ["RaceEthnicityCategory", "State"])
+print(df.head(5))
 
-    new_vars: ndarray = enc.get_feature_names_out(vars_to_dummify)
-    dummy = DataFrame(trans, columns=new_vars, index=df.index)
-
-    final_df: DataFrame = concat([df[other_vars], dummy], axis=1)
-    return final_df
-
-
-df = dummify(df, ["RaceEthnicityCategory"])
-df.head()
+df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_encoded.csv", index=False)

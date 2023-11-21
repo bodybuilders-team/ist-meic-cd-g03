@@ -9,9 +9,9 @@ from utils.dslabs_functions import plot_bar_chart
 A dataset is unbalanced if the number of samples in each class is not similar - this can bias the model.
 """
 
-pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
-pos_covid_file_tag: str = "class_pos_covid"
-pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
+pos_covid_filename: str = "../../data/pos_covid/processed_data/class_pos_covid_train.csv" # Only to the train set
+pos_covid_file_tag: str = "class_pos_covid_train"
+pos_covid_data: DataFrame = read_csv(pos_covid_filename)
 target: str = "CovidPos"
 
 target_count: Series = pos_covid_data[target].value_counts()
@@ -33,7 +33,9 @@ plt.figure()
 plot_bar_chart(
     target_count.index.to_list(), target_count.to_list(), title="Class balance"
 )
+plt.savefig(f"images/{pos_covid_file_tag}_class_balance.png")
 plt.show()
+plt.clf()
 
 """
 Results:
@@ -54,7 +56,7 @@ df_negatives: Series = pos_covid_data[pos_covid_data[target] == negative_class]
 
 df_neg_sample: DataFrame = DataFrame(df_negatives.sample(len(df_positives)))
 df_under: DataFrame = concat([df_positives, df_neg_sample], axis=0)
-df_under.to_csv(f"../../data/{pos_covid_file_tag}_under.csv", index=False)
+df_under.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_under.csv", index=False)
 
 print("Minority class=", positive_class, ":", len(df_positives))
 print("Majority class=", negative_class, ":", len(df_neg_sample))
@@ -73,7 +75,7 @@ Proportion: 1.0 : 1
 
 df_pos_sample: DataFrame = DataFrame(df_positives.sample(len(df_negatives), replace=True))
 df_over: DataFrame = concat([df_pos_sample, df_negatives], axis=0)
-df_over.to_csv(f"../../data/{pos_covid_file_tag}_over.csv", index=False)
+df_over.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_over.csv", index=False)
 
 print("Minority class=", positive_class, ":", len(df_pos_sample))
 print("Majority class=", negative_class, ":", len(df_negatives))
@@ -99,7 +101,7 @@ X: ndarray = pos_covid_data.values
 smote_X, smote_y = smote.fit_resample(X, y)
 df_smote: DataFrame = concat([DataFrame(smote_X), DataFrame(smote_y)], axis=1)
 df_smote.columns = list(pos_covid_data.columns) + [target]
-df_smote.to_csv(f"data/{pos_covid_file_tag}_smote.csv", index=False)
+df_smote.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_smote.csv", index=False)
 
 smote_target_count: Series = Series(smote_y).value_counts()
 print("Minority class=", positive_class, ":", smote_target_count[positive_class])

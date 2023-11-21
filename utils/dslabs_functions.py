@@ -4,7 +4,7 @@ version:    2023.1
 '''
 from datetime import datetime
 from itertools import product
-from math import pi, sin, cos
+from math import pi, sin, cos, ceil
 from numbers import Number
 
 from matplotlib.axes import Axes
@@ -13,14 +13,15 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
 from matplotlib.pyplot import gca, gcf, savefig, subplots
-from numpy import arange, ndarray, set_printoptions, log
-# from matplotlib.dates import _reset_epoch_test_example, set_epoch
-from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series
+from numpy import arange, ndarray, set_printoptions, array
+from numpy import log
+from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index
 from scipy.stats import norm, expon, lognorm
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
 from sklearn.metrics import confusion_matrix, RocCurveDisplay
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import OneHotEncoder
 
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
@@ -193,6 +194,7 @@ def plot_horizontal_bar_chart(elements: list, values: list, error: list = None, 
 # ---------------------------------------
 #             DATA PROFILING
 # ---------------------------------------
+
 def get_variable_types(df: DataFrame) -> dict:
     variable_types: dict = {'numeric': [], 'binary': [], 'date': [], 'symbolic': []}
 
@@ -256,9 +258,7 @@ def analyse_date_granularity(data, var, levels, file_tag=''):
     savefig(f'images/{file_tag}_granularity_{var}.png')
 
 
-def analyse_property_granularity(
-        data: DataFrame, property: str, vars: list[str]
-) -> ndarray:
+def analyse_property_granularity(data: DataFrame, property: str, vars: list[str]) -> ndarray:
     cols: int = len(vars)
     fig: Figure
     axs: ndarray
@@ -472,7 +472,7 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
     return best_model, best_params
 
 
-"""def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag=''):
+def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag=''):
     dist = ['manhattan', 'euclidean', 'chebyshev']
 
     kvalues = [i for i in range(1, k_max + 1, lag)]
@@ -496,11 +496,191 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
         values[d] = y_tst_values
     print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
 
-    plot_multiple_line_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric,
-                             percentage=True)
+    plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True)
     savefig(f'images/{file_tag}_knn_{metric}_study.png')
 
-    return best_model, best_params"""
+    return best_model, best_params
+
+
+def evaluate_approach(train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy") -> dict[
+    str, list]:
+    trnY = train.pop(target).values
+    trnX: ndarray = train.values
+    tstY = test.pop(target).values
+    tstX: ndarray = test.values
+    eval: dict[str, list] = {}
+
+    eval_NB: dict[str, float] = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+    eval_KNN: dict[str, float] = knn_study(trnX, trnY, tstX, tstY, metric=metric)
+    if eval_NB != {} and eval_KNN != {}:
+        for met in CLASS_EVAL_METRICS:
+            eval[met] = [eval_NB[met], eval_KNN[met]]
+    return eval
+
+
+def select_low_variance_variables(data: DataFrame, max_threshold: float, target: str = "class") -> list:
+    summary5: DataFrame = data.describe()
+    vars2drop: Index[str] = summary5.columns[
+        summary5.loc["std"] * summary5.loc["std"] < max_threshold
+        ]
+    vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
+    return list(vars2drop.values)
+
+
+def study_variance_for_feature_selection(
+        train: DataFrame,
+        test: DataFrame,
+        target: str = "class",
+        max_threshold: float = 1,
+        lag: float = 0.05,
+        metric: str = "accuracy",
+        file_tag: str = "",
+) -> dict:
+    options: list[float] = [
+        round(i * lag, 3) for i in range(1, ceil(max_threshold / lag + lag))
+    ]
+    results: dict[str, list] = {"NB": [], "KNN": []}
+    summary5: DataFrame = train.describe()
+    for thresh in options:
+        vars2drop: Index[str] = summary5.columns[
+            summary5.loc["std"] * summary5.loc["std"] < thresh
+            ]
+        vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
+
+        train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
+        test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+        eval: dict[str, list] | None = evaluate_approach(
+            train_copy, test_copy, target=target, metric=metric
+        )
+        if eval is not None:
+            results["NB"].append(eval[metric][0])
+            results["KNN"].append(eval[metric][1])
+
+    plot_multiline_chart(
+        options,
+        results,
+        title=f"{file_tag} variance study ({metric})",
+        xlabel="variance threshold",
+        ylabel=metric,
+        percentage=True,
+    )
+    savefig(f"images/{file_tag}_fs_low_var_{metric}_study.png")
+    return results
+
+
+def apply_feature_selection(
+        train: DataFrame,
+        test: DataFrame,
+        vars2drop: list,
+        filename: str = "",
+        tag: str = "",
+) -> tuple[DataFrame, DataFrame]:
+    train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
+    train_copy.to_csv(f"{filename}_train_{tag}.csv", index=True)
+    test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+    test_copy.to_csv(f"{filename}_test_{tag}.csv", index=True)
+    return train_copy, test_copy
+
+
+def select_redundant_variables(data: DataFrame, min_threshold: float = 0.90, target: str = "class") -> list:
+    df: DataFrame = data.drop(target, axis=1, inplace=False)
+    corr_matrix: DataFrame = abs(df.corr())
+    variables: Index[str] = corr_matrix.columns
+    vars2drop: list = []
+    for v1 in variables:
+        vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= min_threshold]
+        vars_corr.drop(v1, inplace=True)
+        if len(vars_corr) > 1:
+            lst_corr = list(vars_corr.index)
+            for v2 in lst_corr:
+                if v2 not in vars2drop:
+                    vars2drop.append(v2)
+    return vars2drop
+
+
+def study_redundancy_for_feature_selection(
+        train: DataFrame,
+        test: DataFrame,
+        target: str = "class",
+        min_threshold: float = 0.90,
+        lag: float = 0.05,
+        metric: str = "accuracy",
+        file_tag: str = "",
+) -> dict:
+    options: list[float] = [
+        round(min_threshold + i * lag, 3)
+        for i in range(ceil((1 - min_threshold) / lag) + 1)
+    ]
+
+    df: DataFrame = train.drop(target, axis=1, inplace=False)
+    corr_matrix: DataFrame = abs(df.corr())
+    variables: Index[str] = corr_matrix.columns
+    results: dict[str, list] = {"NB": [], "KNN": []}
+    for thresh in options:
+        vars2drop: list = []
+        for v1 in variables:
+            vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= thresh]
+            vars_corr.drop(v1, inplace=True)
+            if len(vars_corr) > 1:
+                lst_corr = list(vars_corr.index)
+                for v2 in lst_corr:
+                    if v2 not in vars2drop:
+                        vars2drop.append(v2)
+
+        train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
+        test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+        eval: dict | None = evaluate_approach(
+            train_copy, test_copy, target=target, metric=metric
+        )
+        if eval is not None:
+            results["NB"].append(eval[metric][0])
+            results["KNN"].append(eval[metric][1])
+
+    plot_multiline_chart(
+        options,
+        results,
+        title=f"{file_tag} redundancy study ({metric})",
+        xlabel="correlation threshold",
+        ylabel=metric,
+        percentage=True,
+    )
+    savefig(f"images/{file_tag}_fs_redundancy_{metric}_study.png")
+    return results
+
+
+def run_NB(trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, metric: str = "accuracy") -> tuple:
+    estimators: dict = {
+        "GaussianNB": GaussianNB(),
+        "MultinomialNB": MultinomialNB(),
+        "BernoulliNB": BernoulliNB(),
+    }
+
+    xvalues: list = []
+    yvalues: list = []
+    best_model = None
+    best_params: dict = {"name": "", "metric": metric, "params": ()}
+    best_performance = 0
+    for clf in estimators:
+        xvalues.append(clf)
+        estimators[clf].fit(trnX, trnY)
+        prdY: array = estimators[clf].predict(tstX)
+        eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if eval - best_performance > DELTA_IMPROVE:
+            best_performance: float = eval
+            best_params["name"] = clf
+            best_params[metric] = eval
+            best_model = estimators[clf]
+        yvalues.append(eval)
+        # print(f'NB {clf}')
+    plot_bar_chart(
+        xvalues,
+        yvalues,
+        title=f"Naive Bayes Models ({metric})",
+        ylabel=metric,
+        percentage=True,
+    )
+
+    return best_model, best_params
 
 
 def compute_known_distributions(x_values: list) -> dict:
