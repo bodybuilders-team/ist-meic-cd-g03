@@ -7,22 +7,28 @@ from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, hist
     set_chart_labels, plot_multibar_chart, count_outliers
 from utils.dslabs_functions import plot_bar_chart
 
+run_pos_covid_global_boxplot: bool = False
+run_pos_covid_single_boxplots: bool = False
+run_pos_covid_outliers: bool = False
+run_pos_covid_histograms: bool = False
+run_pos_covid_histograms_with_distributions: bool = True
+run_pos_covid_histograms_symbolic: bool = False
+run_pos_covid_class_distribution: bool = False
+run_sampling: bool = False
+sampling_amount: float = 0.01
+
 pos_covid_filename = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_savefig_path_prefix = "images/distribution/class_pos_covid"
 
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
+
+if run_sampling:
+    pos_covid_data = pos_covid_data.sample(frac=sampling_amount, random_state=42)
+
 pos_covid_summary = pos_covid_data.describe()
 
 pos_covid_variables_types: dict[str, list] = get_variable_types(pos_covid_data)
 pos_covid_numeric: list[str] = pos_covid_variables_types["numeric"]
-
-run_pos_covid_global_boxplot: bool = True
-run_pos_covid_single_boxplots: bool = True
-run_pos_covid_outliers: bool = True
-run_pos_covid_histograms: bool = True
-run_pos_covid_histograms_with_distributions: bool = True
-run_pos_covid_histograms_symbolic: bool = True
-run_pos_covid_class_distribution: bool = True
 
 # ------------------
 # Global boxplots
@@ -204,7 +210,7 @@ if run_pos_covid_class_distribution:
     print("Printing class distribution for pos_covid...")
 
     target = "CovidPos"
-
+    print(pos_covid_data[target])
     values: Series = pos_covid_data[target].value_counts()
 
     plt.figure(figsize=(4, 2))
