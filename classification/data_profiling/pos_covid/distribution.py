@@ -80,7 +80,6 @@ if pos_covid_numeric and run_pos_covid_outliers:
 
     outliers: dict[str, int] = count_outliers(pos_covid_data, pos_covid_numeric)
     plt.figure(figsize=(12, HEIGHT))
-    plt.tight_layout()
     plot_multibar_chart(
         pos_covid_numeric,
         outliers,
@@ -89,6 +88,7 @@ if pos_covid_numeric and run_pos_covid_outliers:
         ylabel="nr outliers",
         percentage=False,
     )
+    plt.tight_layout()
     plt.savefig(f"{pos_covid_savefig_path_prefix}_outliers_standard.png")
     # plt.show()
     plt.clf()

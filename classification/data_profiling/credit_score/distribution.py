@@ -104,7 +104,6 @@ if credit_score_numeric and run_credit_score_outliers:
 
     outliers: dict[str, int] = count_outliers(credit_score_data, credit_score_numeric)
     plt.figure(figsize=(12, HEIGHT))
-    plt.tight_layout()
     plot_multibar_chart(
         credit_score_numeric,
         outliers,
@@ -114,6 +113,7 @@ if credit_score_numeric and run_credit_score_outliers:
         percentage=False,
     )
     plt.xticks(rotation=90)
+    plt.tight_layout()
     plt.savefig(f"{credit_score_savefig_path_prefix}_outliers_standard.png")
     # plt.show()
     plt.clf()

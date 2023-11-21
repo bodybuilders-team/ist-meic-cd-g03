@@ -53,7 +53,6 @@ df_minmax.boxplot(ax=axs[0, 2])
 axs[0, 2].tick_params(labelrotation=90)
 
 plt.tight_layout()
-
 plt.savefig(f"images/{pos_covid_file_tag}_scaling.png")
 plt.show()
 plt.clf()
