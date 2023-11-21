@@ -7,7 +7,7 @@ from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, hist
     set_chart_labels, plot_multibar_chart, count_outliers
 from utils.dslabs_functions import plot_bar_chart
 
-pos_covid_filename = "../../data/class_pos_covid.csv"
+pos_covid_filename = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_savefig_path_prefix = "images/distribution/class_pos_covid"
 
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")

@@ -6,7 +6,7 @@ from pandas import read_csv, DataFrame
 from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, plot_multibar_chart, set_chart_labels
 from utils.dslabs_functions import plot_bar_chart, count_outliers, histogram_with_distributions
 
-credit_score_filename = "../../data/class_credit_score.csv"
+credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/distribution/class_credit_score"
 
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")

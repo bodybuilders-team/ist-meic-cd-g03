@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame
 
 from utils.dslabs_functions import get_variable_types, plot_bar_chart
 
-credit_score_filename: str = "../../data/class_credit_score.csv"
+credit_score_filename: str = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix: str = "images/dimensionality/class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
 

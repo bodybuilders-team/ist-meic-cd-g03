@@ -7,7 +7,7 @@ from seaborn import heatmap
 from utils.dslabs_functions import HEIGHT, plot_multi_scatters_chart
 from utils.dslabs_functions import get_variable_types
 
-credit_score_filename = "../../data/class_credit_score.csv"
+credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/sparsity/class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
 credit_score_data = credit_score_data.dropna()

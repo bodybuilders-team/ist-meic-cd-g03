@@ -7,7 +7,7 @@ from seaborn import heatmap
 from utils.dslabs_functions import HEIGHT, plot_multi_scatters_chart
 from utils.dslabs_functions import get_variable_types
 
-pos_covid_filename = "../../data/class_pos_covid.csv"
+pos_covid_filename = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_savefig_path_prefix = "images/sparsity/class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 pos_covid_data = pos_covid_data.dropna()

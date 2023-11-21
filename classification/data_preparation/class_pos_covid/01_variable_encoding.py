@@ -12,7 +12,7 @@ and dummification. Different choices have usually to be made for each variable, 
 only a choice per variable shall be applied, without applying more than one alternative
 """
 
-pos_covid_filename: str = "../../data/class_pos_covid.csv"
+pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 

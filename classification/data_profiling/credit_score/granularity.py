@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame
 
 from utils.dslabs_functions import analyse_property_granularity
 
-credit_score_filename = "../../data/class_credit_score.csv"
+credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/granularity/class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values='', index_col="ID")
 

@@ -6,7 +6,7 @@ from utils.dslabs_functions import (
     determine_outlier_thresholds_for_var,
 )
 
-pos_covid_filename: str = "../../data/class_pos_covid.csv"
+pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 print(f"Dataset nr records={pos_covid_data.shape[0]}", f"nr variables={pos_covid_data.shape[1]}")

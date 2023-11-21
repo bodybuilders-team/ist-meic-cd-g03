@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame
 
 from utils.dslabs_functions import get_variable_types, plot_bar_chart
 
-pos_covid_filename: str = "../../data/class_pos_covid.csv"
+pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_savefig_path_prefix = "images/dimensionality/class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 

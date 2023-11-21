@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame
 
 from utils.dslabs_functions import analyse_property_granularity, plot_bar_chart, HEIGHT
 
-pos_covid_filename = "../../data/class_pos_covid.csv"
+pos_covid_filename = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_savefig_path_prefix = "images/granularity/class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values=[''])
 
