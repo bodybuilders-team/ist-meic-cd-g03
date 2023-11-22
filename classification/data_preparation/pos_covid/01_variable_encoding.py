@@ -52,14 +52,14 @@ removed_teeth_type_values: dict[str, int] = {
 had_diabetes_type_values: dict[str, int] = {
     "No": 0,
     "No, pre-diabetes or borderline diabetes": 1,
-    "Yes": 2,
-    "Yes, but only during pregnancy (female)": 3
+    "Yes, but only during pregnancy (female)": 2,
+    "Yes": 3
 }
 
 smoker_status_type_values: dict[str, int] = {
     "Never smoked": 0,
-    "Current smoker - now smokes some days": 1,
-    "Former smoker": 2,
+    "Former smoker": 1,
+    "Current smoker - now smokes some days": 2,
     "Current smoker - now smokes every day": 3
 }
 
@@ -89,8 +89,8 @@ age_category_type_values: dict[str, int] = {
 tetaus_last_10_tdap_type_values: dict[str, int] = {
     "No, did not receive any tetanus shot in the past 10 years": 0,
     "Yes, received tetanus shot, but not Tdap": 1,
-    "Yes, received Tdap": 2,
-    "Yes, received tetanus shot but not sure what type": 3
+    "Yes, received tetanus shot but not sure what type": 2,
+    "Yes, received Tdap": 3
 }
 
 encoding: dict[str, dict[str, int]] = {
