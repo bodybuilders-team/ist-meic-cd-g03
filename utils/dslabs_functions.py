@@ -375,7 +375,6 @@ CLASS_EVAL_METRICS = {
     'f1': f1_score,
 }
 
-
 def read_train_test_from_files(train_fn: str, test_fn: str, target: str = 'class'):
     train = read_csv(train_fn, index_col=None)
     trnY = train.pop(target).values
