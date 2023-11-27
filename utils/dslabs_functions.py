@@ -96,14 +96,28 @@ def plot_line_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = 
     return ax
 
 
-def plot_bar_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = '', xlabel: str = '',
-                   ylabel: str = '', percentage: bool = False):
+def plot_bar_chart(
+    xvalues: list,
+    yvalues: list,
+    ax: Axes = None,  # type: ignore
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
+    percentage: bool = False,
+) -> Axes:
     if ax is None:
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     ax = set_chart_xticks(xvalues, ax=ax, percentage=percentage)
-    values = ax.bar(xvalues, yvalues, label=yvalues, edgecolor=LINE_COLOR, color=FILL_COLOR, tick_label=xvalues)
-    format = '%.2f' if percentage else '%.0f'
+    values: BarContainer = ax.bar(
+        xvalues,
+        yvalues,
+        label=yvalues,
+        edgecolor=LINE_COLOR,
+        color=FILL_COLOR,
+        tick_label=xvalues,
+    )
+    format = "%.2f" if percentage else "%.0f"
     ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
 
     return ax
@@ -115,7 +129,6 @@ def plot_scatter_chart(var1: list, var2: list, ax: Axes = None, title: str = '',
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     ax.scatter(var1, var2)
     return ax
-
 
 def plot_multiline_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str = '', xlabel: str = '',
                          ylabel: str = '', percentage: bool = False):
@@ -191,6 +204,20 @@ def plot_horizontal_bar_chart(elements: list, values: list, error: list = None, 
     ax.set_yticks(y_pos, labels=elements)
     ax.invert_yaxis()  # labels read top-to-bottom
     return ax
+
+
+def histogram_with_distributions(ax: Axes, series: Series, var: str):
+    values: list = series.sort_values().to_list()
+    ax.hist(values, 20, density=True)
+    distributions: dict = compute_known_distributions(values)
+    plot_multiline_chart(
+        values,
+        distributions,
+        ax=ax,
+        title="Best fit for %s" % var,
+        xlabel=var,
+        ylabel="",
+    )
 
 
 # ---------------------------------------
@@ -280,17 +307,25 @@ def analyse_property_granularity(data: DataFrame, property: str, vars: list[str]
     return axs
 
 
+def compute_known_distributions(x_values: list) -> dict:
+    distributions = dict()
+    # Gaussian
+    mean, sigma = norm.fit(x_values)
+    distributions["Normal(%.1f,%.2f)" % (mean, sigma)] = norm.pdf(x_values, mean, sigma)
+    # Exponential
+    loc, scale = expon.fit(x_values)
+    distributions["Exp(%.2f)" % (1 / scale)] = expon.pdf(x_values, loc, scale)
+    # LogNorm
+    sigma, loc, scale = lognorm.fit(x_values)
+    distributions["LogNor(%.1f,%.2f)" % (log(scale), sigma)] = lognorm.pdf(
+        x_values, sigma, loc, scale
+    )
+    return distributions
+
+
 # ---------------------------------------
 #             DATA PREPARATION
 # ---------------------------------------
-
-def derive_date_variables(df, date_vars):
-    for date in date_vars:
-        df[date + '_year'] = df[date].dt.year
-        df[date + '_quarter'] = df[date].dt.quarter
-        df[date + '_month'] = df[date].dt.month
-        df[date + '_day'] = df[date].dt.day
-    return df
 
 
 def encode_cyclic_variables(data, vars):
@@ -300,12 +335,11 @@ def encode_cyclic_variables(data, vars):
         data[v + '_cos'] = data[v].apply(lambda x: round(cos(2 * pi * x / x_max), 3))
 
 
-def dummify(df, vars_to_dummify):
-    other_vars = [c for c in df.columns if not c in vars_to_dummify]
+def dummify(df: DataFrame, vars_to_dummify: list[str]) -> DataFrame:
+    other_vars: list[str] = [c for c in df.columns if not c in vars_to_dummify]
 
     enc = OneHotEncoder(handle_unknown='ignore', sparse_output=False, dtype=bool, drop='if_binary')
     trans = enc.fit_transform(df[vars_to_dummify])
-    print(trans)
 
     new_vars = enc.get_feature_names_out(vars_to_dummify)
     dummy = DataFrame(trans, columns=new_vars, index=df.index)
@@ -572,6 +606,48 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
     "f1": f1_score,
 }
 
+def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
+    estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
+        "GaussianNB": GaussianNB(),
+        "MultinomialNB": MultinomialNB(),
+        "BernoulliNB": BernoulliNB(),
+    }
+    best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
+    best_performance: float = 0.0
+    eval: dict[str, float] = {}
+
+    for clf in estimators:
+        estimators[clf].fit(trnX, trnY)
+        prdY: ndarray = estimators[clf].predict(tstX)
+        performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if performance - best_performance > DELTA_IMPROVE:
+            best_performance = performance
+            best_model = estimators[clf]
+    if best_model is not None:
+        prd: ndarray = best_model.predict(tstX)
+        for key in CLASS_EVAL_METRICS:
+            eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
+    return eval
+
+
+def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
+    kvalues: list[int] = [1] + [i for i in range(5, 26, 5)]
+    best_model: KNeighborsClassifier = None  # type: ignore
+    best_performance: float = 0
+    eval: dict[str, float] = {}
+    for k in kvalues:
+        clf = KNeighborsClassifier(n_neighbors=k, metric="euclidean")
+        clf.fit(trnX, trnY)
+        prdY: ndarray = clf.predict(tstX)
+        performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if performance - best_performance > DELTA_IMPROVE:
+            best_performance = performance
+            best_model: KNeighborsClassifier = clf
+    if best_model is not None:
+        prd: ndarray = best_model.predict(tstX)
+        for key in CLASS_EVAL_METRICS:
+            eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
+    return eval
 
 
 def evaluate_approach(
@@ -670,6 +746,75 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1])
     savefig(f'images/{file_tag}_{model['name']}_best_{model['metric']}_eval.png')
     return axs
+
+
+
+# ---------------------------------------
+#             TIME SERIES
+# ---------------------------------------
+
+from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
+
+
+def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
+    fig: Figure
+    axs: list[Axes]
+    fig, axs = subplots(
+        data.shape[1], 1, figsize=(3 * HEIGHT, HEIGHT / 2 * data.shape[1])
+    )
+    fig.suptitle(title)
+
+    for i in range(data.shape[1]):
+        col: str = data.columns[i]
+        auxi_ax: Axes = plot_line_chart(
+            data[col].index.to_list(),
+            data[col].to_list(),
+            ax=axs[i],
+            xlabel=data.index.name,
+            ylabel=col,
+        )
+        auxi_ax.tick_params(axis="x", labelbottom="off")
+    return axs
+
+
+def plot_components(
+    series: Series,
+    title: str = "",
+    x_label: str = "time",
+    y_label: str = "",
+) -> list[Axes]:
+    decomposition: DecomposeResult = seasonal_decompose(series, model="add")
+    components: dict = {
+        "observed": series,
+        "trend": decomposition.trend,
+        "seasonal": decomposition.seasonal,
+        "residual": decomposition.resid,
+    }
+    rows: int = len(components)
+    fig: Figure
+    axs: list[Axes]
+    fig, axs = subplots(rows, 1, figsize=(3 * HEIGHT, rows * HEIGHT))
+    fig.suptitle(f"{title}")
+    i: int = 0
+    for key in components:
+        set_chart_labels(axs[i], title=key, xlabel=x_label, ylabel=y_label)
+        axs[i].plot(components[key])
+        i += 1
+    return axs
+
+
+def ts_aggregation_by(
+    data: Series | DataFrame,
+    gran_level: str = "D",
+    agg_func: str = "mean",
+) -> Series | DataFrame:
+    df: Series | DataFrame = data.copy()
+    index: Index[Period] = df.index.to_period(gran_level)
+    df = df.groupby(by=index, dropna=True, sort=True).agg(agg_func)
+    df.index.drop_duplicates()
+    df.index = df.index.to_timestamp()
+
+    return df
 
 
 def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
