@@ -7,11 +7,11 @@ from seaborn import heatmap
 from utils.dslabs_functions import HEIGHT, plot_multi_scatters_chart
 from utils.dslabs_functions import get_variable_types
 
-run_credit_score_sparsity_analysis: bool = True
+run_credit_score_sparsity_analysis: bool = False
 run_credit_score_sparsity_per_class_analysis: bool = True
-run_credit_score_correlation_analysis: bool = True
+run_credit_score_correlation_analysis: bool = False
 run_sampling: bool = False
-sampling_amount: float = 0.01
+sampling_amount: float = 0.0001
 
 credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/sparsity/class_credit_score"
@@ -39,7 +39,6 @@ if credit_score_vars and run_credit_score_sparsity_analysis:
         for j in range(i + 1, len(credit_score_vars)):
             var2: str = credit_score_vars[j]
             plot_multi_scatters_chart(credit_score_data, var1, var2, ax=axs[i, j - 1])
-    print("Tightening layout...")
     plt.tight_layout()
     print("Saving image for credit score sparsity study...")
     plt.savefig(f"{credit_score_savefig_path_prefix}_sparsity_study.png")
@@ -67,6 +66,7 @@ if credit_score_vars and run_credit_score_sparsity_per_class_analysis:
         for j in range(i + 1, len(credit_score_vars)):
             var2: str = credit_score_vars[j]
             plot_multi_scatters_chart(credit_score_data, var1, var2, target, ax=axs[i, j - 1])
+    plt.tight_layout()
     print("Saving image for credit score sparsity per class study...")
     plt.savefig(f"{credit_score_savefig_path_prefix}_sparsity_per_class_study.png")
     print("Image saved")
@@ -101,8 +101,10 @@ if credit_score_vars and run_credit_score_correlation_analysis:
         vmax=1,
     )
     plt.tight_layout()
+    print("Saving image for credit score correlation analysis...")
     plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.png")
-    plt.show()
+    # plt.show()
+    print("Image saved")
     plt.clf()
 else:
     if not credit_score_vars:

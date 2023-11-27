@@ -6,7 +6,7 @@ from utils.dslabs_functions import (
     determine_outlier_thresholds_for_var,
 )
 
-pos_covid_filename: str = "../../data/pos_covid/processed_data/class_pos_covid_imputed_mv.csv" # After imputation
+pos_covid_filename: str = "../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach2.csv" # After imputation
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename)
 print(f"Dataset nr records={pos_covid_data.shape[0]}", f"nr variables={pos_covid_data.shape[1]}")
@@ -26,7 +26,7 @@ if numeric_vars is not None:
         )
         outliers: Series = df[(df[var] > top_threshold) | (df[var] < bottom_threshold)]
         df.drop(outliers.index, axis=0, inplace=True)
-    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_drop_outliers.csv", index=True)
+    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_drop_outliers.csv", index=False)
     print(f"Data after dropping outliers: {df.shape[0]} records and {df.shape[1]} variables")
 else:
     print("There are no numeric variables")
@@ -46,7 +46,7 @@ if numeric_vars:
         top, bottom = determine_outlier_thresholds_for_var(summary5[var])
         median: float = df[var].median()
         df[var] = df[var].apply(lambda x: median if x > top or x < bottom else x)
-    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_replacing_outliers.csv", index=True)
+    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_replacing_outliers.csv", index=False)
     print(f"Data after replacing outliers: {df.shape[0]} records and {df.shape[1]} variables")
     print(df.describe())
 else:
@@ -65,7 +65,8 @@ if numeric_vars:
         df[var] = df[var].apply(
             lambda x: top if x > top else bottom if x < bottom else x
         )
-    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_truncate_outliers.csv", index=True)
+    print(df)
+    df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_truncate_outliers.csv",index=False)
     print("Data after truncating outliers:", df.shape)
     print(df.describe())
 else:

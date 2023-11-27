@@ -87,12 +87,12 @@ print("Saved to file.")
 print()
 
 # ------------------
-# Approach 2: Dropping by threshold and imputing missing values with frequent strategy
+# Approach 2: Dropping by threshold and imputing missing values with knn strategy
 # ------------------
 
-print("Approach 2: Dropping by threshold and imputing missing values with frequent strategy")
+print("Approach 2: Dropping by threshold and imputing missing values with knn strategy")
 df_drop_threshold: DataFrame = drop_data_by_mv_threshold(pos_covid_data, 0.7, 0.9)
-data_frame: DataFrame = impute_mv(df_drop_threshold, "frequent")
+data_frame: DataFrame = impute_mv(df_drop_threshold, "knn")
 
 print("Saving to file...")
 data_frame.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_imputed_mv_approach2.csv", index=False)
