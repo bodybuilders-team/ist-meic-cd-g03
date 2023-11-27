@@ -1,4 +1,5 @@
 from pandas import DataFrame, read_csv
+from sklearn.preprocessing import LabelEncoder
 
 from utils.dslabs_functions import dummify
 
@@ -20,20 +21,6 @@ general_health_type_values: dict[str, int] = {
     "Fair": 3,
     "Poor": 4,
 }
-
-# TODO: I think dummification is not a good idea, because it will create a lot of columns, but it is the correct thing to do
-# states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-#           'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
-#           'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-#           'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-#           'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-#           'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-#           'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-#           'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
-#           'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'Guam', 'Puerto Rico',
-#           'Virgin Islands'
-#           ]
-# state_type_values: dict[str, int] = {state: i for i, state in enumerate(states)}
 
 last_checkup_time_type_values: dict[str, int] = {
     "Within past year (anytime less than 12 months ago)": 0,
@@ -132,6 +119,24 @@ encoding: dict[str, dict[str, int]] = {
 }
 df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
 print(df.head(5))
+
+# TODO: Dummification or label encoding for State?
+# states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
+#           'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
+#           'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+#           'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+#           'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+#           'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+#           'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+#           'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia',
+#           'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'Guam', 'Puerto Rico',
+#           'Virgin Islands'
+#           ]
+# state_type_values: dict[str, int] = {state: i for i, state in enumerate(states)}
+
+# State using label encoder
+# le = LabelEncoder()
+# df['State'] = le.fit_transform(df['State'])
 
 # ------------------
 # Dummification
