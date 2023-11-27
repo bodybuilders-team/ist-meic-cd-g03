@@ -20,6 +20,7 @@ from scipy.stats import norm, expon, lognorm
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
 from sklearn.metrics import confusion_matrix, RocCurveDisplay
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import OneHotEncoder
@@ -375,6 +376,7 @@ CLASS_EVAL_METRICS = {
     'f1': f1_score,
 }
 
+
 def read_train_test_from_files(train_fn: str, test_fn: str, target: str = 'class'):
     train = read_csv(train_fn, index_col=None)
     trnY = train.pop(target).values
@@ -386,6 +388,18 @@ def read_train_test_from_files(train_fn: str, test_fn: str, target: str = 'class
     tstY = test.pop(target).values
     tstX = test.values
     return trnX, tstX, trnY, tstY, labels, train.columns
+
+
+def split_train_test_from_file(fn: str, target: str = 'class'):
+    df = read_csv(fn, index_col=None)
+    data_y = df.pop(target).values
+    data_x = df.values
+    labels = unique(data_y)
+    labels.sort()
+
+    trnX, tstX, trnY, tstY = train_test_split(data_x, data_y, train_size=0.7, stratify=data_y)
+
+    return trnX, tstX, trnY, tstY, labels
 
 
 def plot_confusion_matrix(cnf_matrix: ndarray, classes_names: ndarray, ax: Axes = None):
