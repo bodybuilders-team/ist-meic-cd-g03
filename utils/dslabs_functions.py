@@ -683,8 +683,11 @@ def read_train_test_from_files(
     return trnX, tstX, trnY, tstY, labels, train.columns.to_list()
 
 
-def split_train_test_from_file(fn: str, target: str = 'class'):
+def split_train_test_from_file(fn: str, target: str = 'class', sample_amount: float = 1.0):
     df = read_csv(fn, index_col=None)
+    if sample_amount < 1:
+        df = df.sample(frac=sample_amount, random_state=42)
+
     data_y = df.pop(target).values
     data_x = df.values
     labels = unique(data_y)
@@ -854,7 +857,7 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
 
 
 # receives a list of approaches to study; each approach contains train_filename, subtitle
-def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class'):
+def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class', sampling_amount=0.01):
     estimators = {
         'GaussianNB': GaussianNB(),
         'MultinomialNB': MultinomialNB(),
@@ -866,7 +869,7 @@ def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', f
     fig.suptitle(f'Naive Bayes Models ({metric}) - {study_title}')
 
     for i in range(cols):
-        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target)
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target, sample_amount=sampling_amount)
         xvalues = []
         yvalues = []
         best_model = None
@@ -926,3 +929,41 @@ def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_t
 
     return best_model, best_params
 
+
+def data_prep_knn_study(approaches, k_max=19, lag=2, metric='accuracy', study_title='', file_tag='', target='class',
+                        sampling_amount=1):
+    dist = ['manhattan', 'euclidean', 'chebyshev']
+
+    cols = len(approaches)
+    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(f'KNN Models ({metric}) - {study_title}')
+
+    for i in range(cols):
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target, sample_amount=sampling_amount)
+        kvalues = [i for i in range(1, k_max + 1, lag)]
+        best_model = None
+        best_params = {'name': 'KNN', 'metric': metric, 'params': ()}
+        best_performance = 0
+
+        values = {}
+        for d in dist:
+            y_tst_values = []
+            for k in kvalues:
+                clf = KNeighborsClassifier(n_neighbors=k, metric=d)
+                clf.fit(trnX, trnY)
+                prdY = clf.predict(tstX)
+                eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
+                y_tst_values.append(eval)
+                if eval - best_performance > DELTA_IMPROVE:
+                    best_performance = eval
+                    best_params['params'] = (k, d)
+                    best_model = clf
+            values[d] = y_tst_values
+        print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
+
+        plot_multiline_chart(kvalues, values, ax=axs[0][i], title=approaches[i][1], xlabel='k', ylabel=metric,
+                             percentage=True)
+
+    plt.tight_layout()
+    savefig(f'images/{file_tag}_knn_{metric}_study.png')
+    plt.show()
