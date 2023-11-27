@@ -6,7 +6,9 @@ from datetime import datetime
 from itertools import product
 from math import pi, sin, cos, ceil
 from numbers import Number
+from typing import Callable
 
+import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.container import BarContainer
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
@@ -15,7 +17,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.pyplot import gca, gcf, savefig, subplots
 from numpy import arange, ndarray, set_printoptions, array
 from numpy import log
-from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index
+from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index, Period
 from scipy.stats import norm, expon, lognorm
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
@@ -25,7 +27,6 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import OneHotEncoder
 
-from typing import Callable
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
 NR_COLUMNS: int = 3
@@ -817,7 +818,7 @@ def ts_aggregation_by(
     return df
 
 
-def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
+def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', subtitle=''):
     estimators = {
         'GaussianNB': GaussianNB(),
         'MultinomialNB': MultinomialNB(),
@@ -840,10 +841,60 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag=''):
             best_model = estimators[clf]
         yvalues.append(eval)
 
-    plot_bar_chart(xvalues, yvalues, title=f'Naive Bayes Models ({metric})', ylabel=metric, percentage=True)
+    plot_bar_chart(
+        xvalues,
+        yvalues,
+        title=f'Naive Bayes Models ({metric}) {" - " + subtitle if subtitle != "" else ""}',
+        ylabel=metric,
+        percentage=True
+    )
     savefig(f'images/{file_tag}_nb_{metric}_study.png')
 
     return best_model, best_params
+
+
+# receives a list of approaches to study; each approach contains train_filename, subtitle
+def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class'):
+    estimators = {
+        'GaussianNB': GaussianNB(),
+        'MultinomialNB': MultinomialNB(),
+        'BernoulliNB': BernoulliNB()
+    }
+
+    cols = len(approaches)
+    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(f'Naive Bayes Models ({metric}) - {study_title}')
+
+    for i in range(cols):
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target)
+        xvalues = []
+        yvalues = []
+        best_model = None
+        best_params = {'name': '', 'metric': metric, 'params': ()}
+        best_performance = 0
+        for clf in estimators:
+            xvalues.append(clf)
+            estimators[clf].fit(trnX, trnY)
+            prdY = estimators[clf].predict(tstX)
+            eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
+            if eval - best_performance > DELTA_IMPROVE:
+                best_performance = eval
+                best_params['name'] = clf
+                best_model = estimators[clf]
+            yvalues.append(eval)
+
+        plot_bar_chart(
+            xvalues,
+            yvalues,
+            ax=axs[0][i],
+            title=approaches[i][1],
+            ylabel=metric,
+            percentage=True
+        )
+
+    plt.tight_layout()
+    savefig(f'images/{file_tag}_nb_{metric}_study.png')
+    plt.show()
 
 
 def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag=''):
