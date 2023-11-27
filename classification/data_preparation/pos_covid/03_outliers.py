@@ -27,6 +27,7 @@ if numeric_vars is not None:
         outliers: Series = df[(df[var] > top_threshold) | (df[var] < bottom_threshold)]
         df.drop(outliers.index, axis=0, inplace=True)
     df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_drop_outliers.csv", index=False)
+    print(f"Dropped {pos_covid_data.shape[0] - df.shape[0]} records")
     print(f"Data after dropping outliers: {df.shape[0]} records and {df.shape[1]} variables")
 else:
     print("There are no numeric variables")

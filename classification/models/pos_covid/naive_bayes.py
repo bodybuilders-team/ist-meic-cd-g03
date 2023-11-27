@@ -38,8 +38,17 @@ def test_covid_approach(train_filename, save_filename):
     test_approach(train_filename, save_filename, target="CovidPos")
 
 
-test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach1.csv",
-                    f"images/{pos_covid_file_tag}_imputed_mv_approach1_nb_{eval_metric}_study.png")
+# test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach1.csv",
+#                     f"images/{pos_covid_file_tag}_imputed_mv_approach1_nb_{eval_metric}_study.png")
+#
+# test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach2.csv",
+#                     f"images/{pos_covid_file_tag}_imputed_mv_approach2_nb_{eval_metric}_study.png")
 
-test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach2.csv",
-                    f"images/{pos_covid_file_tag}_imputed_mv_approach2_nb_{eval_metric}_study.png")
+# test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_drop_outliers.csv",
+#                      f"images/{pos_covid_file_tag}_drop_outliers_nb_{eval_metric}_study.png")
+#
+# test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_replacing_outliers.csv",
+#                      f"images/{pos_covid_file_tag}_replacing_outliers_nb_{eval_metric}_study.png")
+#
+# test_covid_approach("../../data/pos_covid/processed_data/class_pos_covid_truncate_outliers.csv",
+#                      f"images/{pos_covid_file_tag}_truncate_outliers_nb_{eval_metric}_study.png")
