@@ -14,7 +14,7 @@ from matplotlib.container import BarContainer
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
-from matplotlib.pyplot import gca, gcf, savefig, subplots
+from matplotlib.pyplot import gca, gcf, savefig, subplots, show
 from numpy import arange, ndarray, set_printoptions, array
 from numpy import log
 from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index, Period
@@ -666,6 +666,50 @@ def evaluate_approach(
         for met in CLASS_EVAL_METRICS:
             eval[met] = [eval_NB[met], eval_KNN[met]]
     return eval
+
+
+def evaluate_approach2(trnX, trnY, tstX, tstY, metric: str = "accuracy", knn=True, nb=True) -> dict[str, list]:
+    eval: dict[str, list] = {}
+    eval_NB: dict[str, float] | None = {}
+    eval_KNN: dict[str, float] | None = {}
+
+    if nb:
+        eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+
+    if knn:
+        eval_KNN: dict[str, float] | None = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
+
+    if nb and knn and eval_NB != {} and eval_KNN != {}:
+        for met in CLASS_EVAL_METRICS:
+            eval[met] = [eval_NB[met], eval_KNN[met]]
+    else:
+        if eval_NB != {} and nb:
+            for met in CLASS_EVAL_METRICS:
+                eval[met] = [eval_NB[met], 0]
+        if eval_KNN != {} and knn:
+            for met in CLASS_EVAL_METRICS:
+                eval[met] = [0, eval_KNN[met]]
+
+    return eval
+
+
+def evaluate_approaches(approaches: list[list], target: str = "class", study_title='', file_tag='',
+                        metric: str = "accuracy", sample_amount: float = 1.0, knn=True, nb=True) -> dict[str, list]:
+    cols = len(approaches)
+    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(study_title, fontsize=FONT_SIZE)
+
+    for approach in approaches:
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approach[0], target=target,
+                                                                    sample_amount=sample_amount)
+        eval: dict[str, list] = evaluate_approach2(trnX, trnY, tstX, tstY, metric=metric, knn=knn, nb=nb)
+        plot_multibar_chart(
+            ["NB", "KNN"], eval, title=f"{approach[1]} evaluation", percentage=True,
+            ax=axs[0][approaches.index(approach)]
+        )
+
+    savefig(f"images/{file_tag}_eval.png")
+    show()
 
 
 def read_train_test_from_files(
