@@ -73,7 +73,7 @@ age_category_type_values: dict[str, int] = {
     "Age 80 or older": 12,
 }
 
-tetaus_last_10_tdap_type_values: dict[str, int] = {
+tetanus_last_10_tdap_type_values: dict[str, int] = {
     "No, did not receive any tetanus shot in the past 10 years": 0,
     "Yes, received tetanus shot, but not Tdap": 1,
     "Yes, received tetanus shot but not sure what type": 2,
@@ -115,7 +115,7 @@ encoding: dict[str, dict[str, int]] = {
     "SmokerStatus": smoker_status_type_values,
     "ECigaretteUsage": e_cigarette_usage_type_values,
     "AgeCategory": age_category_type_values,
-    "TetanusLast10Tdap": tetaus_last_10_tdap_type_values
+    "TetanusLast10Tdap": tetanus_last_10_tdap_type_values
 }
 df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
 print(df.head(5))

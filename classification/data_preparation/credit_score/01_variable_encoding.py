@@ -60,6 +60,34 @@ df['SSN'] = le.fit_transform(df['SSN'])
 df['Name'] = le.fit_transform(df['Name'])
 df['Customer_ID'] = le.fit_transform(df['Customer_ID'])
 
+# Fix Age
+# It contained wrongly formatted values such as 30_ and 34_ instead of 30 and 34
+df['Age'] = df['Age'].apply(lambda x: x.replace("_", "") if isinstance(x, str) else x)
+# It contained negative values (set as missing value if negative)
+df['Age'] = df['Age'].apply(lambda x: x if int(x) >= 0 else None)
+
+# Fix NumofLoan
+# It contained negative values (set as missing value if negative)
+df['NumofLoan'] = df['NumofLoan'].apply(lambda x: int(x) if x >= 0 else None)
+
+# Fix Delay_from_due_date (set as 0 if negative)
+df['Delay_from_due_date'] = df['Delay_from_due_date'].apply(lambda x: x if x >= 0 else 0)
+
+# Fix NumofDelayedPayment
+# It contained negative values (set as 0 if negative)
+df['NumofDelayedPayment'] = df['NumofDelayedPayment'].apply(lambda x: x if x >= 0 else 0)
+
+# Fix ChangedCreditLimit
+# It contained negative values (set as missing value if negative)
+df['ChangedCreditLimit'] = df['ChangedCreditLimit'].apply(lambda x: x if x >= 0 else None)
+
+# Fix Num_Bank_Accounts
+# It contained negative values (set as 0 if negative)
+df['Num_Bank_Accounts'] = df['Num_Bank_Accounts'].apply(lambda x: x if x >= 0 else abs(x))
+
+# Fix MonthlyBalance
+# It contains a stupidly low value of -3.33E+26, which is probably a mistake
+df['MonthlyBalance'] = df['MonthlyBalance'].apply(lambda x: x if x >= 0 else None)
 
 # print(df.head(5))
 
