@@ -98,13 +98,13 @@ def plot_line_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = 
 
 
 def plot_bar_chart(
-    xvalues: list,
-    yvalues: list,
-    ax: Axes = None,  # type: ignore
-    title: str = "",
-    xlabel: str = "",
-    ylabel: str = "",
-    percentage: bool = False,
+        xvalues: list,
+        yvalues: list,
+        ax: Axes = None,  # type: ignore
+        title: str = "",
+        xlabel: str = "",
+        ylabel: str = "",
+        percentage: bool = False,
 ) -> Axes:
     if ax is None:
         ax = gca()
@@ -130,6 +130,7 @@ def plot_scatter_chart(var1: list, var2: list, ax: Axes = None, title: str = '',
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     ax.scatter(var1, var2)
     return ax
+
 
 def plot_multiline_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str = '', xlabel: str = '',
                          ylabel: str = '', percentage: bool = False):
@@ -364,37 +365,73 @@ def mvi_by_dropping(data: DataFrame, min_pct_per_variable: float = 0.1, min_pct_
     return df
 
 
-def mvi_by_filling(data: DataFrame, strategy: str = 'frequent') -> DataFrame:
+def mvi_by_filling(data: DataFrame, strategy: str = 'frequent',
+                   variable_types: dict[str, list[str]] = None) -> DataFrame:
     '''
         data: DataFrame - the data to clean
         strategy: str - the strategy to apply ('frequent', 'constant' or 'knn')
+        variable_types: dict - the variable types to use for each variable, list of 'binary' and list of 'categorical'
         return the data modified
     '''
     df, tmp_nr, tmp_sb, tmp_bool = None, None, None, None
     variables = get_variable_types(data)
 
-    stg_num, v_num = 'mean', -1
-    stg_sym, v_sym = 'most_frequent', 'NA'
-    stg_bool, v_bool = 'most_frequent', False
-    if strategy != 'knn':
-        if strategy == 'constant':
-            stg_num, stg_sym, stg_bool = 'constant', 'constant', 'constant'
-        if len(variables['numeric']) > 0:
-            imp = SimpleImputer(strategy=stg_num, fill_value=v_num, copy=True)
-            tmp_nr = DataFrame(imp.fit_transform(data[variables['numeric']]), columns=variables['numeric'])
-        if len(variables['symbolic']) > 0:
-            imp = SimpleImputer(strategy=stg_sym, fill_value=v_sym, copy=True)
-            tmp_sb = DataFrame(imp.fit_transform(data[variables['symbolic']]), columns=variables['symbolic'])
-        if len(variables['binary']) > 0:
-            imp = SimpleImputer(strategy=stg_bool, fill_value=v_bool, copy=True)
-            tmp_bool = DataFrame(imp.fit_transform(data[variables['binary']]), columns=variables['binary'])
+    # If variable types are not provided, infer them to be 'numeric', 'symbolic' or 'binary'
+    if variable_types is None:
+        stg_num, v_num = 'mean', -1
+        stg_sym, v_sym = 'most_frequent', 'NA'
+        stg_bool, v_bool = 'most_frequent', False
+        if strategy != 'knn':
+            if strategy == 'constant':
+                stg_num, stg_sym, stg_bool = 'constant', 'constant', 'constant'
+            if len(variables['numeric']) > 0:
+                imp = SimpleImputer(strategy=stg_num, fill_value=v_num, copy=True)
+                tmp_nr = DataFrame(imp.fit_transform(data[variables['numeric']]), columns=variables['numeric'])
+            if len(variables['symbolic']) > 0:
+                imp = SimpleImputer(strategy=stg_sym, fill_value=v_sym, copy=True)
+                tmp_sb = DataFrame(imp.fit_transform(data[variables['symbolic']]), columns=variables['symbolic'])
+            if len(variables['binary']) > 0:
+                imp = SimpleImputer(strategy=stg_bool, fill_value=v_bool, copy=True)
+                tmp_bool = DataFrame(imp.fit_transform(data[variables['binary']]), columns=variables['binary'])
 
-        df = concat([tmp_nr, tmp_sb, tmp_bool], axis=1)
+            df = concat([tmp_nr, tmp_sb, tmp_bool], axis=1)
+        else:
+            imp = KNNImputer(n_neighbors=5)
+            imp.fit(data)
+            ar = imp.transform(data)
+            df = DataFrame(ar, columns=data.columns, index=data.index)
     else:
-        imp = KNNImputer(n_neighbors=5)
-        imp.fit(data)
-        ar = imp.transform(data)
-        df = DataFrame(ar, columns=data.columns, index=data.index)
+        # If variable types are provided, use them to fill the missing values
+        true_numeric = [c for c in variables['numeric'] if c not in variable_types['categorical']]
+        all_binary = list(set(variable_types['binary'] + variables['binary']))
+
+        stg_num, v_num = 'mean', -1
+        stg_sym, v_sym = 'most_frequent', 'NA'
+        stg_bool, v_bool = 'most_frequent', False
+
+        if strategy != 'knn':
+            if strategy == 'constant':
+                stg_num, stg_sym, stg_bool = 'constant', 'constant', 'constant'
+            if len(variables['numeric']) > 0:
+                imp = SimpleImputer(strategy=stg_num, fill_value=v_num, copy=True)
+                tmp_nr = DataFrame(imp.fit_transform(data[true_numeric]),
+                                   columns=true_numeric)
+            if len(variable_types['categorical']) > 0:
+                imp = SimpleImputer(strategy=stg_sym, fill_value=v_sym, copy=True)
+                tmp_sb = DataFrame(imp.fit_transform(data[variable_types['categorical']]),
+                                   columns=variable_types['categorical'])
+            if len(variable_types['binary']) > 0:
+                imp = SimpleImputer(strategy=stg_bool, fill_value=v_bool, copy=True)
+                tmp_bool = DataFrame(imp.fit_transform(data[all_binary]),
+                                     columns=all_binary)
+
+            df = concat([tmp_nr, tmp_sb, tmp_bool], axis=1)
+        else:
+            imp = KNNImputer(n_neighbors=5)
+            imp.fit(data)
+            ar = imp.transform(data)
+            df = DataFrame(ar, columns=data.columns, index=data.index)
+
     return df
 
 
@@ -403,7 +440,6 @@ def mvi_by_filling(data: DataFrame, strategy: str = 'frequent') -> DataFrame:
 # ---------------------------------------
 
 DELTA_IMPROVE: float = 0.001
-
 
 CLASS_EVAL_METRICS: dict[str, Callable] = {
     "accuracy": accuracy_score,
@@ -437,25 +473,26 @@ def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]
             eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
     return eval
 
+
 def select_low_variance_variables(
-    data: DataFrame, max_threshold: float, target: str = "class"
+        data: DataFrame, max_threshold: float, target: str = "class"
 ) -> list:
     summary5: DataFrame = data.describe()
     vars2drop: Index[str] = summary5.columns[
         summary5.loc["std"] * summary5.loc["std"] < max_threshold
-    ]
+        ]
     vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
     return list(vars2drop.values)
 
 
 def study_variance_for_feature_selection(
-    train: DataFrame,
-    test: DataFrame,
-    target: str = "class",
-    max_threshold: float = 1,
-    lag: float = 0.05,
-    metric: str = "accuracy",
-    file_tag: str = "",
+        train: DataFrame,
+        test: DataFrame,
+        target: str = "class",
+        max_threshold: float = 1,
+        lag: float = 0.05,
+        metric: str = "accuracy",
+        file_tag: str = "",
 ) -> dict:
     options: list[float] = [
         round(i * lag, 3) for i in range(1, ceil(max_threshold / lag + lag))
@@ -465,7 +502,7 @@ def study_variance_for_feature_selection(
     for thresh in options:
         vars2drop: Index[str] = summary5.columns[
             summary5.loc["std"] * summary5.loc["std"] < thresh
-        ]
+            ]
         vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
 
         train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
@@ -490,7 +527,7 @@ def study_variance_for_feature_selection(
 
 
 def select_redundant_variables(
-    data: DataFrame, min_threshold: float = 0.90, target: str = "class"
+        data: DataFrame, min_threshold: float = 0.90, target: str = "class"
 ) -> list:
     df: DataFrame = data.drop(target, axis=1, inplace=False)
     corr_matrix: DataFrame = abs(df.corr())
@@ -508,13 +545,13 @@ def select_redundant_variables(
 
 
 def study_redundancy_for_feature_selection(
-    train: DataFrame,
-    test: DataFrame,
-    target: str = "class",
-    min_threshold: float = 0.90,
-    lag: float = 0.05,
-    metric: str = "accuracy",
-    file_tag: str = "",
+        train: DataFrame,
+        test: DataFrame,
+        target: str = "class",
+        min_threshold: float = 0.90,
+        lag: float = 0.05,
+        metric: str = "accuracy",
+        file_tag: str = "",
 ) -> dict:
     options: list[float] = [
         round(min_threshold + i * lag, 3)
@@ -558,11 +595,11 @@ def study_redundancy_for_feature_selection(
 
 
 def apply_feature_selection(
-    train: DataFrame,
-    test: DataFrame,
-    vars2drop: list,
-    filename: str = "",
-    tag: str = "",
+        train: DataFrame,
+        test: DataFrame,
+        vars2drop: list,
+        filename: str = "",
+        tag: str = "",
 ) -> tuple[DataFrame, DataFrame]:
     train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
     train_copy.to_csv(f"{filename}_train_{tag}.csv", index=True)
@@ -598,7 +635,6 @@ def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
 
 DELTA_IMPROVE: float = 0.001
 
-
 CLASS_EVAL_METRICS: dict[str, Callable] = {
     "accuracy": accuracy_score,
     "recall": recall_score,
@@ -606,6 +642,7 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
     "auc": roc_auc_score,
     "f1": f1_score,
 }
+
 
 def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
     estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
@@ -652,7 +689,7 @@ def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
 
 
 def evaluate_approach(
-    train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy"
+        train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy"
 ) -> dict[str, list]:
     trnY = train.pop(target).values
     trnX: ndarray = train.values
@@ -713,7 +750,7 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
 
 
 def read_train_test_from_files(
-    train_fn: str, test_fn: str, target: str = "class"
+        train_fn: str, test_fn: str, target: str = "class"
 ) -> tuple[ndarray, ndarray, array, array, list, list]:
     train: DataFrame = read_csv(train_fn, index_col=None)
     labels: list = list(train[target].unique())
@@ -796,7 +833,6 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
     return axs
 
 
-
 # ---------------------------------------
 #             TIME SERIES
 # ---------------------------------------
@@ -826,10 +862,10 @@ def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
 
 
 def plot_components(
-    series: Series,
-    title: str = "",
-    x_label: str = "time",
-    y_label: str = "",
+        series: Series,
+        title: str = "",
+        x_label: str = "time",
+        y_label: str = "",
 ) -> list[Axes]:
     decomposition: DecomposeResult = seasonal_decompose(series, model="add")
     components: dict = {
@@ -852,9 +888,9 @@ def plot_components(
 
 
 def ts_aggregation_by(
-    data: Series | DataFrame,
-    gran_level: str = "D",
-    agg_func: str = "mean",
+        data: Series | DataFrame,
+        gran_level: str = "D",
+        agg_func: str = "mean",
 ) -> Series | DataFrame:
     df: Series | DataFrame = data.copy()
     index: Index[Period] = df.index.to_period(gran_level)
@@ -901,7 +937,8 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
 
 
 # receives a list of approaches to study; each approach contains train_filename, subtitle
-def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class', sampling_amount=0.01):
+def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class',
+                                sampling_amount=0.01):
     estimators = {
         'GaussianNB': GaussianNB(),
         'MultinomialNB': MultinomialNB(),
@@ -913,7 +950,8 @@ def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', f
     fig.suptitle(f'Naive Bayes Models ({metric}) - {study_title}')
 
     for i in range(cols):
-        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target, sample_amount=sampling_amount)
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target,
+                                                                    sample_amount=sampling_amount)
         xvalues = []
         yvalues = []
         best_model = None
@@ -983,7 +1021,8 @@ def data_prep_knn_study(approaches, k_max=19, lag=2, metric='accuracy', study_ti
     fig.suptitle(f'KNN Models ({metric}) - {study_title}')
 
     for i in range(cols):
-        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target, sample_amount=sampling_amount)
+        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target,
+                                                                    sample_amount=sampling_amount)
         kvalues = [i for i in range(1, k_max + 1, lag)]
         best_model = None
         best_params = {'name': 'KNN', 'metric': metric, 'params': ()}
