@@ -21,12 +21,14 @@ if run_sampling:
     pos_covid_test = pos_covid_test.sample(frac=sampling_amount, random_state=42)
 
 # ------------------
-# Dropping Low Variance Variables
+# Approach 1: Dropping Low Variance Variables
 # ------------------
 
-print("Original variables", len(pos_covid_train.columns.to_list()), ":", pos_covid_train.columns.to_list())
-vars2drop: list[str] = select_low_variance_variables(pos_covid_train, 0.1, target=target)
-print("Variables to drop", len(vars2drop), ":", vars2drop)
+# print("Original variables", len(pos_covid_train.columns.to_list()), ":", pos_covid_train.columns.to_list())
+# vars2drop: list[str] = select_low_variance_variables(pos_covid_train, 0.1, target=target)
+# print("Variables to drop", len(vars2drop), ":", vars2drop)
+
+# ------------------
 
 eval_metric = "recall"
 
