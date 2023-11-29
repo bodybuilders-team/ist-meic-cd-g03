@@ -50,20 +50,68 @@
     * [X] Code and Charts
     * [ ] Report
   * [ ] Decision Trees
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Random Forest
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Gradient Boosting
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] MLP
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
 
 * [ ] **Critical Analysis**
 
 ## Forecasting
 
-_to be added_
+* [ ] **Data Profiling**:
+  * [ ] Dimensionality
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Distribution
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Granularity
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Stationarity
+    * [ ] Code and Charts
+    * [ ] Report
+
+* [ ] **Data Preparation**:
+  * [ ] Missing Values Imputation
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Scaling
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Aggregation
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Smoothing
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Differentiation
+    * [ ] Code and Charts
+    * [ ] Report
+
+* [ ] **Modeling and Evaluation**:
+  * [ ] Simple Average
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] ARIMA
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Persistence Model
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] Rolling Mean
+    * [ ] Code and Charts
+    * [ ] Report
+  * [ ] LSTMs
+    * [ ] Code and Charts
+    * [ ] Report
+
+* [ ] **Critical Analysis**
