@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import KNeighborsClassifier
 
 from utils.dslabs_functions import read_train_test_from_files, CLASS_EVAL_METRICS, knn_study, HEIGHT, \
-    plot_evaluation_results, plot_multiline_chart, split_train_test_from_file
+    plot_evaluation_results, plot_multiline_chart
 
 train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"
 test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test.csv"
@@ -48,7 +48,9 @@ prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plt.figure()
 plot_evaluation_results(params, trnY, prd_trn, tstY, prd_tst, labels, file_tag=pos_covid_file_tag)
+plt.tight_layout()
 plt.show()
+plt.clf()
 
 # ----------------------------
 # Overfitting Study
@@ -77,5 +79,7 @@ plot_multiline_chart(
     ylabel=str(acc_metric),
     percentage=True,
 )
+plt.tight_layout()
 plt.savefig(f"images/{pos_covid_file_tag}_knn_overfitting.png")
 plt.show()
+plt.clf()

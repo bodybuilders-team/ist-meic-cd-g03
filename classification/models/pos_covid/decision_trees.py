@@ -1,12 +1,11 @@
 from typing import Literal
-from subprocess import call
 
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import imread, imshow, axis
-from sklearn.tree import export_graphviz, DecisionTreeClassifier
+from numpy import argsort
+from sklearn.tree import plot_tree, DecisionTreeClassifier
 
 from utils.dslabs_functions import trees_study, read_train_test_from_files, CLASS_EVAL_METRICS, HEIGHT, \
-    plot_evaluation_results, plot_multiline_chart
+    plot_evaluation_results, plot_horizontal_bar_chart, plot_multiline_chart
 
 train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"
 test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test.csv"
@@ -58,32 +57,47 @@ plt.clf()
 # Variables importance
 # ----------------------------
 
-# tree_filename: str = f"images/{pos_covid_file_tag}_dt_{eval_metric}_best_tree"
-# max_depth2show = 3
-# st_labels: list[str] = [str(value) for value in labels]
-#
-# dot_data: str = export_graphviz(
-#     best_model,
-#     out_file=tree_filename + ".dot",
-#     max_depth=max_depth2show,
-#     feature_names=vars,
-#     class_names=st_labels,
-#     filled=True,
-#     rounded=True,
-#     impurity=False,
-#     special_characters=True,
-#     precision=2,
-# )
-# # Convert to png
-# call(["dot", "-Tpng", tree_filename + ".dot", "-o", tree_filename + ".png", "-Gdpi=600"])
-#
-# plt.figure(figsize=(14, 6))
-# imshow(imread(tree_filename + ".png"))
-# axis("off")
-# plt.show()
-# plt.clf()
+max_depth2show = 3
+st_labels: list[str] = [str(value) for value in labels]
 
-# TODO: Finish this - Jesus
+plt.figure(figsize=(14, 6))
+plot_tree(
+    best_model,
+    max_depth=max_depth2show,
+    feature_names=vars,
+    class_names=st_labels,
+    filled=True,
+    rounded=True,
+    impurity=False,
+    precision=2,
+)
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_DT_{eval_metric}_best_tree.png")
+plt.show()
+plt.clf()
+
+importances = best_model.feature_importances_
+indices: list[int] = argsort(importances)[::-1]
+elems: list[str] = []
+imp_values: list[float] = []
+for f in range(len(vars)):
+    elems += [vars[indices[f]]]
+    imp_values += [importances[indices[f]]]
+    print(f"{f + 1}. {elems[f]} ({importances[indices[f]]})")
+
+plt.figure()  # TODO: Do not change this figure size until data preparation is finished
+plot_horizontal_bar_chart(
+    elems,
+    imp_values,
+    title="Decision Tree variables importance",
+    xlabel="importance",
+    ylabel="variables",
+    percentage=True,
+)
+plt.tight_layout()
+plt.savefig(f"images/{pos_covid_file_tag}_dt_{eval_metric}_vars_ranking.png")
+plt.show()
+plt.clf()
 
 # ----------------------------
 # Overfitting Study
@@ -98,7 +112,7 @@ acc_metric = "accuracy"
 for d in depths:
     clf = DecisionTreeClassifier(max_depth=d, criterion=crit, min_impurity_decrease=0)
     clf.fit(trnX, trnY)
-    prd_tst_Y= clf.predict(tstX)
+    prd_tst_Y = clf.predict(tstX)
     prd_trn_Y = clf.predict(trnX)
     y_tst_values.append(CLASS_EVAL_METRICS[acc_metric](tstY, prd_tst_Y))
     y_trn_values.append(CLASS_EVAL_METRICS[acc_metric](trnY, prd_trn_Y))
@@ -112,5 +126,7 @@ plot_multiline_chart(
     ylabel=str(eval_metric),
     percentage=True,
 )
+plt.tight_layout()
 plt.savefig(f"images/{pos_covid_file_tag}_dt_{eval_metric}_overfitting.png")
 plt.show()
+plt.clf()

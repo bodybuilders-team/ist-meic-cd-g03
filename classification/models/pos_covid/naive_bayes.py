@@ -28,9 +28,9 @@ fig.tight_layout()
 fig.savefig(f"images/{pos_covid_file_tag}_nb_study.png")
 fig.show()
 
-# Best alternative: BernoulliNB
+# Best alternative: BernoulliNB (better in all metrics)
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "accuracy")
-print(f"Best model: {best_model}")
+print(f"Best model: {params["name"]}")
 plt.clf()
 
 # ----------------------------
@@ -41,5 +41,6 @@ prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)
 plt.figure()
 plot_evaluation_results(params, trnY, prd_trn, tstY, prd_tst, labels, file_tag=pos_covid_file_tag)
+plt.tight_layout()
 plt.show()
-
+plt.clf()
