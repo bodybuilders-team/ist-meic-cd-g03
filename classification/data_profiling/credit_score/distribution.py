@@ -15,13 +15,13 @@ credit_score_summary = credit_score_data.describe()
 credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
 credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
 
-run_credit_score_global_boxplot: bool = True
-run_credit_score_single_boxplots: bool = True
+run_credit_score_global_boxplot: bool = False
+run_credit_score_single_boxplots: bool = False
 run_credit_score_outliers: bool = True
-run_credit_score_histograms: bool = True
-run_credit_score_histograms_with_distributions: bool = True
-run_credit_score_histograms_symbolic: bool = True
-run_credit_score_class_distribution: bool = True
+run_credit_score_histograms: bool = False
+run_credit_score_histograms_with_distributions: bool = False
+run_credit_score_histograms_symbolic: bool = False
+run_credit_score_class_distribution: bool = False
 
 # ------------------
 # Global boxplots

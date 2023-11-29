@@ -3,9 +3,9 @@
 ## Classification 
 
 * [ ] **Data Profiling**:
-  * [ ] Dimensionality
+  * [X] Dimensionality
     * [X] Code and Charts
-    * [ ] Report
+    * [X] Report
   * [ ] Distribution - fix some plots (remove labels, change scales, and rerun without sampling)
     * [ ] Code and Charts
     * [ ] Report
@@ -29,7 +29,7 @@
   * [ ] Scaling - fix z-score evaluation; choose approach
     * [ ] Code and Charts
     * [ ] Report
-  * [ ] Balancing - for Dt2 - Oversample; for Dt1 - Undersample
+  * [ ] Balancing - for Dt1 - Oversample; for Dt2 - Undersample
     * [X] Code and Charts
     * [ ] Report
   * [ ] Feature Selection - Páscoa termina; choose approach

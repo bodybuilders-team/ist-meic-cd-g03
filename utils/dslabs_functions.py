@@ -745,6 +745,7 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
             ax=axs[0][approaches.index(approach)]
         )
 
+    plt.tight_layout()
     savefig(f"images/{file_tag}_eval.png")
     show()
 
@@ -901,7 +902,7 @@ def ts_aggregation_by(
     return df
 
 
-def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', subtitle=''):
+def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', subtitle='', ax=None):
     estimators = {
         'GaussianNB': GaussianNB(),
         'MultinomialNB': MultinomialNB(),
@@ -929,9 +930,10 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
         yvalues,
         title=f'Naive Bayes Models ({metric}) {" - " + subtitle if subtitle != "" else ""}',
         ylabel=metric,
-        percentage=True
+        percentage=True,
+        ax=ax
     )
-    savefig(f'images/{file_tag}_nb_{metric}_study.png')
+    #savefig(f'images/{file_tag}_nb_{metric}_study.png')
 
     return best_model, best_params
 
