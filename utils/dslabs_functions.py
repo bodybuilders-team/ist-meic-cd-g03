@@ -750,16 +750,19 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
     show()
 
 
-def read_train_test_from_files(
-        train_fn: str, test_fn: str, target: str = "class"
+def read_train_test_from_files(train_fn: str, test_fn: str, target: str = "class", sample_amount: float = 1.0
 ) -> tuple[ndarray, ndarray, array, array, list, list]:
     train: DataFrame = read_csv(train_fn, index_col=None)
+    if sample_amount < 1:
+        train = train.sample(frac=sample_amount, random_state=42)
     labels: list = list(train[target].unique())
     labels.sort()
     trnY: array = train.pop(target).to_list()
     trnX: ndarray = train.values
 
     test: DataFrame = read_csv(test_fn, index_col=None)
+    if sample_amount < 1:
+        test = test.sample(frac=sample_amount, random_state=42)
     tstY: array = test.pop(target).to_list()
     tstX: ndarray = test.values
     return trnX, tstX, trnY, tstY, labels, train.columns.to_list()
@@ -984,7 +987,7 @@ def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', f
     plt.show()
 
 
-def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag=''):
+def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag='', ax=None):
     dist = ['manhattan', 'euclidean', 'chebyshev']
 
     kvalues = [i for i in range(1, k_max + 1, lag)]
@@ -1008,8 +1011,9 @@ def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_t
         values[d] = y_tst_values
     print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
 
-    plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True)
-    savefig(f'images/{file_tag}_knn_{metric}_study.png')
+    plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True,
+                         ax=ax)
+    # savefig(f'images/{file_tag}_knn_{metric}_study.png')
 
     return best_model, best_params
 
