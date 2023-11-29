@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from utils.dslabs_functions import read_train_test_from_files, CLASS_EVAL_METRICS, knn_study, HEIGHT, \
     plot_evaluation_results, plot_multiline_chart
 
-train_filename = "../../data/credit_score/processed_data/class_credit_score_train_over.csv"
+train_filename = "../../data/credit_score/processed_data/class_credit_score_train_under.csv"
 test_filename = "../../data/credit_score/processed_data/class_credit_score_test.csv"
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
@@ -20,7 +20,7 @@ print(f'Train#={len(trnX)} Test#={len(tstX)}')
 print(f'Labels={labels}')
 
 # ----------------------------
-# Study KNN Alternatives
+# Parameter Study
 # ----------------------------
 
 plt.figure()
@@ -35,7 +35,7 @@ fig.tight_layout()
 fig.savefig(f"images/{credit_score_file_tag}_knn_study.png")
 fig.show()
 
-# Best alternative: Euclidean with k=1
+# Best alternative: Manhattan with k=25
 best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=25, metric="accuracy")
 print(f"Best model: {best_model}")
 plt.clf()

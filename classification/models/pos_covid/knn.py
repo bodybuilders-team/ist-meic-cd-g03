@@ -20,7 +20,7 @@ print(f'Train#={len(trnX)} Test#={len(tstX)}')
 print(f'Labels={labels}')
 
 # ----------------------------
-# Study KNN Alternatives
+# Parameter Study
 # ----------------------------
 
 plt.figure()

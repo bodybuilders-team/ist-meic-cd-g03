@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from utils.dslabs_functions import read_train_test_from_files, naive_Bayes_study, CLASS_EVAL_METRICS, HEIGHT, \
     plot_evaluation_results
 
-train_filename = "../../data/credit_score/processed_data/class_credit_score_train_over.csv"
+train_filename = "../../data/credit_score/processed_data/class_credit_score_train_under.csv"
 test_filename = "../../data/credit_score/processed_data/class_credit_score_test.csv"
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
@@ -28,7 +28,7 @@ fig.tight_layout()
 fig.savefig(f"images/{credit_score_file_tag}_nb_study.png")
 fig.show()
 
-# Best alternative: Multinomial (better in all metrics)
+# Best alternative: BernoulliNB (better in all metrics)
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "accuracy")
 print(f"Best model: {params["name"]}")
 plt.clf()
