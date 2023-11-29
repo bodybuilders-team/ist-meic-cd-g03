@@ -14,12 +14,12 @@ from matplotlib.container import BarContainer
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
-from matplotlib.pyplot import gca, gcf, savefig, subplots, show
+from matplotlib.pyplot import gca, gcf, savefig, subplots, show, tight_layout
 from numpy import arange, ndarray, set_printoptions, array
 from numpy import log
 from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index, Period
 from scipy.stats import norm, expon, lognorm
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
 from sklearn.metrics import confusion_matrix, RocCurveDisplay
@@ -835,6 +835,7 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
 
     cnf_mtx_tst = confusion_matrix(tst_y, prd_tst, labels=labels)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1])
+    tight_layout()
     savefig(f'images/{file_tag}_{model['name']}_best_{model['metric']}_eval.png')
     return axs
 
@@ -1144,4 +1145,59 @@ def random_forests_study(
     print(
         f'RF best for {best_params["params"][2]} trees (d={best_params["params"][0]} and f={best_params["params"][1]})'
     )
+    return best_model, best_params
+
+
+def gradient_boosting_study(
+        trnX: ndarray,
+        trnY: array,
+        tstX: ndarray,
+        tstY: array,
+        nr_max_trees: int = 2500,
+        lag: int = 500,
+        metric: str = "accuracy",
+) -> tuple[GradientBoostingClassifier | None, dict]:
+    n_estimators: list[int] = [100] + [i for i in range(500, nr_max_trees + 1, lag)]
+    max_depths: list[int] = [2, 5, 7]
+    learning_rates: list[float] = [0.1, 0.3, 0.5, 0.7, 0.9]
+
+    best_model: GradientBoostingClassifier | None = None
+    best_params: dict = {"name": "GB", "metric": metric, "params": ()}
+    best_performance: float = 0.0
+
+    values: dict = {}
+    cols: int = len(max_depths)
+    _, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    for i in range(len(max_depths)):
+        d: int = max_depths[i]
+        values = {}
+        for lr in learning_rates:
+            y_tst_values: list[float] = []
+            for n in n_estimators:
+                clf = GradientBoostingClassifier(
+                    n_estimators=n, max_depth=d, learning_rate=lr
+                )
+                clf.fit(trnX, trnY)
+                prdY: array = clf.predict(tstX)
+                eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+                y_tst_values.append(eval)
+                if eval - best_performance > DELTA_IMPROVE:
+                    best_performance = eval
+                    best_params["params"] = (d, lr, n)
+                    best_model = clf
+                # print(f'GB d={d} lr={lr} n={n}')
+            values[lr] = y_tst_values
+        plot_multiline_chart(
+            n_estimators,
+            values,
+            ax=axs[0, i],
+            title=f"Gradient Boosting with max_depth={d}",
+            xlabel="nr estimators",
+            ylabel=metric,
+            percentage=True,
+        )
+    print(
+        f'GB best for {best_params["params"][2]} trees (d={best_params["params"][0]} and lr={best_params["params"][1]}'
+    )
+
     return best_model, best_params
