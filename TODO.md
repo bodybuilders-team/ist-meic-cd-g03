@@ -44,10 +44,10 @@
 
 * [ ] **Modeling and Evaluation**:
   * [ ] Naive Bayes
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] KNN
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Decision Trees
     * [ ] Code and Charts
