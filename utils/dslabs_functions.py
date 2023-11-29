@@ -6,7 +6,7 @@ from datetime import datetime
 from itertools import product
 from math import pi, sin, cos, ceil
 from numbers import Number
-from typing import Callable
+from typing import Callable, Literal
 
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
@@ -26,6 +26,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.tree import DecisionTreeClassifier
 
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
@@ -1056,3 +1057,36 @@ def data_prep_knn_study(approaches, k_max=19, lag=2, metric='accuracy', study_ti
     plt.tight_layout()
     savefig(f'images/{file_tag}_knn_{metric}_study.png')
     plt.show()
+
+
+def trees_study(
+        trnX: ndarray, trnY: array, tstX: ndarray, tstY: array, d_max: int = 10, lag: int = 2, metric='accuracy',
+        ax=None
+) -> tuple:
+    criteria: list[Literal['entropy', 'gini']] = ['entropy', 'gini']
+    depths: list[int] = [i for i in range(2, d_max + 1, lag)]
+
+    best_model: DecisionTreeClassifier | None = None
+    best_params: dict = {'name': 'DT', 'metric': metric, 'params': ()}
+    best_performance: float = 0.0
+
+    values: dict = {}
+    for c in criteria:
+        y_tst_values: list[float] = []
+        for d in depths:
+            clf = DecisionTreeClassifier(max_depth=d, criterion=c, min_impurity_decrease=0)
+            clf.fit(trnX, trnY)
+            prdY: array = clf.predict(tstX)
+            eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+            y_tst_values.append(eval)
+            if eval - best_performance > DELTA_IMPROVE:
+                best_performance = eval
+                best_params['params'] = (c, d)
+                best_model = clf
+            # print(f'DT {c} and d={d}')
+        values[c] = y_tst_values
+    print(f'DT best with {best_params['params'][0]} and d={best_params['params'][1]}')
+    plot_multiline_chart(depths, values, title=f'DT Models ({metric})', xlabel='d', ylabel=metric, percentage=True,
+                         ax=ax)
+
+    return best_model, best_params

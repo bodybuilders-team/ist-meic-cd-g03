@@ -35,7 +35,7 @@ fig.tight_layout()
 fig.savefig(f"images/{pos_covid_file_tag}_knn_study.png")
 fig.show()
 
-# Best alternative: Manhattan
+# Best alternative: Manhattan with k=7
 best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=25, metric="accuracy")
 print(f"Best model: {best_model}")
 plt.clf()
