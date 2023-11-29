@@ -10,7 +10,7 @@ print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit
 
 variable_types: dict[str, list[str]] = {
     "binary": ["Credit_Score"],
-    "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour", "Month"]
+    "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour"] # Month variable was removed
 }
 
 
