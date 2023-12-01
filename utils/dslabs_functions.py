@@ -502,7 +502,10 @@ def study_variance_for_feature_selection(
     ]
     results: dict[str, list] = {"NB": [], "KNN": []}
     summary5: DataFrame = train.describe()
-    for thresh in options:
+    print(summary5)
+    for i, thresh in enumerate(options):
+        print(f"{i}/{len(options)-1}")
+
         vars2drop: Index[str] = summary5.columns[
             summary5.loc["std"] * summary5.loc["std"] < thresh
             ]
@@ -510,12 +513,21 @@ def study_variance_for_feature_selection(
 
         train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
         test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+        if len(train_copy.columns) <= 1 or len(test_copy.columns) <= 1:
+            results["NB"].append(0)
+            results["KNN"].append(0)
+            continue
+
         eval: dict[str, list] | None = evaluate_approach(
             train_copy, test_copy, target=target, metric=metric
         )
-        if eval is not None:
+
+        if eval is not None and len(eval) != 0:
             results["NB"].append(eval[metric][0])
             results["KNN"].append(eval[metric][1])
+        else:
+            results["NB"].append(0)
+            results["KNN"].append(0)
 
     plot_multiline_chart(
         options,
@@ -563,9 +575,11 @@ def study_redundancy_for_feature_selection(
 
     df: DataFrame = train.drop(target, axis=1, inplace=False)
     corr_matrix: DataFrame = abs(df.corr())
+    print(corr_matrix)
     variables: Index[str] = corr_matrix.columns
     results: dict[str, list] = {"NB": [], "KNN": []}
-    for thresh in options:
+    for i,thresh in enumerate(options):
+        print(f"{i}/{len(options)-1}")
         vars2drop: list = []
         for v1 in variables:
             vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= thresh]
@@ -578,6 +592,11 @@ def study_redundancy_for_feature_selection(
 
         train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
         test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+        if len(train_copy.columns) <= 1:
+            results["NB"].append(0)
+            results["KNN"].append(0)
+            continue
+
         eval: dict | None = evaluate_approach(
             train_copy, test_copy, target=target, metric=metric
         )
