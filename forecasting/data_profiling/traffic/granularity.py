@@ -11,7 +11,9 @@ traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", pars
 target: str = "Total"
 series: Series = traffic_data[target]
 
-grans: list[str] = ["H", "D", "W", "M", "Q"]
+grans: list[str] = ["H", "D", "W"] #, "M", "Q"]
+# Does not make sense to aggregate by month or quarter because we only have 1 month of data
+
 fig: Figure
 axs: list[Axes]
 fig, axs = plt.subplots(len(grans), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(grans)))

@@ -36,6 +36,9 @@ plt.clf()
 # Multivariate Time Series - All Variables # TODO: Maybe remove the week chart
 # ------------------
 
+# Remove Week variable, because it is not relevant for the following analysis
+covid_data = covid_data.drop(columns=["week"], inplace=False)
+
 plot_ts_multivariate_chart(covid_data, title=f"{covid_file_tag} {target}")
 plt.tight_layout()
 plt.savefig(f"images/dimensionality/{covid_file_tag}_{target}.png")

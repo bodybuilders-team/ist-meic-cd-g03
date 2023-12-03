@@ -36,6 +36,9 @@ plt.clf()
 # Multivariate Time Series - All Variables
 # ------------------
 
+# Remove day of the week variable, because it is not relevant for the following analysis
+traffic_data = traffic_data.drop(columns=["Day of the week"], inplace=False)
+
 plot_ts_multivariate_chart(traffic_data, title=f"{traffic_file_tag} {target}")
 plt.tight_layout()
 plt.savefig(f"images/dimensionality/{traffic_file_tag}_{target}.png")
