@@ -68,13 +68,13 @@
 
 * [ ] **Data Profiling**:
   * [ ] Dimensionality
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Distribution
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Granularity
-    * [ ] Code and Charts
+    * [X] Code and Charts
     * [ ] Report
   * [ ] Stationarity
     * [ ] Code and Charts
