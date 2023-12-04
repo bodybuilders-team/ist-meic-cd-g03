@@ -3,13 +3,14 @@ from utils.dslabs_functions import evaluate_approaches
 pos_covid_file_tag: str = "class_pos_covid"
 eval_metric = "accuracy"
 
-run_sampling = True
-sampling_amount = 0.01 if run_sampling else 1
+run_sampling = False
+sampling_amount = 0.1 if run_sampling else 1
 
-run_mv_imputation_study = True
+run_mv_imputation_study = False
 run_outliers_treatment_study = True
-run_scaling_study = True
-run_balancing_study = True
+run_scaling_study = False
+run_balancing_study = False
+run_feature_selection_study = True
 
 """
 ------------------
@@ -46,6 +47,8 @@ Outliers Treatment
 if run_outliers_treatment_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach2.csv",
+             "Approach 1 - Not doing anything to outliers"],
             ["../../data/pos_covid/processed_data/class_pos_covid_drop_outliers.csv",
              "Approach 1 - Drop Outliers"],
             ["../../data/pos_covid/processed_data/class_pos_covid_replacing_outliers.csv",
@@ -71,8 +74,8 @@ Scaling (only KNN)
 if run_scaling_study:
     evaluate_approaches(  # TODO: Fix this
         approaches=[
-            # ["../../data/pos_covid/processed_data/class_pos_covid_scaled_zscore.csv",
-            #  "Approach 1 - Standard Scaler"],
+            ["../../data/pos_covid/processed_data/class_pos_covid_scaled_zscore.csv",
+             "Approach 1 - Standard Scaler"],
             ["../../data/pos_covid/processed_data/class_pos_covid_scaled_minmax.csv",
              "Approach 2 - MinMax Scaler"]
         ],

@@ -19,22 +19,20 @@ print(f"Dataset nr records={pos_covid_data.shape[0]}", f"nr variables={pos_covid
 
 vars: list[str] = pos_covid_data.columns.to_list()
 target_data: Series = pos_covid_data.pop(target)
-print(pos_covid_data)
 
-transform: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(pos_covid_data)
-df_zscore = DataFrame(transform.transform(pos_covid_data), index=pos_covid_data.index)
+scaler: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True)
+df_zscore = DataFrame(scaler.fit_transform(pos_covid_data), columns=pos_covid_data.columns, index=pos_covid_data.index)
 df_zscore[target] = target_data
-df_zscore.columns = vars
+
 df_zscore.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_scaled_zscore.csv", index=False)
 
 # ------------------
 # Approach 2: MinMax Scaler
 # ------------------
 
-transform: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(pos_covid_data)
-df_minmax = DataFrame(transform.transform(pos_covid_data), index=pos_covid_data.index)
+scaler: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True)
+df_minmax = DataFrame(scaler.fit_transform(pos_covid_data), columns=pos_covid_data.columns, index=pos_covid_data.index)
 df_minmax[target] = target_data
-df_minmax.columns = vars
 df_minmax.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_scaled_minmax.csv", index=False)
 
 # To see the results:

@@ -7,7 +7,7 @@ from utils.dslabs_functions import dummify
 
 credit_score_filename: str = "../../data/credit_score/class_credit_score.csv"
 credit_score_file_tag: str = "class_credit_score"
-credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
+credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="")
 
 # ------------------
 # Ordinal Encoding: Binary and Categorical variables with order
@@ -54,11 +54,10 @@ encoding: dict[str, dict[str, int]] = {
 }
 df: DataFrame = credit_score_data.replace(encoding, inplace=False)
 
-# SSN, Name and Customer_ID using label encoder
-le = LabelEncoder()
-df['SSN'] = le.fit_transform(df['SSN'])
-df['Name'] = le.fit_transform(df['Name'])
-df['Customer_ID'] = le.fit_transform(df['Customer_ID'])
+df = df.drop('Name', axis=1)
+df = df.drop('SSN', axis=1)
+df = df.drop('Customer_ID', axis=1)
+df = df.drop('ID', axis=1)
 
 # Fix Age
 # It contained wrongly formatted values such as 30_ and 34_ instead of 30 and 34
@@ -135,5 +134,4 @@ df.drop('Type_of_Loan', axis=1, inplace=True)  # Drop the original column
 df = dummify(df, ["Occupation"])
 
 print(df.head(5))
-
 df.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_encoded.csv", index=False)
