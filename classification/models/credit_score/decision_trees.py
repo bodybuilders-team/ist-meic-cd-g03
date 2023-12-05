@@ -12,6 +12,7 @@ test_filename = "../../data/credit_score/processed_data/class_credit_score_test_
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
+# Relatively quick without sampling
 run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
