@@ -1,8 +1,6 @@
-import matplotlib.pyplot as plt
 from pandas import DataFrame, read_csv
 
-from utils.dslabs_functions import HEIGHT, study_variance_for_feature_selection, study_redundancy_for_feature_selection, \
-    apply_feature_selection, select_redundant_variables
+from utils.dslabs_functions import apply_feature_selection, select_redundant_variables
 from utils.dslabs_functions import (
     select_low_variance_variables,
 )

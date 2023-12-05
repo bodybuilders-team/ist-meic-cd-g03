@@ -1,7 +1,8 @@
-from matplotlib.pyplot import rcParams, style
-from matplotlib.colors import LinearSegmentedColormap
 from warnings import simplefilter
+
 from cycler import cycler
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.pyplot import rcParams, style
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")

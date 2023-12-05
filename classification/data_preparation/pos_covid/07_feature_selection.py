@@ -1,13 +1,11 @@
-import matplotlib.pyplot as plt
 from pandas import DataFrame, read_csv
 
-from utils.dslabs_functions import HEIGHT, study_variance_for_feature_selection, study_redundancy_for_feature_selection, \
-    select_redundant_variables, apply_feature_selection
 from utils.dslabs_functions import (
     select_low_variance_variables,
 )
+from utils.dslabs_functions import select_redundant_variables, apply_feature_selection
 
-pos_covid_train_file: str = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"  # After scaling
+pos_covid_train_file: str = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"  # After balancing
 pos_covid_test_file: str = "../../data/pos_covid/processed_data/class_pos_covid_test.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_train: DataFrame = read_csv(pos_covid_train_file)

@@ -1,14 +1,9 @@
-from utils.dslabs_functions import evaluate_approaches
-from utils.dslabs_functions import evaluate_approaches
 import matplotlib.pyplot as plt
 from pandas import DataFrame, read_csv
 
-from utils.dslabs_functions import HEIGHT, study_variance_for_feature_selection, study_redundancy_for_feature_selection, \
-    select_redundant_variables, apply_feature_selection
-from utils.dslabs_functions import (
-    select_low_variance_variables,
-)
-
+from utils.dslabs_functions import HEIGHT, study_variance_for_feature_selection, \
+    study_redundancy_for_feature_selection
+from utils.dslabs_functions import evaluate_approaches
 
 credit_score_file_tag: str = "class_credit_score"
 eval_metric = "accuracy"
