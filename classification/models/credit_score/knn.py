@@ -12,7 +12,7 @@ credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
 run_sampling = True
-sampling_amount = 0.01 if run_sampling else 1
+sampling_amount = 0.1 if run_sampling else 1
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target,
                                                                   sampling_amount)
