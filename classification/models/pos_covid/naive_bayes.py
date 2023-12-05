@@ -5,6 +5,7 @@ from utils.dslabs_functions import read_train_test_from_files, naive_Bayes_study
 
 train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_lowvar.csv"
 test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test_lowvar.csv"
+
 pos_covid_file_tag: str = "class_pos_covid"
 target = "CovidPos"
 
