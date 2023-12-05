@@ -36,7 +36,7 @@ fig.tight_layout()
 fig.savefig(f"images/{credit_score_file_tag}_dt_study.png")
 fig.show()
 
-# Best alternative: Gini with max_depth=4
+# Best alternative: Entropy with max_depth=10
 eval_metric = "accuracy"
 best_model, params = trees_study(trnX, trnY, tstX, tstY, d_max=25, metric=eval_metric)
 print(f"Best model: {best_model}")

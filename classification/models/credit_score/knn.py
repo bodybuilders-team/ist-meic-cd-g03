@@ -11,7 +11,7 @@ test_filename = "../../data/credit_score/processed_data/class_credit_score_test_
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
-run_sampling = False
+run_sampling = True
 sampling_amount = 0.01 if run_sampling else 1
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target,
@@ -35,7 +35,7 @@ fig.tight_layout()
 fig.savefig(f"images/{credit_score_file_tag}_knn_study.png")
 fig.show()
 
-# Best alternative: Manhattan with k=25
+# Best alternative: Manhattan with k=15
 best_model, params = knn_study(trnX, trnY, tstX, tstY, k_max=25, metric="accuracy")
 print(f"Best model: {best_model}")
 plt.clf()

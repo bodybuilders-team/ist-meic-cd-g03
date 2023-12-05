@@ -28,7 +28,7 @@ fig.tight_layout()
 fig.savefig(f"images/{credit_score_file_tag}_nb_study.png")
 fig.show()
 
-# Best alternative: BernoulliNB (better in all metrics)
+# Best alternative: GaussianNB (better in all metrics)
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "accuracy")
 print(f"Best model: {params["name"]}")
 plt.clf()
