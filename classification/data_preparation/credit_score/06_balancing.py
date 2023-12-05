@@ -9,7 +9,7 @@ from utils.dslabs_functions import plot_bar_chart
 A dataset is unbalanced if the number of samples in each class is not similar - this can bias the model.
 """
 
-credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_train_smote.csv" # Only to the train set
+credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_train.csv" # Only to the train set
 credit_score_file_tag: str = "class_credit_score_train"
 credit_score_data: DataFrame = read_csv(credit_score_filename)
 target: str = "Credit_Score"
