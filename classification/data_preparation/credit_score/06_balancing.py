@@ -28,7 +28,7 @@ print(
 values: dict[str, list] = {
     "Original": [target_count[positive_class], target_count[negative_class]]
 }
-raise ""
+
 plt.figure()
 plot_bar_chart(
     target_count.index.to_list(), target_count.to_list(), title="Class balance"
