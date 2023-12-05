@@ -1,15 +1,27 @@
 from utils.dslabs_functions import evaluate_approaches
+from utils.dslabs_functions import evaluate_approaches
+import matplotlib.pyplot as plt
+from pandas import DataFrame, read_csv
+
+from utils.dslabs_functions import HEIGHT, study_variance_for_feature_selection, study_redundancy_for_feature_selection, \
+    select_redundant_variables, apply_feature_selection
+from utils.dslabs_functions import (
+    select_low_variance_variables,
+)
+
 
 credit_score_file_tag: str = "class_credit_score"
 eval_metric = "accuracy"
 
 run_sampling = True
-sampling_amount = 0.01 if run_sampling else 1
+sampling_amount = 0.001 if run_sampling else 1
 
-run_mv_imputation_study = True
-run_outliers_treatment_study = True
-run_scaling_study = True
-run_balancing_study = True
+run_mv_imputation_study = False
+run_outliers_treatment_study = False
+run_scaling_study = False
+run_balancing_study = False
+run_feature_selection_preliminary_study = True
+run_feature_selection_study = False
 
 """
 ------------------
@@ -69,10 +81,10 @@ Scaling (only KNN)
 % Approach 2: MinMax Scaler
 """
 if run_scaling_study:
-    evaluate_approaches(  # TODO: Fix this
+    evaluate_approaches(
         approaches=[
-            # ["../../data/credit_score/processed_data/class_credit_score_scaled_zscore.csv",
-            #  "Approach 1 - Standard Scaler"],
+            ["../../data/credit_score/processed_data/class_credit_score_scaled_zscore.csv",
+             "Approach 1 - Standard Scaler"],
             ["../../data/credit_score/processed_data/class_credit_score_scaled_minmax.csv",
              "Approach 2 - MinMax Scaler"]
         ],
@@ -96,13 +108,78 @@ Balancing
 if run_balancing_study:
     evaluate_approaches(
         approaches=[
-            ["../../data/credit_score/processed_data/class_credit_score_drop_outliers.csv", "Approach 1 - Undersampling"],
-            ["../../data/credit_score/processed_data/class_credit_score_replacing_outliers.csv", "Approach 2 - Oversampling"],
-            ["../../data/credit_score/processed_data/class_credit_score_truncate_outliers.csv", "Approach 3 - SMOTE"]
+            ["../../data/credit_score/processed_data/class_credit_score_train_under.csv", "Approach 1 - Undersampling"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_over.csv", "Approach 2 - Oversampling"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_smote.csv", "Approach 3 - SMOTE"]
         ],
         study_title="Balancing",
         metric=eval_metric,
         target="Credit_Score",
         file_tag=f"{credit_score_file_tag}_balancing",
+        sample_amount=sampling_amount
+    )
+
+"""
+------------------
+Feature Selection Preliminary Study
+------------------
+"""
+if run_feature_selection_preliminary_study:
+    credit_score_train_file: str = "../../data/credit_score/processed_data/class_credit_score_train_over.csv"
+    credit_score_test_file: str = "../../data/credit_score/processed_data/class_credit_score_test.csv"
+    credit_score_train: DataFrame = read_csv(credit_score_train_file)
+    credit_score_test: DataFrame = read_csv(credit_score_test_file)
+    target: str = "Credit_Score"
+
+    if run_sampling:
+        credit_score_train = credit_score_train.sample(frac=sampling_amount, random_state=42)
+        credit_score_test = credit_score_test.sample(frac=sampling_amount, random_state=42)
+
+    eval_metric = "recall"
+
+    plt.figure(figsize=(2 * HEIGHT, HEIGHT))
+    study_variance_for_feature_selection(
+        credit_score_train,
+        credit_score_test,
+        target=target,
+        max_threshold=1.5,
+        lag=0.1,
+        metric=eval_metric,
+        file_tag=credit_score_file_tag,
+    )
+    plt.show()
+    plt.clf()
+
+    eval_metric = "recall"
+
+    plt.figure(figsize=(2 * HEIGHT, HEIGHT))
+    study_redundancy_for_feature_selection(
+        credit_score_train,
+        credit_score_test,
+        target=target,
+        min_threshold=0.10,
+        lag=0.05,
+        metric=eval_metric,
+        file_tag=credit_score_file_tag,
+    )
+    plt.show()
+
+"""
+------------------
+Feature Selection Study
+------------------
+% Approach 1: Dropping Low Variance Variables
+% Approach 2: Dropping Highly Correlated Variables
+"""
+if run_feature_selection_study:
+    evaluate_approaches(
+        approaches=[
+            ["../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv", "Approach 1 - Dropping Low Variance Variables"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_redundant.csv", "Approach 2 - Dropping Highly Correlated Variables"],
+        ],
+        study_title="Feature Selection",
+        metric=eval_metric,
+        target="Credit_Score",
+        file_tag=f"{credit_score_file_tag}_feature_selection",
         sample_amount=sampling_amount
     )

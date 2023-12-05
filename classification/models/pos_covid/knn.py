@@ -6,8 +6,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from utils.dslabs_functions import read_train_test_from_files, CLASS_EVAL_METRICS, knn_study, HEIGHT, \
     plot_evaluation_results, plot_multiline_chart
 
-train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"
-test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test.csv"
+train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_lowvar.csv"
+test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test_lowvar.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 target = "CovidPos"
 

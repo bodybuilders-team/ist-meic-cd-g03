@@ -6,12 +6,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from utils.dslabs_functions import read_train_test_from_files, CLASS_EVAL_METRICS, knn_study, HEIGHT, \
     plot_evaluation_results, plot_multiline_chart
 
-train_filename = "../../data/credit_score/processed_data/class_credit_score_train_under.csv"
-test_filename = "../../data/credit_score/processed_data/class_credit_score_test.csv"
+train_filename = "../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv"
+test_filename = "../../data/credit_score/processed_data/class_credit_score_test_lowvar.csv"
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target,

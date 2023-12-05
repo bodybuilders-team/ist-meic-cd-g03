@@ -464,7 +464,10 @@ def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]
     eval: dict[str, float] = {}
 
     for clf in estimators:
-        estimators[clf].fit(trnX, trnY)
+        try:
+            estimators[clf].fit(trnX, trnY)
+        except ValueError: # MultinomialNB and BernoulliNB don't support negative values
+            continue
         prdY: ndarray = estimators[clf].predict(tstX)
         performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
         if performance - best_performance > DELTA_IMPROVE:
@@ -600,9 +603,12 @@ def study_redundancy_for_feature_selection(
         eval: dict | None = evaluate_approach(
             train_copy, test_copy, target=target, metric=metric
         )
-        if eval is not None:
+        if eval is not None and len(eval) != 0:
             results["NB"].append(eval[metric][0])
             results["KNN"].append(eval[metric][1])
+        else:
+            results["NB"].append(0)
+            results["KNN"].append(0)
 
     plot_multiline_chart(
         options,
@@ -624,9 +630,9 @@ def apply_feature_selection(
         tag: str = "",
 ) -> tuple[DataFrame, DataFrame]:
     train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
-    train_copy.to_csv(f"{filename}_train_{tag}.csv", index=True)
+    train_copy.to_csv(f"{filename}_train_{tag}.csv", index=False)
     test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
-    test_copy.to_csv(f"{filename}_test_{tag}.csv", index=True)
+    test_copy.to_csv(f"{filename}_test_{tag}.csv", index=False)
     return train_copy, test_copy
 
 
@@ -666,65 +672,15 @@ CLASS_EVAL_METRICS: dict[str, Callable] = {
 }
 
 
-def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
-    estimators: dict[str, GaussianNB | MultinomialNB | BernoulliNB] = {
-        "GaussianNB": GaussianNB(),
-        "MultinomialNB": MultinomialNB(),
-        "BernoulliNB": BernoulliNB(),
-    }
-    best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
-    best_performance: float = 0.0
-    eval: dict[str, float] = {}
-
-    for clf in estimators:
-        estimators[clf].fit(trnX, trnY)
-        prdY: ndarray = estimators[clf].predict(tstX)
-        performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
-        if performance - best_performance > DELTA_IMPROVE:
-            best_performance = performance
-            best_model = estimators[clf]
-    if best_model is not None:
-        prd: ndarray = best_model.predict(tstX)
-        for key in CLASS_EVAL_METRICS:
-            eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
-    return eval
-
-
-def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
-    kvalues: list[int] = [1] + [i for i in range(5, 26, 5)]
-    best_model: KNeighborsClassifier = None  # type: ignore
-    best_performance: float = 0
-    eval: dict[str, float] = {}
-    for k in kvalues:
-        clf = KNeighborsClassifier(n_neighbors=k, metric="euclidean")
-        clf.fit(trnX, trnY)
-        prdY: ndarray = clf.predict(tstX)
-        performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
-        if performance - best_performance > DELTA_IMPROVE:
-            best_performance = performance
-            best_model: KNeighborsClassifier = clf
-    if best_model is not None:
-        prd: ndarray = best_model.predict(tstX)
-        for key in CLASS_EVAL_METRICS:
-            eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
-    return eval
-
-
 def evaluate_approach(
-        train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy"
+        train: DataFrame, test: DataFrame, target: str = "class", metric: str = "accuracy", knn=True, nb=True
 ) -> dict[str, list]:
     trnY = train.pop(target).values
     trnX: ndarray = train.values
     tstY = test.pop(target).values
     tstX: ndarray = test.values
-    eval: dict[str, list] = {}
 
-    eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
-    eval_KNN: dict[str, float] | None = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
-    if eval_NB != {} and eval_KNN != {}:
-        for met in CLASS_EVAL_METRICS:
-            eval[met] = [eval_NB[met], eval_KNN[met]]
-    return eval
+    return evaluate_approach2(trnX, trnY, tstX, tstY, metric=metric, knn=knn, nb=nb)
 
 
 def evaluate_approach2(trnX, trnY, tstX, tstY, metric: str = "accuracy", knn=True, nb=True) -> dict[str, list]:
@@ -759,6 +715,7 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
     fig.suptitle(study_title, fontsize=FONT_SIZE)
 
     for approach in approaches:
+        print("Evaluating %s" % approach[1])
         trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approach[0], target=target,
                                                                     sample_amount=sample_amount)
         eval: dict[str, list] = evaluate_approach2(trnX, trnY, tstX, tstY, metric=metric, knn=knn, nb=nb)
@@ -773,7 +730,7 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
 
 
 def read_train_test_from_files(train_fn: str, test_fn: str, target: str = "class", sample_amount: float = 1.0
-) -> tuple[ndarray, ndarray, array, array, list, list]:
+                               ) -> tuple[ndarray, ndarray, array, array, list, list]:
     train: DataFrame = read_csv(train_fn, index_col=None)
     if sample_amount < 1:
         train = train.sample(frac=sample_amount, random_state=42)
@@ -941,9 +898,13 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
     best_params = {'name': '', 'metric': metric, 'params': ()}
     best_performance = 0
     for clf in estimators:
+        try:
+            estimators[clf].fit(trnX, trnY)
+            prdY = estimators[clf].predict(tstX)
+        except ValueError:
+            continue
         xvalues.append(clf)
-        estimators[clf].fit(trnX, trnY)
-        prdY = estimators[clf].predict(tstX)
+
         eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
         if eval - best_performance > DELTA_IMPROVE:
             best_performance = eval
@@ -959,7 +920,7 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
         percentage=True,
         ax=ax
     )
-    #savefig(f'images/{file_tag}_nb_{metric}_study.png')
+    # savefig(f'images/{file_tag}_nb_{metric}_study.png')
 
     return best_model, best_params
 
@@ -1101,7 +1062,7 @@ def trees_study(
             prdY: array = clf.predict(tstX)
             eval: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
             y_tst_values.append(eval)
-            if eval - best_performance > DELTA_IMPROVE:
+            if best_model is None or eval - best_performance > DELTA_IMPROVE:
                 best_performance = eval
                 best_params['params'] = (c, d)
                 best_model = clf
@@ -1113,14 +1074,15 @@ def trees_study(
 
     return best_model, best_params
 
+
 def random_forests_study(
-    trnX: ndarray,
-    trnY: array,
-    tstX: ndarray,
-    tstY: array,
-    nr_max_trees: int = 2500,
-    lag: int = 500,
-    metric: str = "accuracy"
+        trnX: ndarray,
+        trnY: array,
+        tstX: ndarray,
+        tstY: array,
+        nr_max_trees: int = 2500,
+        lag: int = 500,
+        metric: str = "accuracy"
 ) -> tuple[RandomForestClassifier | None, dict]:
     n_estimators: list[int] = [100] + [i for i in range(500, nr_max_trees + 1, lag)]
     max_depths: list[int] = [2, 5, 7]

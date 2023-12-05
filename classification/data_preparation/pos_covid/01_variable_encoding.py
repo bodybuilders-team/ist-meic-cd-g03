@@ -7,7 +7,6 @@ pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 
-print(pos_covid_data['State'].unique())
 # ------------------
 # Ordinal Encoding: Binary and Categorical variables with order
 # ------------------
@@ -149,7 +148,6 @@ print(df.head(5))
 # RaceEthnicityCategory ['White only, Non-Hispanic' 'Black only, Non-Hispanic'
 #  'Multiracial, Non-Hispanic' nan 'Hispanic'
 #  'Other race only, Non-Hispanic']
-
 
 df = dummify(df, ["RaceEthnicityCategory", "State"])
 print(df.head(5))

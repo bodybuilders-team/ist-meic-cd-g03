@@ -5,8 +5,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 from utils.dslabs_functions import read_train_test_from_files, gradient_boosting_study, plot_evaluation_results, \
     plot_horizontal_bar_chart, plot_multiline_chart, CLASS_EVAL_METRICS
 
-train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_over.csv"
-test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test.csv"
+train_filename = "../../data/pos_covid/processed_data/class_pos_covid_train_lowvar.csv"
+test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test_lowvar.csv"
 pos_covid_file_tag: str = "class_pos_covid"
 target = "CovidPos"
 

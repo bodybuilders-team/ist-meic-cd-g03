@@ -9,8 +9,8 @@ from utils.dslabs_functions import (
 )
 from utils.dslabs_functions import plot_evaluation_results, plot_multiline_chart
 
-train_filename = "../../data/credit_score/processed_data/class_credit_score_train_under.csv"
-test_filename = "../../data/credit_score/processed_data/class_credit_score_test.csv"
+train_filename = "../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv"
+test_filename = "../../data/credit_score/processed_data/class_credit_score_test_lowvar.csv"
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 

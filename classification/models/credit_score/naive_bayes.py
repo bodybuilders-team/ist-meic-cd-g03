@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from utils.dslabs_functions import read_train_test_from_files, naive_Bayes_study, CLASS_EVAL_METRICS, HEIGHT, \
     plot_evaluation_results
 
-train_filename = "../../data/credit_score/processed_data/class_credit_score_train_under.csv"
-test_filename = "../../data/credit_score/processed_data/class_credit_score_test.csv"
+train_filename = "../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv"
+test_filename = "../../data/credit_score/processed_data/class_credit_score_test_lowvar.csv"
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 

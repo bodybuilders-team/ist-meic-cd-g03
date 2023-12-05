@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 from utils.dslabs_functions import plot_multibar_chart
 
-pos_covid_filename: str = "../../data/pos_covid/processed_data/class_pos_covid_scaled_minmax.csv"  # After scaling
+pos_covid_filename: str = "../../data/pos_covid/processed_data/class_pos_covid_scaled_zscore.csv"  # After scaling
 pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename)
 target: str = "CovidPos"
