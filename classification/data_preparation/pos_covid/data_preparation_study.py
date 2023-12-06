@@ -7,14 +7,14 @@ from utils.dslabs_functions import evaluate_approaches
 pos_covid_file_tag: str = "class_pos_covid"
 eval_metric = "accuracy"
 
-run_sampling = False
+run_sampling = True
 sampling_amount = 0.1 if run_sampling else 1
 
-run_mv_imputation_study = False
-run_outliers_treatment_study = False
-run_scaling_study = False
-run_balancing_study = False
-run_feature_selection_preliminary_study = True
+run_mv_imputation_study = True
+run_outliers_treatment_study = True
+run_scaling_study = True
+run_balancing_study = True
+run_feature_selection_preliminary_study = False
 run_feature_selection_study = False
 
 """

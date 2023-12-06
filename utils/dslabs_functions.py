@@ -437,6 +437,15 @@ def mvi_by_filling(data: DataFrame, strategy: str = 'frequent',
 
     return df
 
+def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
+    for v in vars:
+        numeric_values = [x for x in data[v] if isinstance(x, (int, float))]
+        x_max: float = max(numeric_values) if numeric_values else 0.0  # Assuming a default value if there are no numeric values
+        # The plus one sum is not to have a negative value on both of this new variables
+        data[v + "Sin"] = data[v].apply(lambda x: x if x == '' else (round(sin(2 * pi * x / x_max), 3)) + 1)
+        data[v + "Cos"] = data[v].apply(lambda x: x if x == '' else (round(cos(2 * pi * x / x_max), 3)) + 1)
+    return
+
 
 # ---------------------------------------
 #             CLASSIFICATION

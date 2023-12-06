@@ -1,7 +1,8 @@
 from pandas import DataFrame, read_csv
 from sklearn.preprocessing import LabelEncoder
 
-from utils.dslabs_functions import dummify
+from utils.dslabs_functions import dummify, encode_cyclic_variables
+from math import pi, sin, cos
 
 pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
@@ -80,6 +81,59 @@ tetanus_last_10_tdap_type_values: dict[str, int] = {
     "Yes, received Tdap": 3
 }
 
+state_type_values_transform_1: dict[str, str] = {
+    "Alabama": "South",
+    "Alaska": "West",
+    "Arizona": "West",
+    "Arkansas": "South",
+    "California": "West",
+    "Colorado": "West",
+    "Connecticut": "Northeast",
+    "Delaware": "South",
+    "Florida": "South",
+    "Georgia": "South",
+    "Hawaii": "West",
+    "Idaho": "West",
+    "Illinois": "Midwest",
+    "Indiana": "Midwest",
+    "Iowa": "Midwest",
+    "Kansas": "Midwest",
+    "Kentucky": "South",
+    "Louisiana": "South",
+    "Maine": "Northeast",
+    "Maryland": "South",
+    "Massachusetts": "Northeast",
+    "Michigan": "Midwest",
+    "Minnesota": "Midwest",
+    "Mississippi": "South",
+    "Missouri": "Midwest",
+    "Montana": "West",
+    "Nebraska": "Midwest",
+    "Nevada": "West",
+    "New Hampshire": "Northeast",
+    "New Jersey": "Northeast",
+    "New Mexico": "West",
+    "New York": "Northeast",
+    "North Carolina": "South",
+    "North Dakota": "Midwest",
+    "Ohio": "Midwest",
+    "Oklahoma": "South",
+    "Oregon": "West",
+    "Pennsylvania": "Northeast",
+    "Rhode Island": "Northeast",
+    "South Carolina": "South",
+    "South Dakota": "Midwest",
+    "Tennessee": "South",
+    "Texas": "South",
+    "Utah": "West",
+    "Vermont": "Northeast",
+    "Virginia": "South",
+    "Washington": "West",
+    "West Virginia": "South",
+    "Wisconsin": "Midwest",
+    "Wyoming": "West",
+}
+
 encoding: dict[str, dict[str, int]] = {
     # Binary variables
     "Sex": sex_type_values,
@@ -108,19 +162,45 @@ encoding: dict[str, dict[str, int]] = {
     "CovidPos": yes_no,
     # Categorical variables with order
     "GeneralHealth": general_health_type_values,
-    # "State": state_type_values,
+    "State": state_type_values_transform_1,
     "LastCheckupTime": last_checkup_time_type_values,
     "RemovedTeeth": removed_teeth_type_values,
     "HadDiabetes": had_diabetes_type_values,
     "SmokerStatus": smoker_status_type_values,
     "ECigaretteUsage": e_cigarette_usage_type_values,
     "AgeCategory": age_category_type_values,
-    "TetanusLast10Tdap": tetanus_last_10_tdap_type_values
+    "TetanusLast10Tdap": tetanus_last_10_tdap_type_values,
 }
 df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
-print(df.head(5))
 
-# TODO: Dummification or label encoding for State?
+# Now that the State values were transformed, they will be encoded with a cyclic technique.
+# Also, the records that do not correspond to the 4 possible regions, will have the State value changes
+# to an empty string
+
+# List of valid state values
+valid_states = ['Northeast', 'South', 'West', 'Midwest']
+
+# Replace non-valid state values with an empty string
+df['State'] = df['State'].replace({state: '' for state in df['State'].unique() if state not in valid_states})
+
+state_type_values_transform_2: dict[str, float] = {
+    "Northeast": 0,
+    "West": pi / 2,
+    "South": pi,
+    "Midwest": -pi / 2,
+}
+
+encoding: dict[str, dict[str, float]] = {
+    "State": state_type_values_transform_2
+}
+
+df: DataFrame = df.replace(encoding, inplace=False)
+
+encode_cyclic_variables(df, ['State'])
+
+# Drops variable State
+del df['State']
+
 # states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
 #           'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
 #           'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
@@ -149,7 +229,7 @@ print(df.head(5))
 #  'Multiracial, Non-Hispanic' nan 'Hispanic'
 #  'Other race only, Non-Hispanic']
 
-df = dummify(df, ["RaceEthnicityCategory", "State"])
-print(df.head(5))
+df = dummify(df, ["RaceEthnicityCategory"])
+#print(df.head(5))
 
 df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_encoded.csv", index=False)
