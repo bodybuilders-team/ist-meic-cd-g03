@@ -20,7 +20,7 @@ if run_sampling:
     credit_score_test = credit_score_test.sample(frac=sampling_amount, random_state=42)
 
 # ------------------
-# Dropping Low Variance Variables
+# Approach 1: Dropping Low Variance Variables
 # ------------------
 
 vars2drop: list[str] = select_low_variance_variables(

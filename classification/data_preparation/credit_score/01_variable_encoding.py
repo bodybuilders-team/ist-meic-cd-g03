@@ -74,12 +74,6 @@ encode_cyclic_variables(df, ['Month'])
 # Dropping variable Month
 del df['Month']
 
-# SSN, Name and Customer_ID using label encoder
-le = LabelEncoder()
-df['SSN'] = le.fit_transform(df['SSN'])
-df['Name'] = le.fit_transform(df['Name'])
-df['Customer_ID'] = le.fit_transform(df['Customer_ID'])
-
 # Fix Age
 # It contained wrongly formatted values such as 30_ and 34_ instead of 30 and 34
 df['Age'] = df['Age'].apply(lambda x: x.replace("_", "") if isinstance(x, str) else x)
