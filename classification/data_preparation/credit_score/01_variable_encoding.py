@@ -3,7 +3,7 @@ import re
 from pandas import DataFrame, read_csv
 from sklearn.preprocessing import LabelEncoder
 
-from utils.dslabs_functions import dummify
+from utils.dslabs_functions import dummify, encode_cyclic_variables
 
 from math import pi, sin, cos
 
@@ -32,13 +32,6 @@ payment_behaviour_type_values: dict[str, int] = {
     "High_spent_Medium_value_payments": 4,
     "High_spent_Large_value_payments": 5,
 }
-
-def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
-    for v in vars:
-        x_max: float | int = max(data[v])
-        data[v + "_sin"] = data[v].apply(lambda x: (round(sin(2 * pi * x / x_max), 3)) + 1)
-        data[v + "_cos"] = data[v].apply(lambda x: (round(cos(2 * pi * x / x_max), 3)) + 1)
-    return
 
 month_type_values: dict[str, float] = {
     "January": ((2 * pi) / 12) * 0,
