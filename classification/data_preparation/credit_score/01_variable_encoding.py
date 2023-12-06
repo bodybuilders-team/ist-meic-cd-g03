@@ -5,6 +5,8 @@ from sklearn.preprocessing import LabelEncoder
 
 from utils.dslabs_functions import dummify
 
+from math import pi, sin, cos
+
 credit_score_filename: str = "../../data/credit_score/class_credit_score.csv"
 credit_score_file_tag: str = "class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="")
@@ -30,19 +32,27 @@ payment_behaviour_type_values: dict[str, int] = {
     "High_spent_Medium_value_payments": 4,
     "High_spent_Large_value_payments": 5,
 }
-month_type_values: dict[str, int] = {
-    "January": 1,
-    "February": 2,
-    "March": 3,
-    "April": 4,
-    "May": 5,
-    "June": 6,
-    "July": 7,
-    "August": 8,
-    "September": 9,
-    "October": 10,
-    "November": 11,
-    "December": 12,
+
+def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
+    for v in vars:
+        x_max: float | int = max(data[v])
+        data[v + "_sin"] = data[v].apply(lambda x: (round(sin(2 * pi * x / x_max), 3)) + 1)
+        data[v + "_cos"] = data[v].apply(lambda x: (round(cos(2 * pi * x / x_max), 3)) + 1)
+    return
+
+month_type_values: dict[str, float] = {
+    "January": ((2 * pi) / 12) * 0,
+    "February": ((2 * pi) / 12) * 1,
+    "March": ((2 * pi) / 12) * 2,
+    "April": ((2 * pi) / 12) * 3,
+    "May": ((2 * pi) / 12) * 4,
+    "June": ((2 * pi) / 12) * 5,
+    "July": -(((2 * pi) / 12) * 6),
+    "August": -(((2 * pi) / 12) * 5),
+    "September": -(((2 * pi) / 12) * 4),
+    "October": -(((2 * pi) / 12) * 3),
+    "November": -(((2 * pi) / 12) * 2),
+    "December": -(((2 * pi) / 12) * 1),
 }
 
 encoding: dict[str, dict[str, int]] = {
@@ -58,6 +68,17 @@ df = df.drop('Name', axis=1)
 df = df.drop('SSN', axis=1)
 df = df.drop('Customer_ID', axis=1)
 df = df.drop('ID', axis=1)
+
+
+encode_cyclic_variables(df, ['Month'])
+# Dropping variable Month
+del df['Month']
+
+# SSN, Name and Customer_ID using label encoder
+le = LabelEncoder()
+df['SSN'] = le.fit_transform(df['SSN'])
+df['Name'] = le.fit_transform(df['Name'])
+df['Customer_ID'] = le.fit_transform(df['Customer_ID'])
 
 # Fix Age
 # It contained wrongly formatted values such as 30_ and 34_ instead of 30 and 34
@@ -81,7 +102,7 @@ df['NumofDelayedPayment'] = df['NumofDelayedPayment'].apply(lambda x: x if x >= 
 df['ChangedCreditLimit'] = df['ChangedCreditLimit'].apply(lambda x: x if x >= 0 else None)
 
 # Fix Num_Bank_Accounts
-# It contained negative values (set as 0 if negative)
+# It contained negative values (set as the absolute value if negative)
 df['Num_Bank_Accounts'] = df['Num_Bank_Accounts'].apply(lambda x: x if x >= 0 else abs(x))
 
 # Fix MonthlyBalance
