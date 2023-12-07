@@ -81,6 +81,14 @@ tetanus_last_10_tdap_type_values: dict[str, int] = {
     "Yes, received Tdap": 3
 }
 
+race_ethnicity_values: dict[str, float] = {
+    'White only, Non-Hispanic': 0.0, # full white
+    'Hispanic': 0.25, # close to white
+    'Other race only, Non-Hispanic': 0.4, # probably asian or native
+    'Multiracial, Non-Hispanic': 0.5, # half white, half black
+    'Black only, Non-Hispanic': 1.0, # full black
+}
+
 state_type_values_transform_1: dict[str, str] = {
     "Alabama": "South",
     "Alaska": "West",

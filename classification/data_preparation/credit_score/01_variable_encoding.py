@@ -48,12 +48,33 @@ month_type_values: dict[str, float] = {
     "December": -(((2 * pi) / 12) * 1),
 }
 
+# from exact sciences to artistic ones
+occupation_values = {
+    "Scientist": 0,
+    "Developer": 1,
+    "Engineer": 2,
+    "Architect": 3,
+    "Mechanic": 4,
+    "Manager": 5,
+    "Media_Manager": 6,
+    "Entrepreneur": 7,
+    "Accountant": 8,
+    "Teacher": 9,
+    "Research Scientist": 10,
+    "Doctor": 11,
+    "Lawyer": 12,
+    "Journalist": 13,
+    "Musician": 14,
+    "Writer": 15
+}
+
 encoding: dict[str, dict[str, int]] = {
     "CreditMix": credit_mix_type_values,
     "Payment_of_Min_Amount": payment_of_min_amount_type_values,
     "Credit_Score": credit_score_type_values,
     "Payment_Behaviour": payment_behaviour_type_values,
     "Month": month_type_values,
+    "Occupation": occupation_values
 }
 df: DataFrame = credit_score_data.replace(encoding, inplace=False)
 
@@ -137,9 +158,9 @@ for loan_type in loan_types:
     df[f"Type_of_Loan_{loan_type.replace(" ", "_")}"] = df['Type_of_Loan'].apply(
         lambda x: loan_type in x if isinstance(x, str) else False)
 
-df.drop('Type_of_Loan', axis=1, inplace=True)  # Drop the original column
 
-df = dummify(df, ["Occupation"])
+print(df['Type_of_Loan'].unique())
+df.drop('Type_of_Loan', axis=1, inplace=True)  # Drop the original column
 
 print(df.head(5))
 df.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_encoded.csv", index=False)
