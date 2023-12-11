@@ -571,6 +571,8 @@ def select_redundant_variables(
     vars2drop: list = []
     for v1 in variables:
         vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= min_threshold]
+        if len(vars_corr) == 0:
+            continue
         vars_corr.drop(v1, inplace=True)
         if len(vars_corr) > 1:
             lst_corr = list(vars_corr.index)
