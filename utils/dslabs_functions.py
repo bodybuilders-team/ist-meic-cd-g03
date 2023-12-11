@@ -517,6 +517,7 @@ def study_variance_for_feature_selection(
         lag: float = 0.05,
         metric: str = "accuracy",
         file_tag: str = "",
+        save_fig_path: str = "",
 ) -> dict:
     options: list[float] = [
         round(i * lag, 3) for i in range(1, ceil(max_threshold / lag + lag))
@@ -558,7 +559,7 @@ def study_variance_for_feature_selection(
         ylabel=metric,
         percentage=True,
     )
-    savefig(f"images/{file_tag}_fs_low_var_{metric}_study.png")
+    savefig(save_fig_path)
     return results
 
 
@@ -590,6 +591,7 @@ def study_redundancy_for_feature_selection(
         lag: float = 0.05,
         metric: str = "accuracy",
         file_tag: str = "",
+        save_fig_path: str = "",
 ) -> dict:
     options: list[float] = [
         round(min_threshold + i * lag, 3)
@@ -606,6 +608,8 @@ def study_redundancy_for_feature_selection(
         vars2drop: list = []
         for v1 in variables:
             vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= thresh]
+            if len(vars_corr) == 0:
+                continue
             vars_corr.drop(v1, inplace=True)
             if len(vars_corr) > 1:
                 lst_corr = list(vars_corr.index)
@@ -638,7 +642,7 @@ def study_redundancy_for_feature_selection(
         ylabel=metric,
         percentage=True,
     )
-    savefig(f"images/{file_tag}_fs_redundancy_{metric}_study.png")
+    savefig(save_fig_path)
     return results
 
 
@@ -728,7 +732,7 @@ def evaluate_approach2(trnX, trnY, tstX, tstY, metric: str = "accuracy", knn=Tru
     return eval
 
 
-def evaluate_approaches(approaches: list[list], target: str = "class", study_title='', file_tag='',
+def evaluate_approaches(approaches: list[list], target: str = "class", study_title='', save_fig_path='',
                         metric: str = "accuracy", sample_amount: float = 1.0, knn=True, nb=True) -> dict[str, list]:
     cols = len(approaches)
     fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
@@ -745,7 +749,7 @@ def evaluate_approaches(approaches: list[list], target: str = "class", study_tit
         )
 
     plt.tight_layout()
-    savefig(f"images/{file_tag}_eval.png")
+    savefig(save_fig_path)
     show()
 
 

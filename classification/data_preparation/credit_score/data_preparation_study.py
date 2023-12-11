@@ -8,8 +8,8 @@ from utils.dslabs_functions import evaluate_approaches
 credit_score_file_tag: str = "class_credit_score"
 eval_metric = "accuracy"
 
-run_sampling = False
-sampling_amount = 0.001 if run_sampling else 1
+run_sampling = True
+sampling_amount = 0.01 if run_sampling else 1
 
 run_mv_imputation_study = True
 run_outliers_treatment_study = True
@@ -17,6 +17,8 @@ run_scaling_study = True
 run_balancing_study = True
 run_feature_selection_preliminary_study = True
 run_feature_selection_study = True
+
+sample_tag = f"_1_{1 / sampling_amount}" if run_sampling else ""
 
 """
 ------------------
@@ -37,7 +39,7 @@ if run_mv_imputation_study:
         study_title="MV Imputation Study",
         metric=eval_metric,
         target="Credit_Score",
-        file_tag=f"{credit_score_file_tag}_imputed_mv",
+        save_fig_path=f"images/{credit_score_file_tag}_imputed_mv_eval{sample_tag}.png",
         sample_amount=sampling_amount
     )
 
@@ -63,7 +65,7 @@ if run_outliers_treatment_study:
         study_title="Outliers Treatment",
         metric=eval_metric,
         target="Credit_Score",
-        file_tag=f"{credit_score_file_tag}_outliers",
+        save_fig_path=f"images/{credit_score_file_tag}_outliers_eval{sample_tag}.png",
         sample_amount=sampling_amount
     )
 
@@ -86,7 +88,7 @@ if run_scaling_study:
         study_title="Scaling",
         metric=eval_metric,
         target="Credit_Score",
-        file_tag=f"{credit_score_file_tag}_scaling",
+        save_fig_path=f"images/{credit_score_file_tag}_scaling_eval{sample_tag}.png",
         sample_amount=sampling_amount,
         nb=False
     )
@@ -110,7 +112,7 @@ if run_balancing_study:
         study_title="Balancing",
         metric=eval_metric,
         target="Credit_Score",
-        file_tag=f"{credit_score_file_tag}_balancing",
+        save_fig_path=f"images/{credit_score_file_tag}_balancing_eval{sample_tag}.png",
         sample_amount=sampling_amount
     )
 
@@ -141,6 +143,7 @@ if run_feature_selection_preliminary_study:
         lag=0.1,
         metric=eval_metric,
         file_tag=credit_score_file_tag,
+        save_fig_path=f"images/{credit_score_file_tag}_fs_low_var_{eval_metric}_study{sample_tag}.png"
     )
     plt.show()
     plt.clf()
@@ -156,6 +159,7 @@ if run_feature_selection_preliminary_study:
         lag=0.05,
         metric=eval_metric,
         file_tag=credit_score_file_tag,
+        save_fig_path=f"images/{credit_score_file_tag}_fs_redundancy_{eval_metric}_study{sample_tag}.png"
     )
     plt.show()
 
@@ -175,6 +179,6 @@ if run_feature_selection_study:
         study_title="Feature Selection",
         metric=eval_metric,
         target="Credit_Score",
-        file_tag=f"{credit_score_file_tag}_feature_selection",
+        save_fig_path=f"images/{credit_score_file_tag}_feature_selection_eval{sample_tag}.png",
         sample_amount=sampling_amount
     )
