@@ -14,7 +14,7 @@ run_pos_covid_histograms: bool = False
 run_pos_covid_histograms_with_distributions: bool = True
 run_pos_covid_histograms_symbolic: bool = False
 run_pos_covid_class_distribution: bool = False
-run_sampling: bool = False
+run_sampling: bool = True
 sampling_amount: float = 0.01
 
 pos_covid_filename = "../../data/pos_covid/class_pos_covid.csv"
@@ -156,6 +156,9 @@ if pos_covid_numeric and run_pos_covid_histograms_with_distributions:
         data = pos_covid_data[pos_covid_numeric[n]].dropna()
         print(f"{pos_covid_numeric[n]} - {len(data)}")
         histogram_with_distributions(axs[i, j], data, pos_covid_numeric[n])
+        xticks = [float("{:.2f}".format(min(data) + i * ((max(data) - min(data)) / 3.0))) for i in range(4)]
+        axs[i, j].set_xticks(xticks)
+        axs[i, j].set_xticklabels(xticks)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.tight_layout()
     plt.savefig(f"{pos_covid_savefig_path_prefix}_histogram_numeric_distribution.png")

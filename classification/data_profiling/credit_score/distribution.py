@@ -6,22 +6,28 @@ from pandas import read_csv, DataFrame
 from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, plot_multibar_chart, set_chart_labels
 from utils.dslabs_functions import plot_bar_chart, count_outliers, histogram_with_distributions
 
+run_credit_score_global_boxplot: bool = False
+run_credit_score_single_boxplots: bool = False
+run_credit_score_outliers: bool = False
+run_credit_score_histograms: bool = False
+run_credit_score_histograms_with_distributions: bool = True
+run_credit_score_histograms_symbolic: bool = False
+run_credit_score_class_distribution: bool = False
+run_sampling = False
+sampling_amount = 0.01
+
 credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/distribution/class_credit_score"
 
 credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="", index_col="ID")
+
+if run_sampling:
+    credit_score_data = credit_score_data.sample(frac=sampling_amount, random_state=42)
+
 credit_score_summary = credit_score_data.describe()
 
 credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
 credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
-
-run_credit_score_global_boxplot: bool = False
-run_credit_score_single_boxplots: bool = False
-run_credit_score_outliers: bool = True
-run_credit_score_histograms: bool = False
-run_credit_score_histograms_with_distributions: bool = False
-run_credit_score_histograms_symbolic: bool = False
-run_credit_score_class_distribution: bool = False
 
 # ------------------
 # Global boxplots
@@ -180,6 +186,9 @@ if credit_score_numeric and run_credit_score_histograms_with_distributions:
         data = credit_score_data[credit_score_numeric[n]].dropna()
         print(f"{credit_score_numeric[n]} - {len(data)}")
         histogram_with_distributions(axs[i, j], data, credit_score_numeric[n])
+        xticks = [float("{:.2f}".format(min(data) + i * ((max(data) - min(data)) / 3.0))) for i in range(4)]
+        axs[i, j].set_xticks(xticks)
+        axs[i, j].set_xticklabels(xticks)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.tight_layout()
     plt.savefig(f"{credit_score_savefig_path_prefix}_histogram_numeric_distribution.png")

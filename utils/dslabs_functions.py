@@ -314,17 +314,24 @@ def analyse_property_granularity(data: DataFrame, property: str, vars: list[str]
 
 def compute_known_distributions(x_values: list) -> dict:
     distributions = dict()
+
     # Gaussian
     mean, sigma = norm.fit(x_values)
-    distributions["Normal(%.1f,%.2f)" % (mean, sigma)] = norm.pdf(x_values, mean, sigma)
+    mean_str = "{:e}".format(mean) if abs(mean) > 99999 else "{:.1f}".format(mean)
+    sigma_str = "{:e}".format(sigma) if abs(sigma) > 99999 else "{:.2f}".format(sigma)
+    distributions["Normal({}, {})".format(mean_str, sigma_str)] = norm.pdf(x_values, mean, sigma)
+
     # Exponential
     loc, scale = expon.fit(x_values)
-    distributions["Exp(%.2f)" % (1 / scale)] = expon.pdf(x_values, loc, scale)
+    scale_str = "{:e}".format(1 / scale) if abs(1 / scale) > 99999 else "{:.2f}".format(1 / scale)
+    distributions["Exp({})".format(scale_str)] = expon.pdf(x_values, loc, scale)
+
     # LogNorm
     sigma, loc, scale = lognorm.fit(x_values)
-    distributions["LogNor(%.1f,%.2f)" % (log(scale), sigma)] = lognorm.pdf(
-        x_values, sigma, loc, scale
-    )
+    sigma_str = "{:e}".format(sigma) if abs(sigma) > 99999 else "{:.1f}".format(sigma)
+    scale_str = "{:e}".format(log(scale)) if abs(log(scale)) > 99999 else "{:.2f}".format(log(scale))
+    distributions["LogNor({}, {})".format(scale_str, sigma_str)] = lognorm.pdf(x_values, sigma, loc, scale)
+
     return distributions
 
 
@@ -437,10 +444,12 @@ def mvi_by_filling(data: DataFrame, strategy: str = 'frequent',
 
     return df
 
+
 def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
     for v in vars:
         numeric_values = [x for x in data[v] if isinstance(x, (int, float))]
-        x_max: float = max(numeric_values) if numeric_values else 0.0  # Assuming a default value if there are no numeric values
+        x_max: float = max(
+            numeric_values) if numeric_values else 0.0  # Assuming a default value if there are no numeric values
         # The plus one sum is not to have a negative value on both of this new variables
         data[v + "Sin"] = data[v].apply(lambda x: x if x == '' else (round(sin(2 * pi * x / x_max), 3)) + 1)
         data[v + "Cos"] = data[v].apply(lambda x: x if x == '' else (round(cos(2 * pi * x / x_max), 3)) + 1)
@@ -475,7 +484,7 @@ def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]
     for clf in estimators:
         try:
             estimators[clf].fit(trnX, trnY)
-        except ValueError: # MultinomialNB and BernoulliNB don't support negative values
+        except ValueError:  # MultinomialNB and BernoulliNB don't support negative values
             continue
         prdY: ndarray = estimators[clf].predict(tstX)
         performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
@@ -516,7 +525,7 @@ def study_variance_for_feature_selection(
     summary5: DataFrame = train.describe()
     print(summary5)
     for i, thresh in enumerate(options):
-        print(f"{i}/{len(options)-1}")
+        print(f"{i}/{len(options) - 1}")
 
         vars2drop: Index[str] = summary5.columns[
             summary5.loc["std"] * summary5.loc["std"] < thresh
@@ -590,8 +599,8 @@ def study_redundancy_for_feature_selection(
     print(corr_matrix)
     variables: Index[str] = corr_matrix.columns
     results: dict[str, list] = {"NB": [], "KNN": []}
-    for i,thresh in enumerate(options):
-        print(f"{i}/{len(options)-1}")
+    for i, thresh in enumerate(options):
+        print(f"{i}/{len(options) - 1}")
         vars2drop: list = []
         for v1 in variables:
             vars_corr: Series = (corr_matrix[v1]).loc[corr_matrix[v1] >= thresh]
@@ -836,7 +845,7 @@ from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
 def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
     trn_size: int = int(len(data) * trn_pct)
     df_cp: Series = data.copy()
-    train: Series = df_cp.iloc[:trn_size, :] # TODO: a stora deu codigo bugado, está a dar erro
+    train: Series = df_cp.iloc[:trn_size, :]  # TODO: a stora deu codigo bugado, está a dar erro
     test: Series = df_cp.iloc[trn_size:]
     return train, test
 
@@ -877,6 +886,7 @@ def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Se
     plot_multibar_chart(["train", "test"], ev1, ax=axs[0], title="Scale-dependent error", percentage=False)
     plot_multibar_chart(["train", "test"], ev2, ax=axs[1], title="Percentage error", percentage=True)
     return axs
+
 
 def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
     fig: Figure
