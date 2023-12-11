@@ -13,7 +13,7 @@ test_filename = "../../data/credit_score/processed_data/class_credit_score_test_
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
-run_sampling = False
+run_sampling = True
 sampling_amount = 0.01 if run_sampling else 1
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target,

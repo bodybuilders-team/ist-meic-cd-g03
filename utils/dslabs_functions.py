@@ -33,7 +33,7 @@ from sklearn.tree import DecisionTreeClassifier
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.stattools import adfuller
 
-from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
+#from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
 from forecasting.models.RollingMeanRegressor import RollingMeanRegressor
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
@@ -1034,52 +1034,52 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
 
     return best_model, best_params
 
-def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
-    sequence_size = [2, 4, 8]
-    nr_hidden_units = [25, 50, 100]
-
-    step: int = nr_episodes // 10
-    episodes = [1] + list(range(0, nr_episodes + 1, step))[1:]
-    flag = measure == "R2" or measure == "MAPE"
-    best_model = None
-    best_params: dict = {"name": "LSTM", "metric": measure, "params": ()}
-    best_performance: float = -100000
-
-    _, axs = subplots(1, len(sequence_size), figsize=(len(sequence_size) * HEIGHT, HEIGHT))
-
-    for i in range(len(sequence_size)):
-        length = sequence_size[i]
-        tstX, tstY = prepare_dataset_for_lstm(test, seq_length=length)
-
-        values = {}
-        for hidden in nr_hidden_units:
-            yvalues = []
-            model = DS_LSTM(train, hidden_size=hidden)
-            for n in range(0, nr_episodes + 1):
-                model.fit()
-                if n % step == 0:
-                    prd_tst = model.predict(tstX)
-                    eval: float = FORECAST_MEASURES[measure](test[length:], prd_tst)
-                    print(f"seq length={length} hidden_units={hidden} nr_episodes={n}", eval)
-                    if eval > best_performance and abs(eval - best_performance) > DELTA_IMPROVE:
-                        best_performance: float = eval
-                        best_params["params"] = (length, hidden, n)
-                        best_model = deepcopy(model)
-                    yvalues.append(eval)
-            values[hidden] = yvalues
-        plot_multiline_chart(
-            episodes,
-            values,
-            ax=axs[i],
-            title=f"LSTM seq length={length} ({measure})",
-            xlabel="nr episodes",
-            ylabel=measure,
-            percentage=flag,
-        )
-    print(
-        f"LSTM best results achieved with length={best_params["params"][0]} hidden_units={best_params["params"][1]} and nr_episodes={best_params["params"][2]}) ==> measure={best_performance:.2f}"
-    )
-    return best_model, best_params
+# def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
+#     sequence_size = [2, 4, 8]
+#     nr_hidden_units = [25, 50, 100]
+#
+#     step: int = nr_episodes // 10
+#     episodes = [1] + list(range(0, nr_episodes + 1, step))[1:]
+#     flag = measure == "R2" or measure == "MAPE"
+#     best_model = None
+#     best_params: dict = {"name": "LSTM", "metric": measure, "params": ()}
+#     best_performance: float = -100000
+#
+#     _, axs = subplots(1, len(sequence_size), figsize=(len(sequence_size) * HEIGHT, HEIGHT))
+#
+#     for i in range(len(sequence_size)):
+#         length = sequence_size[i]
+#         tstX, tstY = prepare_dataset_for_lstm(test, seq_length=length)
+#
+#         values = {}
+#         for hidden in nr_hidden_units:
+#             yvalues = []
+#             model = DS_LSTM(train, hidden_size=hidden)
+#             for n in range(0, nr_episodes + 1):
+#                 model.fit()
+#                 if n % step == 0:
+#                     prd_tst = model.predict(tstX)
+#                     eval: float = FORECAST_MEASURES[measure](test[length:], prd_tst)
+#                     print(f"seq length={length} hidden_units={hidden} nr_episodes={n}", eval)
+#                     if eval > best_performance and abs(eval - best_performance) > DELTA_IMPROVE:
+#                         best_performance: float = eval
+#                         best_params["params"] = (length, hidden, n)
+#                         best_model = deepcopy(model)
+#                     yvalues.append(eval)
+#             values[hidden] = yvalues
+#         plot_multiline_chart(
+#             episodes,
+#             values,
+#             ax=axs[i],
+#             title=f"LSTM seq length={length} ({measure})",
+#             xlabel="nr episodes",
+#             ylabel=measure,
+#             percentage=flag,
+#         )
+#     print(
+#         f"LSTM best results achieved with length={best_params["params"][0]} hidden_units={best_params["params"][1]} and nr_episodes={best_params["params"][2]}) ==> measure={best_performance:.2f}"
+#     )
+#     return best_model, best_params
 
 def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', subtitle='', ax=None):
     estimators = {
