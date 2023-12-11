@@ -86,7 +86,7 @@ df = df.drop('ID', axis=1)
 
 encode_cyclic_variables(df, ['Month'])
 # Dropping variable Month
-del df['Month']
+df = df.drop('Month', axis=1)
 
 # Fix Age
 # It contained wrongly formatted values such as 30_ and 34_ instead of 30 and 34

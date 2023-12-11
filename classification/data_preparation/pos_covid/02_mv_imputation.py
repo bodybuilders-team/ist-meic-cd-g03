@@ -15,7 +15,7 @@ variable_types: dict[str, list[str]] = {
                "DifficultyErrands", "ChestScan", "AlcoholDrinkers", "HIVTesting", "FluVaxLast12", "PneumoVaxEver",
                "HighRiskLastYear", "CovidPos"],
     "categorical": ["GeneralHealth", "LastCheckupTime", "RemovedTeeth", "HadDiabetes", "SmokerStatus",
-                    "ECigaretteUsage", "AgeCategory", "TetanusLast10Tdap", "StateCos", "StateSin"]
+                    "ECigaretteUsage", "AgeCategory", "TetanusLast10Tdap"]
 }
 
 # ------------------

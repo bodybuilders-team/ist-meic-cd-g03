@@ -14,8 +14,8 @@ run_mv_imputation_study = True
 run_outliers_treatment_study = True
 run_scaling_study = True
 run_balancing_study = True
-run_feature_selection_preliminary_study = False
-run_feature_selection_study = False
+run_feature_selection_preliminary_study = True
+run_feature_selection_study = True
 
 """
 ------------------

@@ -1,8 +1,8 @@
-from pandas import DataFrame, read_csv
-from sklearn.preprocessing import LabelEncoder
+from math import pi
 
-from utils.dslabs_functions import dummify, encode_cyclic_variables
-from math import pi, sin, cos
+from pandas import DataFrame, read_csv
+
+from utils.dslabs_functions import encode_cyclic_variables
 
 pos_covid_filename: str = "../../data/pos_covid/class_pos_covid.csv"
 pos_covid_file_tag: str = "class_pos_covid"
@@ -178,6 +178,7 @@ encoding: dict[str, dict[str, int]] = {
     "ECigaretteUsage": e_cigarette_usage_type_values,
     "AgeCategory": age_category_type_values,
     "TetanusLast10Tdap": tetanus_last_10_tdap_type_values,
+    "RaceEthnicityCategory": race_ethnicity_values
 }
 df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
 
@@ -189,7 +190,8 @@ df: DataFrame = pos_covid_data.replace(encoding, inplace=False)
 valid_states = ['Northeast', 'South', 'West', 'Midwest']
 
 # Replace non-valid state values with an empty string
-df['State'] = df['State'].replace({state: '' for state in df['State'].unique() if state not in valid_states})
+df['Region'] = df['State'].replace({state: '' for state in df['State'].unique() if state not in valid_states})
+df = df.drop('State', axis=1)
 
 state_type_values_transform_2: dict[str, float] = {
     "Northeast": 0,
@@ -198,16 +200,11 @@ state_type_values_transform_2: dict[str, float] = {
     "Midwest": -pi / 2,
 }
 
-encoding: dict[str, dict[str, float]] = {
-    "State": state_type_values_transform_2
-}
+encoding: dict[str, dict[str, float]] = {"Region": state_type_values_transform_2}
 
 df: DataFrame = df.replace(encoding, inplace=False)
-
-encode_cyclic_variables(df, ['State'])
-
-# Drops variable State
-del df['State']
+encode_cyclic_variables(df, ['Region'])
+df = df.drop('Region', axis=1)
 
 # states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
 #           'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia',
@@ -237,7 +234,7 @@ del df['State']
 #  'Multiracial, Non-Hispanic' nan 'Hispanic'
 #  'Other race only, Non-Hispanic']
 
-df = dummify(df, ["RaceEthnicityCategory"])
-#print(df.head(5))
-
+# df = dummify(df, ["RaceEthnicityCategory"])
+# #print(df.head(5))
+#
 df.to_csv(f"../../data/pos_covid/processed_data/{pos_covid_file_tag}_encoded.csv", index=False)

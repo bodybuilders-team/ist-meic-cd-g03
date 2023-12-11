@@ -10,7 +10,7 @@ print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit
 
 variable_types: dict[str, list[str]] = {
     "binary": ["Credit_Score"],
-    "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour", "MonthCos", "MonthSin"] # Month variable was removed
+    "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour"]
 }
 
 
@@ -77,8 +77,6 @@ def impute_mv(df: DataFrame, strategy: str) -> DataFrame:
 
     return df1
 
-
-# TODO: Analyze the results of the imputation
 
 # ------------------
 # Approach 1: Only delete records with at least one missing value
