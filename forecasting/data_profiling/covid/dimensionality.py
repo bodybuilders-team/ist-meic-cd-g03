@@ -33,7 +33,7 @@ plt.show()
 plt.clf()
 
 # ------------------
-# Multivariate Time Series - All Variables # TODO: Maybe remove the week chart
+# Multivariate Time Series - All Variables
 # ------------------
 
 # Remove Week variable, because it is not relevant for the following analysis
