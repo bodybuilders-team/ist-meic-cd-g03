@@ -18,5 +18,3 @@ train, test = series_train_test_split(series)
 
 train.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_train.csv", index=True)
 test.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_test.csv", index=True)
-
-# FIXME: pandas.errors.IndexingError: Too many indexers

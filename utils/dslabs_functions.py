@@ -911,7 +911,7 @@ from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
 def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
     trn_size: int = int(len(data) * trn_pct)
     df_cp: Series = data.copy()
-    train: Series = df_cp.iloc[:trn_size, :]
+    train: Series = df_cp.iloc[:trn_size]
     test: Series = df_cp.iloc[trn_size:]
     return train, test
 
