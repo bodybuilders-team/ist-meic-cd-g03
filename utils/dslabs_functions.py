@@ -33,7 +33,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.stattools import adfuller
@@ -911,8 +911,8 @@ from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
 def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
     trn_size: int = int(len(data) * trn_pct)
     df_cp: Series = data.copy()
-    train: Series = df_cp.iloc[:trn_size, 0]
-    test: Series = df_cp.iloc[trn_size:, 0]
+    train: Series = df_cp.iloc[:trn_size, :]
+    test: Series = df_cp.iloc[trn_size:]
     return train, test
 
 
@@ -1038,6 +1038,14 @@ def ts_aggregation_by(
     df.index.drop_duplicates()
     df.index = df.index.to_timestamp()
 
+    return df
+
+
+def scale_all_dataframe(data: DataFrame) -> DataFrame:
+    vars: list[str] = data.columns.to_list()
+    transf: StandardScaler = StandardScaler().fit(data)
+    df = DataFrame(transf.transform(data), index=data.index)
+    df.columns = vars
     return df
 
 
