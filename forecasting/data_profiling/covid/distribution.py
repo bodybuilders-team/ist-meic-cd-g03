@@ -8,9 +8,9 @@ from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by, 
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
 covid_file_tag: str = "covid"
-index: str = "date"
-covid_data: DataFrame = read_csv(covid_filename, index_col=index, parse_dates=True, infer_datetime_format=True)
+index_col: str = "date"
 target: str = "deaths"
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = covid_data[target]
 
@@ -82,7 +82,7 @@ plt.clf()
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 lags = get_lagged_series(series, 20, 10)
-plot_multiline_chart(series.index.to_list(), lags, xlabel=index, ylabel=target)
+plot_multiline_chart(series.index.to_list(), lags, xlabel=index_col, ylabel=target)
 plt.tight_layout()
 plt.savefig(f"images/distribution/{covid_file_tag}_{target}_lag_plot.png")
 plt.show()

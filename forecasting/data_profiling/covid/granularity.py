@@ -7,8 +7,9 @@ from utils.dslabs_functions import plot_line_chart, HEIGHT, ts_aggregation_by
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
 covid_file_tag: str = "covid"
-covid_data: DataFrame = read_csv(covid_filename, index_col="date", parse_dates=True, infer_datetime_format=True)
+index_col: str = "date"
 target: str = "deaths"
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 series: Series = covid_data[target]
 
 # All in the same plot

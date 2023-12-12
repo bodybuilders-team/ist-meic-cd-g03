@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 from pandas import DataFrame, read_csv, Series
 
-from utils.dslabs_functions import plot_line_chart, HEIGHT, plot_ts_multivariate_chart
+from utils.dslabs_functions import plot_line_chart, HEIGHT
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
 covid_file_tag: str = "covid"
-covid_data: DataFrame = read_csv(covid_filename, index_col="date", parse_dates=True, infer_datetime_format=True)
+index_col: str = "date"
 target: str = "deaths"
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = covid_data[target]
 print("Nr. Records = ", series.shape[0])
@@ -31,15 +32,3 @@ plt.tight_layout()
 plt.savefig(f"images/dimensionality/{covid_file_tag}_daily_{target}.png")
 plt.show()
 plt.clf()
-
-# ------------------
-# Multivariate Time Series - All Variables
-# ------------------
-
-# Remove Week variable, because it is not relevant for the following analysis
-covid_data = covid_data.drop(columns=["week"], inplace=False)
-
-plot_ts_multivariate_chart(covid_data, title=f"{covid_file_tag} {target}")
-plt.tight_layout()
-plt.savefig(f"images/dimensionality/{covid_file_tag}_{target}.png")
-plt.show()

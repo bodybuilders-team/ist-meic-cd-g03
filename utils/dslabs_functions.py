@@ -15,15 +15,20 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
 from matplotlib.gridspec import GridSpec
-from matplotlib.pyplot import gca, gcf, savefig, subplots, show, tight_layout
-from numpy import arange, ndarray, set_printoptions, array
-from numpy import log
-from pandas import DataFrame, read_csv, concat, unique, to_numeric, to_datetime, Series, Index, Period
+from matplotlib.pyplot import gca, gcf, savefig, subplots, show
+from matplotlib.pyplot import tight_layout
+from numpy import array, ndarray, arange, set_printoptions, log, std
+# from matplotlib.dates import _reset_epoch_test_example, set_epoch
+from pandas import DataFrame, Series, Index, Period
+from pandas import read_csv, concat, to_numeric, to_datetime
+from pandas import unique
 from scipy.stats import norm, expon, lognorm
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.impute import SimpleImputer, KNNImputer
-from sklearn.metrics import accuracy_score, recall_score, precision_score, roc_auc_score, f1_score
-from sklearn.metrics import confusion_matrix, RocCurveDisplay
+from sklearn.metrics import accuracy_score, recall_score, precision_score, mean_squared_error, mean_absolute_error, \
+    r2_score, mean_absolute_percentage_error
+from sklearn.metrics import confusion_matrix, RocCurveDisplay, roc_auc_score
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -35,7 +40,15 @@ from statsmodels.tsa.stattools import adfuller
 
 # from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
 from forecasting.models.RollingMeanRegressor import RollingMeanRegressor
-from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
+from utils.config import (
+    ACTIVE_COLORS,
+    LINE_COLOR,
+    FILL_COLOR,
+    PAST_COLOR,
+    FUTURE_COLOR,
+    PRED_FUTURE_COLOR,
+    cmap_blues,
+)
 
 NR_COLUMNS: int = 3
 HEIGHT: int = 4
@@ -95,13 +108,29 @@ def set_chart_xticks(xvalues: list, ax: Axes, percentage: bool = False):
     return ax
 
 
-def plot_line_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = '', xlabel: str = '',
-                    ylabel: str = '', percentage: bool = False):
+def plot_line_chart(
+        xvalues: list,
+        yvalues: list,
+        ax: Axes = None,  # type: ignore
+        title: str = "",
+        xlabel: str = "",
+        ylabel: str = "",
+        name: str = "",
+        percentage: bool = False,
+        show_stdev: bool = False,
+) -> Axes:
     if ax is None:
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     ax = set_chart_xticks(xvalues, ax, percentage=percentage)
-    ax.plot(xvalues, yvalues, c=LINE_COLOR)
+    if any(y < 0 for y in yvalues) and percentage:
+        ax.set_ylim(-1.0, 1.0)
+    ax.plot(xvalues, yvalues, c=LINE_COLOR, label=name)
+    if show_stdev:
+        stdev: float = round(std(yvalues), 3)
+        y_bottom: list[float] = [(y - stdev) for y in yvalues]
+        y_top: list[float] = [(y + stdev) for y in yvalues]
+        ax.fill_between(xvalues, y_bottom, y_top, color=FILL_COLOR, alpha=0.2)
     return ax
 
 
@@ -882,10 +911,25 @@ from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
 def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
     trn_size: int = int(len(data) * trn_pct)
     df_cp: Series = data.copy()
-    train: Series = df_cp.iloc[:trn_size, :]  # TODO: a stora deu codigo bugado, está a dar erro
-    test: Series = df_cp.iloc[trn_size:]
+    train: Series = df_cp.iloc[:trn_size, 0]
+    test: Series = df_cp.iloc[trn_size:, 0]
     return train, test
 
+
+def dataframe_temporal_train_test_split(data: DataFrame, trn_pct: float = 0.90) -> tuple[DataFrame, DataFrame]:
+    trn_size: int = int(len(data) * trn_pct)
+    df_cp: DataFrame = data.copy()
+    train: DataFrame = df_cp.iloc[:trn_size]
+    test: DataFrame = df_cp.iloc[trn_size:]
+    return train, test
+
+
+FORECAST_MEASURES = {
+    "MSE": mean_squared_error,
+    "MAE": mean_absolute_error,
+    "R2": r2_score,
+    "MAPE": mean_absolute_percentage_error,
+}
 
 def plot_forecasting_series(
         trn: Series,
@@ -922,6 +966,7 @@ def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Se
     fig.suptitle(title)
     plot_multibar_chart(["train", "test"], ev1, ax=axs[0], title="Scale-dependent error", percentage=False)
     plot_multibar_chart(["train", "test"], ev2, ax=axs[1], title="Percentage error", percentage=True)
+
     return axs
 
 

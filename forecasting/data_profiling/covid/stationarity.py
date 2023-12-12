@@ -7,8 +7,8 @@ from utils.dslabs_functions import plot_components, HEIGHT, plot_line_chart, eva
 covid_filename: str = "../../data/covid/forecast_covid.csv"
 covid_file_tag: str = "covid"
 target: str = "deaths"
-index: str = "date"
-covid_data: DataFrame = read_csv(covid_filename, index_col=index, parse_dates=True, infer_datetime_format=True)
+index_col: str = "date"
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = covid_data[target]
 
@@ -31,7 +31,7 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{covid_file_tag} stationary study",  # TODO: not working because the teacher's function is not updated
+    title=f"{covid_file_tag} stationary study",
     name="original"
 )
 n: int = len(series)
@@ -74,3 +74,13 @@ plt.clf()
 # ------------------
 
 print(f"The series {('is' if eval_stationarity(series) else 'is not')} stationary")
+
+"""
+ADF Statistic: -2.156
+p-value: 0.223
+Critical Values:
+	1%: -3.464
+	5%: -2.876
+	10%: -2.575
+The series is not stationary
+"""

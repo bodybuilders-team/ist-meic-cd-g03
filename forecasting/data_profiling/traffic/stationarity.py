@@ -7,10 +7,12 @@ from utils.dslabs_functions import plot_components, HEIGHT, plot_line_chart, eva
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"
 traffic_file_tag: str = "traffic"
 target: str = "Total"
-index: str = "Timestamp"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col=index, parse_dates=True, infer_datetime_format=True)
+index_col: str = "Timestamp"
+traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = traffic_data[target]
+
+series = series.resample("H").sum() # TODO: This is sus but I was getting an error when I tried to run plot_components without this
 
 # ------------------
 # Plot components
@@ -31,7 +33,7 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{traffic_file_tag} stationary study",  # TODO: not working because the teacher's function is not updated
+    title=f"{traffic_file_tag} stationary study",
     name="original"
 )
 n: int = len(series)
@@ -74,3 +76,13 @@ plt.clf()
 # ------------------
 
 print(f"The series {('is' if eval_stationarity(series) else 'is not')} stationary")
+
+"""
+ADF Statistic: -14.169
+p-value: 0.000
+Critical Values:
+	1%: -3.439
+	5%: -2.866
+	10%: -2.569
+The series is stationary
+"""
