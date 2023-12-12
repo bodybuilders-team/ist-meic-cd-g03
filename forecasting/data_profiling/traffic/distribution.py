@@ -3,12 +3,13 @@ from matplotlib.figure import Figure
 from numpy import array
 from pandas import DataFrame, read_csv, Series
 
-from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by
+from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by, get_lagged_series, plot_multiline_chart, \
+    autocorrelation_study
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"
 traffic_file_tag: str = "traffic"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True,
-                                   infer_datetime_format=True)
+index: str = "Timestamp"
+traffic_data: DataFrame = read_csv(traffic_filename, index_col=index, parse_dates=True, infer_datetime_format=True)
 target: str = "Total"
 
 series: Series = traffic_data[target]
@@ -83,5 +84,27 @@ for i in range(len(grans)):
     axs[i].hist(grans[i].values)
 plt.tight_layout()
 plt.savefig(f"images/distribution/{traffic_file_tag}_{target}_distribution.png")
+plt.show()
+plt.clf()
+
+# ------------------
+# Autocorrelation - Lag Plot
+# ------------------
+
+plt.figure(figsize=(3 * HEIGHT, HEIGHT))
+lags = get_lagged_series(series, 20, 10)
+plot_multiline_chart(series.index.to_list(), lags, xlabel=index, ylabel=target)
+plt.tight_layout()
+plt.savefig(f"images/distribution/{traffic_file_tag}_{target}_lag_plot.png")
+plt.show()
+plt.clf()
+
+# ------------------
+# Autocorrelation - Correlogram
+# ------------------
+
+autocorrelation_study(series, 10, 1)
+plt.tight_layout()
+plt.savefig(f"images/distribution/{traffic_file_tag}_{target}_correlogram.png")
 plt.show()
 plt.clf()

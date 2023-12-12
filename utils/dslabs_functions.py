@@ -14,6 +14,7 @@ from matplotlib.container import BarContainer
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
+from matplotlib.gridspec import GridSpec
 from matplotlib.pyplot import gca, gcf, savefig, subplots, show, tight_layout
 from numpy import arange, ndarray, set_printoptions, array
 from numpy import log
@@ -585,6 +586,32 @@ def select_redundant_variables(
                 if v2 not in vars2drop:
                     vars2drop.append(v2)
     return vars2drop
+
+
+def get_lagged_series(series: Series, max_lag: int, delta: int = 1):
+    lagged_series: dict = {"original": series, "lag 1": series.shift(1)}
+    for i in range(delta, max_lag + 1, delta):
+        lagged_series[f"lag {i}"] = series.shift(i)
+    return lagged_series
+
+
+def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
+    k: int = int(max_lag / delta)
+    fig = plt.figure(figsize=(4 * HEIGHT, 2 * HEIGHT), constrained_layout=True)
+    gs = GridSpec(2, k, figure=fig)
+
+    series_values: list = series.tolist()
+    for i in range(1, k + 1):
+        ax = fig.add_subplot(gs[0, i - 1])
+        lag = i * delta
+        ax.scatter(series.shift(lag).tolist(), series_values)
+        ax.set_xlabel(f"lag {lag}")
+        ax.set_ylabel("original")
+    ax = fig.add_subplot(gs[1, :])
+    ax.acorr(series, maxlags=max_lag)
+    ax.set_title("Autocorrelation")
+    ax.set_xlabel("Lags")
+    return
 
 
 def study_redundancy_for_feature_selection(

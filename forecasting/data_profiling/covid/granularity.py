@@ -11,6 +11,8 @@ covid_data: DataFrame = read_csv(covid_filename, index_col="date", parse_dates=T
 target: str = "deaths"
 series: Series = covid_data[target]
 
+# All in the same plot
+
 grans: list[str] = ["D", "W", "M", "Q"]
 fig: Figure
 axs: list[Axes]
@@ -31,3 +33,20 @@ plt.tight_layout()
 plt.savefig(f"images/granularity/{covid_file_tag}_{target}_aggregation_study.png")
 plt.show()
 plt.clf()
+
+# Different plots
+
+for i in range(len(grans)):
+    fig = plt.figure(figsize=(3 * HEIGHT, HEIGHT / 2))
+    ss: Series = ts_aggregation_by(series, grans[i])
+    plot_line_chart(
+        ss.index.to_list(),
+        ss.to_list(),
+        xlabel=f"{ss.index.name} ({grans[i]})",
+        ylabel=target,
+        title=f"granularity={grans[i]}",
+    )
+    plt.tight_layout()
+    plt.savefig(f"images/granularity/{covid_file_tag}_{target}_aggregation_study_{grans[i]}.png")
+    plt.show()
+    plt.clf()
