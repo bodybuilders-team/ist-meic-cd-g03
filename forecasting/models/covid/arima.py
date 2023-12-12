@@ -7,19 +7,23 @@ from utils.dslabs_functions import series_train_test_split, HEIGHT, arima_study,
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from differentiated data
 covid_file_tag: str = "covid"
-timecol: str = "date"
+index_col: str = "date"
 target: str = "deaths"
 measure: str = "R2"
-covid_data: DataFrame = read_csv(covid_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = covid_data[target]
-train, test = series_train_test_split(series, trn_pct=0.90)
+train, test = series_train_test_split(covid_data)
 
 predictor = ARIMA(train, order=(3, 1, 2))
 model = predictor.fit()
 print(model.summary())
 
 model.plot_diagnostics(figsize=(2 * HEIGHT, 1.5 * HEIGHT))
+plt.tight_layout()
+plt.savefig(f"images/{covid_file_tag}_arima_{measure}_diagnostics.png")
+plt.show()
+plt.clf()
 
 best_model, best_params = arima_study(train, test, measure=measure)
 plt.tight_layout()
@@ -44,7 +48,7 @@ plot_forecasting_series(
     test,
     prd_tst,
     title=f"{covid_file_tag} - ARIMA ",
-    xlabel=timecol,
+    xlabel=index_col,
     ylabel=target,
 )
 plt.tight_layout()

@@ -6,13 +6,12 @@ from utils.dslabs_functions import series_train_test_split, plot_forecasting_eva
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from differentiated data
 covid_file_tag: str = "covid"
-timecol: str = "date"
+index_col: str = "date"
 target: str = "deaths"
-covid_data: DataFrame = read_csv(covid_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
+covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = covid_data[target]
-
-train, test = series_train_test_split(series)
+train, test = series_train_test_split(covid_data)
 
 # Fit the model and predict
 
@@ -34,7 +33,7 @@ plot_forecasting_series(
     test,
     prd_tst,
     title=f"{covid_file_tag} - Simple Average",
-    xlabel=timecol,
+    xlabel=index_col,
     ylabel=target,
 )
 plt.tight_layout()

@@ -6,18 +6,17 @@ from utils.dslabs_functions import series_train_test_split, HEIGHT, rolling_mean
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from differentiated data
 traffic_file_tag: str = "traffic"
-timecol: str = "Timestamp"
+index_col: str = "Timestamp"
 target: str = "Total"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
+traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = traffic_data[target]
-
-train, test = series_train_test_split(series, trn_pct=0.90)
+train, test = series_train_test_split(series)
 
 measure: str = "R2"
 
 fig = plt.figure(figsize=(HEIGHT, HEIGHT))
-best_model, best_params = rolling_mean_study(train, test)
+best_model, best_params = rolling_mean_study(train, test) # FIXME: This is not working
 plt.tight_layout()
 plt.savefig(f"images/{traffic_file_tag}_rollingmean_{measure}_study.png")
 plt.show()
@@ -38,7 +37,7 @@ plot_forecasting_series(
     test,
     prd_tst,
     title=f"{traffic_file_tag} - Rolling Mean (win={params[0]})",
-    xlabel=timecol,
+    xlabel=index_col,
     ylabel=target,
 )
 plt.tight_layout()

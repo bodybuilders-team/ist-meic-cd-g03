@@ -35,7 +35,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
-from statsmodels.tsa.arima_model import ARIMA
+import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller
 
 # from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
@@ -1096,7 +1096,7 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
         for q in q_params:
             yvalues = []
             for p in p_params:
-                arima = ARIMA(train, order=(p, d, q))
+                arima = sm.tsa.arima.ARIMA(train, order=(p, d, q))
                 model = arima.fit()
                 prd_tst = model.forecast(steps=len(test), signal_only=False)
                 eval: float = FORECAST_MEASURES[measure](test, prd_tst)

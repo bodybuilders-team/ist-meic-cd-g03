@@ -6,10 +6,10 @@ from utils.dslabs_functions import series_train_test_split, lstm_study, plot_for
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from differentiated data
 traffic_file_tag: str = "traffic"
-timecol: str = "Timestamp"
+index_col: str = "Timestamp"
 target: str = "Total"
 measure: str = "R2"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
+traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = traffic_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)
@@ -47,7 +47,7 @@ plot_forecasting_series(
     test[best_length:],
     pred_series,
     title=f"{traffic_file_tag} - LSTMs ",
-    xlabel=timecol,
+    xlabel=index_col,
     ylabel=target,
 )
 plt.tight_layout()
