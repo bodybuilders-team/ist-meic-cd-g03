@@ -1,5 +1,4 @@
 import re
-from math import pi
 
 from pandas import DataFrame, read_csv
 
@@ -32,18 +31,18 @@ payment_behaviour_type_values: dict[str, int] = {
 }
 
 month_type_values: dict[str, float] = {
-    "January": ((2 * pi) / 12) * 0,
-    "February": ((2 * pi) / 12) * 1,
-    "March": ((2 * pi) / 12) * 2,
-    "April": ((2 * pi) / 12) * 3,
-    "May": ((2 * pi) / 12) * 4,
-    "June": ((2 * pi) / 12) * 5,
-    "July": -(((2 * pi) / 12) * 6),
-    "August": -(((2 * pi) / 12) * 5),
-    "September": -(((2 * pi) / 12) * 4),
-    "October": -(((2 * pi) / 12) * 3),
-    "November": -(((2 * pi) / 12) * 2),
-    "December": -(((2 * pi) / 12) * 1),
+    "January": 1,
+    "February": 2,
+    "March": 3,
+    "April": 4,
+    "May": 5,
+    "June": 6,
+    "July": 7,
+    "August": 8,
+    "September": 9,
+    "October": 10,
+    "November": 11,
+    "December": 12
 }
 
 # from exact sciences to artistic ones

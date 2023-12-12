@@ -10,14 +10,14 @@ eval_metric = "accuracy"
 run_sampling = True
 sampling_amount = 0.01 if run_sampling else 1
 
-run_mv_imputation_study = False
-run_outliers_treatment_study = False
-run_scaling_study = False
-run_balancing_study = False
+run_mv_imputation_study = True
+run_outliers_treatment_study = True
+run_scaling_study = True
+run_balancing_study = True
 run_feature_selection_preliminary_study = True
 run_feature_selection_study = True
 
-sample_tag = f"_1_{1 / sampling_amount}" if run_sampling else ""
+sample_tag = f"_1_{int(1 / sampling_amount)}th" if run_sampling else ""
 
 """
 ------------------

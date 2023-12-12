@@ -18,7 +18,7 @@ run_balancing_study = True
 run_feature_selection_preliminary_study = True
 run_feature_selection_study = True
 
-sample_tag = f"_1_{1 / sampling_amount}" if run_sampling else ""
+sample_tag = f"_1_{int(1 / sampling_amount)}th" if run_sampling else ""
 
 """
 ------------------

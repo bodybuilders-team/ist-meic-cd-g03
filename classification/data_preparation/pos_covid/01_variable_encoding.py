@@ -1,5 +1,3 @@
-from math import pi
-
 from pandas import DataFrame, read_csv
 
 from utils.dslabs_functions import encode_cyclic_variables
@@ -194,10 +192,10 @@ df['Region'] = df['State'].replace({state: '' for state in df['State'].unique() 
 df = df.drop('State', axis=1)
 
 state_type_values_transform_2: dict[str, float] = {
-    "Northeast": 0,
-    "West": pi / 2,
-    "South": pi,
-    "Midwest": -pi / 2,
+    "Northeast": 1,
+    "West": 2,
+    "South": 3,
+    "Midwest": 4
 }
 
 encoding: dict[str, dict[str, float]] = {"Region": state_type_values_transform_2}
