@@ -7,7 +7,8 @@ from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"
 traffic_file_tag: str = "traffic"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True, infer_datetime_format=True)
+traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True,
+                                   infer_datetime_format=True)
 target: str = "Total"
 
 series: Series = traffic_data[target]

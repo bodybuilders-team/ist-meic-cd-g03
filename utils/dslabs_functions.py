@@ -2,7 +2,6 @@
 file:       dslabs_functions.py
 version:    2023.1
 '''
-from copy import deepcopy
 from datetime import datetime
 from itertools import product
 from math import pi, sin, cos, ceil, sqrt
@@ -33,7 +32,7 @@ from sklearn.tree import DecisionTreeClassifier
 from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.tsa.stattools import adfuller
 
-#from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
+# from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
 from forecasting.models.RollingMeanRegressor import RollingMeanRegressor
 from utils.config import ACTIVE_COLORS, LINE_COLOR, FILL_COLOR, cmap_blues
 
@@ -103,6 +102,7 @@ def plot_line_chart(xvalues: list, yvalues: list, ax: Axes = None, title: str = 
     ax = set_chart_xticks(xvalues, ax, percentage=percentage)
     ax.plot(xvalues, yvalues, c=LINE_COLOR)
     return ax
+
 
 def plot_bar_chart(
         xvalues: list,
@@ -954,6 +954,7 @@ def eval_stationarity(series: Series) -> bool:
         print(f"\t{key}: {value:.3f}")
     return result[1] <= 0.05
 
+
 def ts_aggregation_by(
         data: Series | DataFrame,
         gran_level: str = "D",
@@ -997,6 +998,7 @@ def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
 
     return best_model, best_params
 
+
 def arima_study(train: Series, test: Series, measure: str = "R2"):
     d_values = (0, 1, 2)
     p_params = (1, 2, 3, 5, 7, 10)
@@ -1033,6 +1035,7 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
     )
 
     return best_model, best_params
+
 
 # def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
 #     sequence_size = [2, 4, 8]

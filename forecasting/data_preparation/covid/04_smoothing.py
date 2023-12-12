@@ -5,7 +5,7 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import plot_line_chart, HEIGHT
 
-covid_filename: str = "../../data/covid/forecast_covid.csv" # TODO: Get data from aggregated data
+covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from aggregated data
 covid_file_tag: str = "covid"
 covid_data: DataFrame = read_csv(covid_filename, index_col="date", parse_dates=True, infer_datetime_format=True)
 target: str = "deaths"
@@ -34,5 +34,5 @@ plt.show()
 plt.clf()
 
 # Save smoothed data
-smoothed_data = series.rolling(window=50).mean() # TODO: Choose best size
+smoothed_data = series.rolling(window=50).mean()  # TODO: Choose best size
 smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_{target}_smoothed.csv")

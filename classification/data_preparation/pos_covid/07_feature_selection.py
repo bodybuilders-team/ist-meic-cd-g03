@@ -27,7 +27,8 @@ vars2drop: list[str] = select_low_variance_variables(
     pos_covid_train, max_threshold=0.8, target=target
 )
 train_cp, test_cp = apply_feature_selection(
-    pos_covid_train, pos_covid_test, vars2drop, filename=f"../../data/pos_covid/processed_data/{pos_covid_file_tag}", tag="lowvar"
+    pos_covid_train, pos_covid_test, vars2drop, filename=f"../../data/pos_covid/processed_data/{pos_covid_file_tag}",
+    tag="lowvar"
 )
 print(f"Original data: train={pos_covid_train.shape}, test={pos_covid_test.shape}")
 print(f"After low variance FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")
@@ -40,7 +41,8 @@ vars2drop: list[str] = select_redundant_variables(
     pos_covid_train, min_threshold=0.45, target=target
 )
 train_cp, test_cp = apply_feature_selection(
-    pos_covid_train, pos_covid_test, vars2drop, filename=f"../../data/pos_covid/processed_data/{pos_covid_file_tag}", tag="redundant"
+    pos_covid_train, pos_covid_test, vars2drop, filename=f"../../data/pos_covid/processed_data/{pos_covid_file_tag}",
+    tag="redundant"
 )
 print(f"Original data: train={pos_covid_train.shape}, test={pos_covid_train.shape}")
 print(f"After redundant FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")

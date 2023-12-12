@@ -27,7 +27,8 @@ vars2drop: list[str] = select_low_variance_variables(
     credit_score_train, max_threshold=1.0, target=target
 )
 train_cp, test_cp = apply_feature_selection(
-    credit_score_train, credit_score_test, vars2drop, filename=f"../../data/credit_score/processed_data/{credit_score_file_tag}", tag="lowvar"
+    credit_score_train, credit_score_test, vars2drop,
+    filename=f"../../data/credit_score/processed_data/{credit_score_file_tag}", tag="lowvar"
 )
 print(f"Original data: train={credit_score_train.shape}, test={credit_score_test.shape}")
 print(f"After low variance FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")
@@ -40,7 +41,8 @@ vars2drop: list[str] = select_redundant_variables(
     credit_score_train, min_threshold=0.55, target=target
 )
 train_cp, test_cp = apply_feature_selection(
-    credit_score_train, credit_score_test, vars2drop, filename=f"../../data/credit_score/processed_data/{credit_score_file_tag}", tag="redundant"
+    credit_score_train, credit_score_test, vars2drop,
+    filename=f"../../data/credit_score/processed_data/{credit_score_file_tag}", tag="redundant"
 )
 print(f"Original data: train={credit_score_train.shape}, test={credit_score_test.shape}")
 print(f"After redundant FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")

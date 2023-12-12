@@ -5,9 +5,10 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import plot_line_chart, HEIGHT
 
-traffic_filename: str = "../../data/traffic/forecast_traffic.csv" # TODO: Get data from aggregated data
+traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from aggregated data
 traffic_file_tag: str = "traffic"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True, infer_datetime_format=True)
+traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True,
+                                   infer_datetime_format=True)
 target: str = "Total"
 
 series: Series = traffic_data[target]
@@ -34,5 +35,5 @@ plt.show()
 plt.clf()
 
 # Save smoothed data
-smoothed_data = series.rolling(window=50).mean() # TODO: Choose best size
+smoothed_data = series.rolling(window=50).mean()  # TODO: Choose best size
 smoothed_data.to_csv(f"../../data/traffic/processed_data/{traffic_file_tag}_{target}_smoothed.csv")

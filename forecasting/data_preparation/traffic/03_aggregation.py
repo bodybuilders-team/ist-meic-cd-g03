@@ -5,7 +5,8 @@ from utils.dslabs_functions import plot_ts_multivariate_chart, ts_aggregation_by
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from aggregated data
 traffic_file_tag: str = "traffic"
-traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True, infer_datetime_format=True)
+traffic_data: DataFrame = read_csv(traffic_filename, index_col="Timestamp", parse_dates=True,
+                                   infer_datetime_format=True)
 target: str = "Total"
 
 # Remove Day of the weeK variable, because it is not relevant for the following analysis

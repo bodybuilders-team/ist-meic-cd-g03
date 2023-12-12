@@ -8,6 +8,7 @@ credit_score_data: DataFrame = read_csv(credit_score_filename,
                                         na_values="")  # TODO , index_col="ID" - ID column was removed after encoding and I don't know why
 print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit_score_data.shape[1]}")
 
+# TODO: Fix
 variable_types: dict[str, list[str]] = {
     "binary": ["Credit_Score"],
     "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour"]
@@ -86,7 +87,8 @@ print("Approach 1: Only delete records with at least one missing value")
 data_frame: DataFrame = delete_records_with_any_mv(credit_score_data)
 
 print("Saving to file...")
-data_frame.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_imputed_mv_approach1.csv", index=False)
+data_frame.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_imputed_mv_approach1.csv",
+                  index=False)
 print("Saved to file.")
 
 print()
@@ -100,5 +102,6 @@ df_drop_threshold: DataFrame = drop_data_by_mv_threshold(credit_score_data, 0.7,
 data_frame: DataFrame = impute_mv(df_drop_threshold, "frequent")
 
 print("Saving to file...")
-data_frame.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_imputed_mv_approach2.csv", index=False)
+data_frame.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_imputed_mv_approach2.csv",
+                  index=False)
 print("Saved to file.")

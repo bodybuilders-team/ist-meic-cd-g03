@@ -1,11 +1,9 @@
 import re
+from math import pi
 
 from pandas import DataFrame, read_csv
-from sklearn.preprocessing import LabelEncoder
 
-from utils.dslabs_functions import dummify, encode_cyclic_variables
-
-from math import pi, sin, cos
+from utils.dslabs_functions import encode_cyclic_variables
 
 credit_score_filename: str = "../../data/credit_score/class_credit_score.csv"
 credit_score_file_tag: str = "class_credit_score"
@@ -83,7 +81,6 @@ df = df.drop('SSN', axis=1)
 df = df.drop('Customer_ID', axis=1)
 df = df.drop('ID', axis=1)
 
-
 encode_cyclic_variables(df, ['Month'])
 # Dropping variable Month
 df = df.drop('Month', axis=1)
@@ -116,6 +113,7 @@ df['Num_Bank_Accounts'] = df['Num_Bank_Accounts'].apply(lambda x: x if x >= 0 el
 # Fix MonthlyBalance
 # It contains a stupidly low value of -3.33E+26, which is probably a mistake
 df['MonthlyBalance'] = df['MonthlyBalance'].apply(lambda x: x if x >= 0 else None)
+
 
 # print(df.head(5))
 
@@ -157,7 +155,6 @@ loan_types = ['Credit-Builder Loan', 'Home Equity Loan', 'Payday Loan', 'Debt Co
 for loan_type in loan_types:
     df[f"Type_of_Loan_{loan_type.replace(" ", "_")}"] = df['Type_of_Loan'].apply(
         lambda x: loan_type in x if isinstance(x, str) else False)
-
 
 print(df['Type_of_Loan'].unique())
 df.drop('Type_of_Loan', axis=1, inplace=True)  # Drop the original column

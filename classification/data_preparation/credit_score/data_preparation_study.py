@@ -69,7 +69,6 @@ if run_outliers_treatment_study:
         sample_amount=sampling_amount
     )
 
-
 """
 ------------------
 Scaling (only KNN)
@@ -92,7 +91,6 @@ if run_scaling_study:
         sample_amount=sampling_amount,
         nb=False
     )
-
 
 """
 ------------------
@@ -173,8 +171,10 @@ Feature Selection Study
 if run_feature_selection_study:
     evaluate_approaches(
         approaches=[
-            ["../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv", "Approach 1 - Dropping Low Variance Variables"],
-            ["../../data/credit_score/processed_data/class_credit_score_train_redundant.csv", "Approach 2 - Dropping Highly Correlated Variables"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv",
+             "Approach 1 - Dropping Low Variance Variables"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_redundant.csv",
+             "Approach 2 - Dropping Highly Correlated Variables"],
         ],
         study_title="Feature Selection",
         metric=eval_metric,

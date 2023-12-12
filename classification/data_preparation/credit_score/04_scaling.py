@@ -22,7 +22,8 @@ vars: list[str] = credit_score_data.columns.to_list()
 target_data: Series = credit_score_data.pop(target)
 
 scaler: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True)
-df_zscore = DataFrame(scaler.fit_transform(credit_score_data), columns=credit_score_data.columns, index=credit_score_data.index)
+df_zscore = DataFrame(scaler.fit_transform(credit_score_data), columns=credit_score_data.columns,
+                      index=credit_score_data.index)
 df_zscore[target] = target_data
 df_zscore.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_scaled_zscore.csv", index=False)
 
@@ -31,7 +32,8 @@ df_zscore.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag
 # ------------------
 
 scaler: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True)
-df_minmax = DataFrame(scaler.fit_transform(credit_score_data), columns=credit_score_data.columns, index=credit_score_data.index)
+df_minmax = DataFrame(scaler.fit_transform(credit_score_data), columns=credit_score_data.columns,
+                      index=credit_score_data.index)
 df_minmax[target] = target_data
 df_minmax.to_csv(f"../../data/credit_score/processed_data/{credit_score_file_tag}_scaled_minmax.csv", index=False)
 
