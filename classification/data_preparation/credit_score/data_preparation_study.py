@@ -8,7 +8,7 @@ from utils.dslabs_functions import evaluate_approaches
 credit_score_file_tag: str = "class_credit_score"
 eval_metric = "accuracy"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
 run_mv_imputation_study = True
@@ -55,6 +55,8 @@ Outliers Treatment
 if run_outliers_treatment_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/credit_score/processed_data/class_credit_score_imputed_mv_approach2.csv",
+             "Control"],
             ["../../data/credit_score/processed_data/class_credit_score_drop_outliers.csv",
              "Approach 1 - Drop Outliers"],
             ["../../data/credit_score/processed_data/class_credit_score_replacing_outliers.csv",
@@ -79,6 +81,8 @@ Scaling (only KNN)
 if run_scaling_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/credit_score/processed_data/class_credit_score_drop_outliers.csv",
+             "Control"],
             ["../../data/credit_score/processed_data/class_credit_score_scaled_zscore.csv",
              "Approach 1 - Standard Scaler"],
             ["../../data/credit_score/processed_data/class_credit_score_scaled_minmax.csv",
@@ -103,9 +107,14 @@ Balancing
 if run_balancing_study:
     evaluate_approaches(
         approaches=[
-            ["../../data/credit_score/processed_data/class_credit_score_train_under.csv", "Approach 1 - Undersampling"],
-            ["../../data/credit_score/processed_data/class_credit_score_train_over.csv", "Approach 2 - Oversampling"],
-            ["../../data/credit_score/processed_data/class_credit_score_train_smote.csv", "Approach 3 - SMOTE"]
+            ["../../data/credit_score/processed_data/class_credit_score_scaled_zscore.csv",
+             "Control"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_under.csv",
+             "Approach 1 - Undersampling"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_over.csv",
+             "Approach 2 - Oversampling"],
+            ["../../data/credit_score/processed_data/class_credit_score_train_smote.csv",
+             "Approach 3 - SMOTE"]
         ],
         study_title="Balancing",
         metric=eval_metric,
@@ -171,6 +180,8 @@ Feature Selection Study
 if run_feature_selection_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/credit_score/processed_data/class_credit_score_train_over.csv",
+             "Control"],
             ["../../data/credit_score/processed_data/class_credit_score_train_lowvar.csv",
              "Approach 1 - Dropping Low Variance Variables"],
             ["../../data/credit_score/processed_data/class_credit_score_train_redundant.csv",

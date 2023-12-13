@@ -200,7 +200,7 @@ def plot_multibar_chart(group_labels: list, yvalues: dict, ax: Axes = None, titl
 
     for i in range(len(bar_labels)):
         values = ax.bar(index + i * bar_width, yvalues[bar_labels[i]], width=bar_width, label=bar_labels[i])
-        format = '%.2f' if percentage else '%.0f'
+        format = '%.2f'
         ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
     ax.legend(fontsize=FONT_SIZE)
     return ax
@@ -486,8 +486,8 @@ def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
         x_max: float = max(
             numeric_values) if numeric_values else 0.0  # Assuming a default value if there are no numeric values
         # The plus one sum is not to have a negative value on both of this new variables
-        data[v + "Sin"] = data[v].apply(lambda x: x if x == '' else (round(sin(2 * pi * x / x_max), 3)) + 1)
-        data[v + "Cos"] = data[v].apply(lambda x: x if x == '' else (round(cos(2 * pi * x / x_max), 3)) + 1)
+        data[v + "Sin"] = data[v].apply(lambda x: x if x == '' else round(sin(2 * pi * x / x_max), 3))
+        data[v + "Cos"] = data[v].apply(lambda x: x if x == '' else round(cos(2 * pi * x / x_max), 3))
     return
 
 
@@ -962,7 +962,6 @@ def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Se
         "R2": [FORECAST_MEASURES["R2"](trn, prd_trn), FORECAST_MEASURES["R2"](tst, prd_tst)],
     }
 
-    # print(eval1, eval2)
     fig, axs = subplots(1, 2, figsize=(1.5 * HEIGHT, 0.75 * HEIGHT), squeeze=True)
     fig.suptitle(title)
     plot_multibar_chart(["train", "test"], ev1, ax=axs[0], title="Scale-dependent error", percentage=False)

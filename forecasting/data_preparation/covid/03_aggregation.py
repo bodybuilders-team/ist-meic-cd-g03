@@ -3,8 +3,8 @@ from pandas import read_csv, DataFrame, Series
 
 from utils.dslabs_functions import ts_aggregation_by, plot_line_chart, HEIGHT
 
-covid_filename: str = "../../data/covid/processed_data/forecast_covid_deaths_scaled.csv"
-covid_file_tag: str = "covid"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_scaled.csv"
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -23,11 +23,11 @@ for gran, freq in grans.items():
         title=f"{covid_file_tag} {target} {gran} aggregation",
     )
     plt.tight_layout()
-    plt.savefig(f"images/{covid_file_tag}_{target}_{gran}_aggregation.png")
+    plt.savefig(f"images/{covid_file_tag}_{gran}_aggregation.png")
     plt.show()
     plt.clf()
 
     # Save aggregated data
-    covid_data_gran.to_csv(f"../../data/covid/processed_data/forecast_covid_{target}_{gran}_aggregated.csv")
+    covid_data_gran.to_csv(f"../../data/covid/processed_data/forecast_covid_{gran}_aggregated.csv")
 
 # TODO: Choose the best aggregation: weekly, monthly or quarterly?

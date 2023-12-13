@@ -3,8 +3,8 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import HEIGHT, plot_line_chart
 
-covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from smoothing
-covid_file_tag: str = "covid"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_smoothed.csv"  # TODO: Get data from smoothing
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -23,7 +23,7 @@ plot_line_chart(
     title=f"{covid_file_tag} {target} - no differentiation",
 )
 plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_{target}_no_diff.png")
+plt.savefig(f"images/{covid_file_tag}_no_diff.png")
 plt.show()
 plt.clf()
 
@@ -42,11 +42,11 @@ plot_line_chart(
     ylabel=target,
 )
 plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_{target}_first_diff.png")
+plt.savefig(f"images/{covid_file_tag}_first_diff.png")
 plt.show()
 plt.clf()
 
-ss_diff.to_csv(f"../../data/covid/processed_data/forecast_covid_{target}_first_diff.csv")
+ss_diff.to_csv(f"../../data/covid/processed_data/forecast_covid_first_diff.csv")
 
 # ----------------------------
 # Second differentiation
@@ -62,8 +62,8 @@ plot_line_chart(
     ylabel=target,
 )
 plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_{target}_second_diff.png")
+plt.savefig(f"images/{covid_file_tag}_second_diff.png")
 plt.show()
 plt.clf()
 
-ss_diff.to_csv(f"../../data/covid/processed_data/forecast_covid_{target}_second_diff.csv")
+ss_diff.to_csv(f"../../data/covid/processed_data/forecast_covid_second_diff.csv")

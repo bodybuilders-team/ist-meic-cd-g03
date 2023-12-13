@@ -23,7 +23,7 @@ plot_line_chart(
     title=f"{traffic_file_tag} {target} - no differentiation",
 )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_no_diff.png")
+plt.savefig(f"images/{traffic_file_tag}_no_diff.png")
 plt.show()
 plt.clf()
 
@@ -42,11 +42,11 @@ plot_line_chart(
     ylabel=target,
 )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_first_diff.png")
+plt.savefig(f"images/{traffic_file_tag}_first_diff.png")
 plt.show()
 plt.clf()
 
-ss_diff.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{target}_first_diff.csv")
+ss_diff.to_csv(f"../../data/traffic/processed_data/forecast_traffic_first_diff.csv")
 
 # ----------------------------
 # Second differentiation
@@ -62,8 +62,8 @@ plot_line_chart(
     ylabel=target,
 )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_second_diff.png")
+plt.savefig(f"images/{traffic_file_tag}_second_diff.png")
 plt.show()
 plt.clf()
 
-ss_diff.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{target}_second_diff.csv")
+ss_diff.to_csv(f"../../data/traffic/processed_data/forecast_traffic_second_diff.csv")

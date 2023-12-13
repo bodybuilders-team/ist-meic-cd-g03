@@ -23,11 +23,11 @@ for gran, freq in grans.items():
         title=f"{traffic_file_tag} {target} {gran} aggregation",
     )
     plt.tight_layout()
-    plt.savefig(f"images/{traffic_file_tag}_{target}_{gran}_aggregation.png")
+    plt.savefig(f"images/{traffic_file_tag}_{gran}_aggregation.png")
     plt.show()
     plt.clf()
 
     # Save aggregated data
-    traffic_data_gran.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{target}_{gran}_aggregated.csv")
+    traffic_data_gran.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{gran}_aggregated.csv")
 
 # TODO: Choose the best aggregation: hourly, daily or weekly?

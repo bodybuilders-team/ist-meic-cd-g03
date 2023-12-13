@@ -30,10 +30,10 @@ for i in range(len(sizes)):
         title=f"size={sizes[i]}",
     )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_after_smoothing.png")
+plt.savefig(f"images/{traffic_file_tag}_after_smoothing.png")
 plt.show()
 plt.clf()
 
 # Save smoothed data
 smoothed_data = series.rolling(window=50).mean()  # TODO: Choose best size
-smoothed_data.to_csv(f"../../data/traffic/processed_data/{traffic_file_tag}_{target}_smoothed.csv")
+smoothed_data.to_csv(f"../../data/traffic/processed_data/{traffic_file_tag}_smoothed.csv")

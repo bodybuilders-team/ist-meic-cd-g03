@@ -7,7 +7,7 @@ from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by, 
     autocorrelation_study
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -54,7 +54,7 @@ axs[1, 2].text(0.2, 0, str(ss_months.describe()), fontsize="small")
 # axs[1, 3].text(0.2, 0, str(ss_quarters.describe()), fontsize="small")
 
 plt.tight_layout()
-plt.savefig(f"images/distribution/{covid_file_tag}_{target}_boxplot.png")
+plt.savefig(f"images/distribution/{covid_file_tag}_boxplot.png")
 plt.show()
 plt.clf()
 
@@ -72,7 +72,7 @@ for i in range(len(grans)):
     set_chart_labels(axs[i], title=f"{gran_names[i]}", xlabel=target, ylabel="Nr records")
     axs[i].hist(grans[i].values)
 plt.tight_layout()
-plt.savefig(f"images/distribution/{covid_file_tag}_{target}_distribution.png")
+plt.savefig(f"images/distribution/{covid_file_tag}_distribution.png")
 plt.show()
 plt.clf()
 
@@ -84,7 +84,7 @@ plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 lags = get_lagged_series(series, 20, 10)
 plot_multiline_chart(series.index.to_list(), lags, xlabel=index_col, ylabel=target)
 plt.tight_layout()
-plt.savefig(f"images/distribution/{covid_file_tag}_{target}_lag_plot.png")
+plt.savefig(f"images/distribution/{covid_file_tag}_lag_plot.png")
 plt.show()
 plt.clf()
 
@@ -94,6 +94,6 @@ plt.clf()
 
 autocorrelation_study(series, 10, 1)
 plt.tight_layout()
-plt.savefig(f"images/distribution/{covid_file_tag}_{target}_correlogram.png")
+plt.savefig(f"images/distribution/{covid_file_tag}_correlogram.png")
 plt.show()
 plt.clf()

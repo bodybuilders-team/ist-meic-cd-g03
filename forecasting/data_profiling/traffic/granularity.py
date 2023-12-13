@@ -31,7 +31,7 @@ for i in range(len(grans)):
         title=f"granularity={grans[i]}",
     )
 plt.tight_layout()
-plt.savefig(f"images/granularity/{traffic_file_tag}_{target}_aggregation_study.png")
+plt.savefig(f"images/granularity/{traffic_file_tag}_aggregation_study.png")
 plt.show()
 plt.clf()
 
@@ -48,6 +48,6 @@ for i in range(len(grans)):
         title=f"granularity={grans[i]}",
     )
     plt.tight_layout()
-    plt.savefig(f"images/granularity/{traffic_file_tag}_{target}_aggregation_study_{grans[i]}.png")
+    plt.savefig(f"images/granularity/{traffic_file_tag}_aggregation_study_{grans[i]}.png")
     plt.show()
     plt.clf()

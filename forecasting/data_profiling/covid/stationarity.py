@@ -5,7 +5,7 @@ from pandas import DataFrame, read_csv, Series
 from utils.dslabs_functions import plot_components, HEIGHT, plot_line_chart, eval_stationarity
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 target: str = "deaths"
 index_col: str = "date"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -17,7 +17,7 @@ series: Series = covid_data[target]
 # ------------------
 plot_components(series, title=f"{covid_file_tag} {target} components", x_label=series.index.name, y_label=target)
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{covid_file_tag}_{target}_components.png")
+plt.savefig(f"images/stationarity/{covid_file_tag}_components.png")
 plt.show()
 plt.clf()
 
@@ -38,7 +38,7 @@ n: int = len(series)
 plot(series.index, [series.mean()] * n, "r-", label="mean")
 plt.legend()
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{covid_file_tag}_{target}_stationary.png")
+plt.savefig(f"images/stationarity/{covid_file_tag}_stationary.png")
 plt.show()
 plt.clf()
 
@@ -65,7 +65,7 @@ n: int = len(series)
 plot(series.index, mean_line, "r-", label="mean")
 plt.legend()
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{covid_file_tag}_{target}_stationary.png")
+plt.savefig(f"images/stationarity/{covid_file_tag}_stationary.png")
 plt.show()
 plt.clf()
 

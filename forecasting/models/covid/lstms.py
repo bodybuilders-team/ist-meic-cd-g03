@@ -5,7 +5,7 @@ from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
 from utils.dslabs_functions import series_train_test_split, lstm_study, plot_forecasting_eval, plot_forecasting_series
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from differentiated data
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 timecol: str = "date"
 target: str = "deaths"
 measure: str = "R2"

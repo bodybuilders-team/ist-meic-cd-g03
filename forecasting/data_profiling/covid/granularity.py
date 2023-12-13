@@ -6,7 +6,7 @@ from pandas import DataFrame, read_csv, Series
 from utils.dslabs_functions import plot_line_chart, HEIGHT, ts_aggregation_by
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -14,7 +14,7 @@ series: Series = covid_data[target]
 
 # All in the same plot
 
-grans: list[str] = ["D", "W", "M", "Q"]
+grans: list[str] = ["W", "M", "Q"]
 fig: Figure
 axs: list[Axes]
 fig, axs = plt.subplots(len(grans), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(grans)))
@@ -31,7 +31,7 @@ for i in range(len(grans)):
         title=f"granularity={grans[i]}",
     )
 plt.tight_layout()
-plt.savefig(f"images/granularity/{covid_file_tag}_{target}_aggregation_study.png")
+plt.savefig(f"images/granularity/{covid_file_tag}_aggregation_study.png")
 plt.show()
 plt.clf()
 
@@ -48,6 +48,6 @@ for i in range(len(grans)):
         title=f"granularity={grans[i]}",
     )
     plt.tight_layout()
-    plt.savefig(f"images/granularity/{covid_file_tag}_{target}_aggregation_study_{grans[i]}.png")
+    plt.savefig(f"images/granularity/{covid_file_tag}_aggregation_study_{grans[i]}.png")
     plt.show()
     plt.clf()

@@ -5,7 +5,7 @@ from forecasting.models.SimpleAvgRegressor import SimpleAvgRegressor
 from utils.dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from differentiated data
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)

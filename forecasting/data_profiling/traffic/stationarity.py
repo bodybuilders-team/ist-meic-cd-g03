@@ -19,7 +19,7 @@ series = series.resample("H").sum() # TODO: This is sus but I was getting an err
 # ------------------
 plot_components(series, title=f"{traffic_file_tag} {target} components", x_label=series.index.name, y_label=target)
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{traffic_file_tag}_{target}_components.png")
+plt.savefig(f"images/stationarity/{traffic_file_tag}_components.png")
 plt.show()
 plt.clf()
 
@@ -40,7 +40,7 @@ n: int = len(series)
 plot(series.index, [series.mean()] * n, "r-", label="mean")
 plt.legend()
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{traffic_file_tag}_{target}_stationary.png")
+plt.savefig(f"images/stationarity/{traffic_file_tag}_stationary.png")
 plt.show()
 plt.clf()
 
@@ -67,7 +67,7 @@ n: int = len(series)
 plot(series.index, mean_line, "r-", label="mean")
 plt.legend()
 plt.tight_layout()
-plt.savefig(f"images/stationarity/{traffic_file_tag}_{target}_stationary.png")
+plt.savefig(f"images/stationarity/{traffic_file_tag}_stationary.png")
 plt.show()
 plt.clf()
 

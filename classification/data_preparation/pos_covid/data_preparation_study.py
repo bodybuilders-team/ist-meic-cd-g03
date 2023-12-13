@@ -7,7 +7,7 @@ from utils.dslabs_functions import evaluate_approaches
 pos_covid_file_tag: str = "class_pos_covid"
 eval_metric = "accuracy"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
 run_mv_imputation_study = True
@@ -54,6 +54,8 @@ Outliers Treatment
 if run_outliers_treatment_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/pos_covid/processed_data/class_pos_covid_imputed_mv_approach2.csv",
+             "Control"],
             ["../../data/pos_covid/processed_data/class_pos_covid_drop_outliers.csv",
              "Approach 1 - Drop Outliers"],
             ["../../data/pos_covid/processed_data/class_pos_covid_replacing_outliers.csv",
@@ -78,6 +80,8 @@ Scaling (Only KNN)
 if run_scaling_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/pos_covid/processed_data/class_pos_covid_truncate_outliers.csv",
+             "Control"],
             ["../../data/pos_covid/processed_data/class_pos_covid_scaled_zscore.csv",
              "Approach 1 - Standard Scaler"],
             ["../../data/pos_covid/processed_data/class_pos_covid_scaled_minmax.csv",
@@ -102,6 +106,8 @@ Balancing
 if run_balancing_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/pos_covid/processed_data/class_pos_covid_scaled_zscore.csv",
+             "Control"],
             ["../../data/pos_covid/processed_data/class_pos_covid_train_under.csv", "Approach 1 - Undersampling"],
             ["../../data/pos_covid/processed_data/class_pos_covid_train_over.csv", "Approach 2 - Oversampling"],
             ["../../data/pos_covid/processed_data/class_pos_covid_train_smote.csv", "Approach 3 - SMOTE"]

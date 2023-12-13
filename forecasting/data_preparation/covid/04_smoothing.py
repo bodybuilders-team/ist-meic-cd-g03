@@ -5,8 +5,8 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import plot_line_chart, HEIGHT
 
-covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from aggregated data
-covid_file_tag: str = "covid"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_weekly_aggregated.csv"  # TODO: Get data from aggregated data
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
@@ -29,11 +29,15 @@ for i in range(len(sizes)):
         ylabel=target,
         title=f"size={sizes[i]}",
     )
-    plt.tight_layout()
-    plt.savefig(f"images/{covid_file_tag}_{target}_smoothed_size_{sizes[i]}.png")
-    plt.show()
-    plt.clf()
+plt.tight_layout()
+plt.savefig(f"images/{covid_file_tag}_smoothed_size_{sizes[i]}.png")
+plt.show()
+plt.clf()
 
 # Save smoothed data
-smoothed_data = series.rolling(window=50).mean()  # TODO: Choose best size
-smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_{target}_smoothed.csv")
+for size in sizes:
+    smoothed_data = series.rolling(window=size).mean().dropna()  # TODO: Choose best size
+    smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_smoothed_size_{size}.csv")
+
+smoothed_data = series.rolling(window=25).mean().dropna()  # TODO: Choose best size
+smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_smoothed.csv")

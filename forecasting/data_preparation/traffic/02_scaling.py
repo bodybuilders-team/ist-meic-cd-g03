@@ -21,7 +21,7 @@ plot_line_chart(
     title=f"{traffic_file_tag} {target} before scaling",
 )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_before_scaling.png")
+plt.savefig(f"images/{traffic_file_tag}_before_scaling.png")
 plt.show()
 plt.clf()
 
@@ -39,9 +39,9 @@ plot_line_chart(
     title=f"{traffic_file_tag} {target} after scaling",
 )
 plt.tight_layout()
-plt.savefig(f"images/{traffic_file_tag}_{target}_after_scaling.png")
+plt.savefig(f"images/{traffic_file_tag}_after_scaling.png")
 plt.show()
 plt.clf()
 
 # Save scaled data
-df.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{target}_scaled.csv")
+df.to_csv(f"../../data/traffic/processed_data/forecast_traffic_scaled.csv")

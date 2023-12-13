@@ -1,12 +1,12 @@
 from utils.dslabs_functions import run_linear_regression_study
 
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 
-run_aggregation_study = True
-run_smoothing_study = True
-
+run_aggregation_study = False
+run_smoothing_study = False
+run_differentiation_study = True
 """
 ------------------
 Aggregation
@@ -19,21 +19,21 @@ Aggregation
 
 if run_aggregation_study:
     run_linear_regression_study(
-        filename="../../data/covid/processed_data/forecast_covid_deaths_weekly_aggregated.csv",
+        filename="../../data/covid/processed_data/forecast_covid_weekly_aggregated.csv",
         file_tag=covid_file_tag,
         index_col=index_col,
         target=target,
         title="Weekly Aggregation"
     )
     run_linear_regression_study(
-        filename="../../data/covid/processed_data/forecast_covid_deaths_monthly_aggregated.csv",
+        filename="../../data/covid/processed_data/forecast_covid_monthly_aggregated.csv",
         file_tag=covid_file_tag,
         index_col=index_col,
         target=target,
         title="Monthly Aggregation"
     )
     run_linear_regression_study(
-        filename="../../data/covid/processed_data/forecast_covid_deaths_quarterly_aggregated.csv",
+        filename="../../data/covid/processed_data/forecast_covid_quarterly_aggregated.csv",
         file_tag=covid_file_tag,
         index_col=index_col,
         target=target,
@@ -47,14 +47,23 @@ Smoothing
 
 % Smoothing Sizes: 25, 50, 75, 100
 """
-
 if run_smoothing_study:
     sizes: list[int] = [25, 50, 75, 100]
     for i in range(len(sizes)):
         run_linear_regression_study(
-            filename=f"../../data/covid/processed_data/forecast_covid_deaths_smoothed_size_{sizes[i]}.csv",
+            filename=f"../../data/covid/processed_data/forecast_covid_smoothed_size_{sizes[i]}.csv",
             file_tag=covid_file_tag,
             index_col=index_col,
             target=target,
             title=f"Smoothing Size {sizes[i]}"
         )
+
+"""
+------------------
+Differentiation
+------------------
+
+% Approach 1: No differentiation
+% Approach 2: First differentiation
+% Approach 3: Second differentiation
+"""

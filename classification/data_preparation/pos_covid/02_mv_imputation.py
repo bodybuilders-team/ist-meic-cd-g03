@@ -7,7 +7,6 @@ pos_covid_file_tag: str = "class_pos_covid"
 pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 print(f"Dataset nr records={pos_covid_data.shape[0]}", f"nr variables={pos_covid_data.shape[1]}\n")
 
-# TODO: Fix
 variable_types: dict[str, list[str]] = {
     "binary": ["Sex", "PhysicalActivities", "HadHeartAttack", "HadAngina", "HadStroke", "HadAsthma", "HadSkinCancer",
                "HadCOPD", "HadDepressiveDisorder", "HadKidneyDisease", "HadArthritis", "DeafOrHardOfHearing",
@@ -22,7 +21,6 @@ variable_types: dict[str, list[str]] = {
 # ------------------
 # Delete records with at least one missing value
 # ------------------
-
 def delete_records_with_any_mv(df: DataFrame) -> DataFrame:
     print("Dropping records with at least one missing value")
     df1: DataFrame = df.dropna(how="any", inplace=False)
