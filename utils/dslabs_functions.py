@@ -885,7 +885,7 @@ def plot_roc_chart(tstY: ndarray, predictions: dict, ax: Axes = None, target: st
     return ax
 
 
-def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarray, file_tag=''):
+def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarray, file_tag='', sample_tag=''):
     evaluation = {}
     for key in CLASS_EVAL_METRICS:
         evaluation[key] = [CLASS_EVAL_METRICS[key](trn_y, prd_trn), CLASS_EVAL_METRICS[key](tst_y, prd_tst)]
@@ -898,7 +898,7 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
     cnf_mtx_tst = confusion_matrix(tst_y, prd_tst, labels=labels)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1])
     tight_layout()
-    savefig(f'images/{file_tag}_{model['name']}_best_{model['metric']}_eval.png')
+    savefig(f'images/{file_tag}_{model['name']}_best_{model['metric']}_eval{sample_tag}.png')
     return axs
 
 
