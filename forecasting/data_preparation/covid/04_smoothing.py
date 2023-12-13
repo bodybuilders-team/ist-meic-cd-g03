@@ -14,8 +14,6 @@ covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_date
 series: Series = covid_data[target]
 
 sizes: list[int] = [25, 50, 75, 100]
-fig: Figure
-axs: list[Axes]
 
 for i in range(len(sizes)):
     fig = plt.figure(figsize=(3 * HEIGHT, HEIGHT))

@@ -3,7 +3,7 @@ from pandas import read_csv, DataFrame, Series
 
 from utils.dslabs_functions import ts_aggregation_by, HEIGHT, plot_line_chart
 
-traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_Total_scaled.csv"
+traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_scaled.csv"
 traffic_file_tag: str = "traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
@@ -30,4 +30,3 @@ for gran, freq in grans.items():
     # Save aggregated data
     traffic_data_gran.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{gran}_aggregated.csv")
 
-# TODO: Choose the best aggregation: hourly, daily or weekly?

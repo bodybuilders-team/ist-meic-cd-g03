@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from pandas import DataFrame, read_csv, Series
 
-from utils.dslabs_functions import plot_ts_multivariate_chart, HEIGHT, plot_line_chart
+from utils.dslabs_functions import HEIGHT, plot_line_chart
 
-traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from smoothing
+traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_smoothed_size_50.csv"
 traffic_file_tag: str = "traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
@@ -31,7 +31,7 @@ plt.clf()
 # First differentiation
 # ----------------------------
 
-ss_diff: Series = series.diff()
+ss_diff: Series = series.diff().dropna()
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
@@ -51,7 +51,7 @@ ss_diff.to_csv(f"../../data/traffic/processed_data/forecast_traffic_first_diff.c
 # ----------------------------
 # Second differentiation
 # ----------------------------
-ss_diff: Series = ss_diff.diff()
+ss_diff: Series = ss_diff.diff().dropna()
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(

@@ -6,6 +6,7 @@ target: str = "Total"
 
 run_aggregation_study = True
 run_smoothing_study = True
+run_differentiation_study = True
 
 """
 ------------------
@@ -57,3 +58,27 @@ if run_smoothing_study:
             target=target,
             title=f"Smoothing Size {sizes[i]}"
         )
+
+"""
+------------------
+Differentiation
+------------------
+
+% Approach 1: First differentiation
+% Approach 2: Second differentiation
+"""
+if run_differentiation_study:
+    run_linear_regression_study(
+        filename="../../data/traffic/processed_data/forecast_traffic_first_diff.csv",
+        file_tag=traffic_file_tag,
+        index_col=index_col,
+        target=target,
+        title="First Differentiation"
+    )
+    run_linear_regression_study(
+        filename="../../data/traffic/processed_data/forecast_traffic_second_diff.csv",
+        file_tag=traffic_file_tag,
+        index_col=index_col,
+        target=target,
+        title="Second Differentiation"
+    )
