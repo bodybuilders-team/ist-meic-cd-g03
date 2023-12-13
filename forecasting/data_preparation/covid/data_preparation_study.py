@@ -4,9 +4,10 @@ covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
 
-run_aggregation_study = False
-run_smoothing_study = False
+run_aggregation_study = True
+run_smoothing_study = True
 run_differentiation_study = True
+
 """
 ------------------
 Aggregation
@@ -63,7 +64,21 @@ if run_smoothing_study:
 Differentiation
 ------------------
 
-% Approach 1: No differentiation
-% Approach 2: First differentiation
-% Approach 3: Second differentiation
+% Approach 1: First differentiation
+% Approach 2: Second differentiation
 """
+if run_differentiation_study:
+    run_linear_regression_study(
+        filename="../../data/covid/processed_data/forecast_covid_first_diff.csv",
+        file_tag=covid_file_tag,
+        index_col=index_col,
+        target=target,
+        title="First Differentiation"
+    )
+    run_linear_regression_study(
+        filename="../../data/covid/processed_data/forecast_covid_second_diff.csv",
+        file_tag=covid_file_tag,
+        index_col=index_col,
+        target=target,
+        title="Second Differentiation"
+    )

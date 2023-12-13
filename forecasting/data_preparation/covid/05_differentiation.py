@@ -3,7 +3,7 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import HEIGHT, plot_line_chart
 
-covid_filename: str = "../../data/covid/processed_data/forecast_covid_smoothed.csv"  # TODO: Get data from smoothing
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_smoothed_size_25.csv"
 covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
@@ -31,7 +31,7 @@ plt.clf()
 # First differentiation
 # ----------------------------
 
-ss_diff: Series = series.diff()
+ss_diff: Series = series.diff().dropna()
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
@@ -51,7 +51,7 @@ ss_diff.to_csv(f"../../data/covid/processed_data/forecast_covid_first_diff.csv")
 # ----------------------------
 # Second differentiation
 # ----------------------------
-ss_diff: Series = ss_diff.diff()
+ss_diff: Series = ss_diff.diff().dropna()
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(

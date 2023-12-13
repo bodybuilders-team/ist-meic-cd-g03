@@ -5,7 +5,7 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import plot_line_chart, HEIGHT
 
-covid_filename: str = "../../data/covid/processed_data/forecast_covid_weekly_aggregated.csv"  # TODO: Get data from aggregated data
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_weekly_aggregated.csv"
 covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"
@@ -16,28 +16,21 @@ series: Series = covid_data[target]
 sizes: list[int] = [25, 50, 75, 100]
 fig: Figure
 axs: list[Axes]
-fig, axs = plt.subplots(len(sizes), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(sizes)))
-fig.suptitle(f"{covid_file_tag} {target} after smoothing")
 
 for i in range(len(sizes)):
-    ss_smooth: Series = series.rolling(window=sizes[i]).mean()
+    fig = plt.figure(figsize=(3 * HEIGHT, HEIGHT))
+    ss_smooth: Series = series.rolling(window=sizes[i]).mean().dropna()
     plot_line_chart(
         ss_smooth.index.to_list(),
         ss_smooth.to_list(),
-        ax=axs[i],
         xlabel=ss_smooth.index.name,
         ylabel=target,
-        title=f"size={sizes[i]}",
+        title=f"{covid_file_tag} {target} smoothed with size {sizes[i]}",
     )
-plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_smoothed_size_{sizes[i]}.png")
-plt.show()
-plt.clf()
+    plt.tight_layout()
+    plt.savefig(f"images/{covid_file_tag}_smoothed_size_{sizes[i]}.png")
+    plt.show()
+    plt.clf()
 
-# Save smoothed data
-for size in sizes:
-    smoothed_data = series.rolling(window=size).mean().dropna()  # TODO: Choose best size
-    smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_smoothed_size_{size}.csv")
-
-smoothed_data = series.rolling(window=25).mean().dropna()  # TODO: Choose best size
-smoothed_data.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_smoothed.csv")
+    # Save smoothed data
+    ss_smooth.to_csv(f"../../data/covid/processed_data/{covid_file_tag}_smoothed_size_{sizes[i]}.csv")

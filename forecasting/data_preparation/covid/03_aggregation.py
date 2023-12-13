@@ -30,4 +30,3 @@ for gran, freq in grans.items():
     # Save aggregated data
     covid_data_gran.to_csv(f"../../data/covid/processed_data/forecast_covid_{gran}_aggregated.csv")
 
-# TODO: Choose the best aggregation: weekly, monthly or quarterly?
