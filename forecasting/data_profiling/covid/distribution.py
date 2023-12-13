@@ -24,18 +24,18 @@ ss_quarters: Series = ts_aggregation_by(series, gran_level="Q", agg_func=sum)
 
 fig: Figure
 axs: array
-fig, axs = plt.subplots(2, 4, figsize=(4 * HEIGHT, HEIGHT))
-set_chart_labels(axs[0, 0], title="DAILY")
-axs[0, 0].boxplot(series)
+fig, axs = plt.subplots(2, 3, figsize=(4 * HEIGHT, HEIGHT))
+# set_chart_labels(axs[0, 0], title="DAILY")
+# axs[0, 0].boxplot(series)
 
-set_chart_labels(axs[0, 1], title="WEEKLY")
-axs[0, 1].boxplot(ss_weeks)
+set_chart_labels(axs[0, 0], title="WEEKLY")
+axs[0, 0].boxplot(ss_weeks)
 
-set_chart_labels(axs[0, 2], title="MONTHLY")
-axs[0, 2].boxplot(ss_months)
+set_chart_labels(axs[0, 1], title="MONTHLY")
+axs[0, 1].boxplot(ss_months)
 
-set_chart_labels(axs[0, 3], title="QUARTERLY")
-axs[0, 3].boxplot(ss_quarters)
+set_chart_labels(axs[0, 2], title="QUARTERLY")
+axs[0, 2].boxplot(ss_quarters)
 
 axs[1, 0].grid(False)
 axs[1, 0].set_axis_off()
@@ -49,9 +49,9 @@ axs[1, 2].grid(False)
 axs[1, 2].set_axis_off()
 axs[1, 2].text(0.2, 0, str(ss_months.describe()), fontsize="small")
 
-axs[1, 3].grid(False)
-axs[1, 3].set_axis_off()
-axs[1, 3].text(0.2, 0, str(ss_quarters.describe()), fontsize="small")
+# axs[1, 3].grid(False)
+# axs[1, 3].set_axis_off()
+# axs[1, 3].text(0.2, 0, str(ss_quarters.describe()), fontsize="small")
 
 plt.tight_layout()
 plt.savefig(f"images/distribution/{covid_file_tag}_{target}_boxplot.png")
@@ -62,8 +62,8 @@ plt.clf()
 # Variables Distribution
 # ------------------
 
-grans: list[Series] = [series, ss_weeks, ss_months, ss_quarters]
-gran_names: list[str] = ["Daily", "Weekly", "Monthly", "Quarterly"]
+grans: list[Series] = [ss_weeks, ss_months, ss_quarters]
+gran_names: list[str] = ["Weekly", "Monthly", "Quarterly"]
 fig: Figure
 axs: array
 fig, axs = plt.subplots(1, len(grans), figsize=(len(grans) * HEIGHT, HEIGHT))
