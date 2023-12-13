@@ -29,10 +29,10 @@ for i in range(len(sizes)):
         ylabel=target,
         title=f"size={sizes[i]}",
     )
-plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_{target}_after_smoothing.png")
-plt.show()
-plt.clf()
+    plt.tight_layout()
+    plt.savefig(f"images/{covid_file_tag}_{target}_smoothed_size_{sizes[i]}.png")
+    plt.show()
+    plt.clf()
 
 # Save smoothed data
 smoothed_data = series.rolling(window=50).mean()  # TODO: Choose best size

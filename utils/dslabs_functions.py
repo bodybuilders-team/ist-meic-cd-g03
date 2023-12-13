@@ -25,6 +25,7 @@ from pandas import unique
 from scipy.stats import norm, expon, lognorm
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.impute import SimpleImputer, KNNImputer
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import accuracy_score, recall_score, precision_score, mean_squared_error, mean_absolute_error, \
     r2_score, mean_absolute_percentage_error
 from sklearn.metrics import confusion_matrix, RocCurveDisplay, roc_auc_score
@@ -1533,3 +1534,39 @@ def mlp_study(
     )
 
     return best_model, best_params
+
+def run_linear_regression_study(filename: str, file_tag: str, index_col: str, target: str, title: str):
+    data: DataFrame = read_csv(filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
+
+    series: Series = data[target]
+    train, test = series_train_test_split(data)
+
+    trnX = arange(len(train)).reshape(-1, 1)
+    trnY = train.to_numpy()
+    tstX = arange(len(train), len(data)).reshape(-1, 1)
+    tstY = test.to_numpy()
+
+    model = LinearRegression()
+    model.fit(trnX, trnY)
+
+    prd_trn: Series = Series(model.predict(trnX).reshape(-1), index=train.index)
+    prd_tst: Series = Series(model.predict(tstX).reshape(-1), index=test.index)
+
+    plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression Evaluation - {title}")
+    plt.tight_layout()
+    plt.savefig(f"images/{file_tag}_linear_regression_evaluation_{title}.png")
+    plt.show()
+    plt.clf()
+
+    plot_forecasting_series(
+        train,
+        test,
+        prd_tst,
+        title=f"{file_tag} - Linear Regression Forecast - {title}",
+        xlabel=index_col,
+        ylabel=target,
+    )
+    plt.tight_layout()
+    plt.savefig(f"images/{file_tag}_linear_regression_forecast_{title}.png")
+    plt.show()
+    plt.clf()
