@@ -174,6 +174,8 @@ Feature Selection Study
 if run_feature_selection_study:
     evaluate_approaches(
         approaches=[
+            ["../../data/pos_covid/processed_data/class_pos_covid_train_over.csv",
+             "Control"],
             ["../../data/pos_covid/processed_data/class_pos_covid_train_lowvar.csv",
              "Approach 1 - Dropping Low Variance Variables"],
             ["../../data/pos_covid/processed_data/class_pos_covid_train_redundant.csv",
