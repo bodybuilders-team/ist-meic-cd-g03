@@ -22,20 +22,20 @@
     * [X] Variable Encoding
         * [X] Code and Charts
         * [X] Report
-    * [X] Missing Values Imputation - chose Approach 2
+    * [X] Missing Values Imputation
         * [X] Code and Charts
         * [X] Report
-    * [X] Outliers Treatment - for Dt1 - Truncate; for Dt2 - Drop; individual treatment for each variable
+    * [X] Outliers Treatment
         * [X] Code and Charts
         * [X] Report
-    * [ ] Scaling - fix z-score evaluation; choose approach
-        * [ ] Code and Charts
-        * [ ] Report
-    * [ ] Balancing - for Dt1 - Oversample; for Dt2 - Undersample
+    * [X] Scaling
         * [X] Code and Charts
-        * [ ] Report
-    * [ ] Feature Selection - choose approach
-        * [ ] Code and Charts
+        * [X] Report
+    * [X] Balancing
+        * [X] Code and Charts
+        * [X] Report
+    * [X] Feature Selection
+        * [X] Code and Charts
         * [ ] Report
     * [ ] Feature Extraction - _optional_
         * [ ] Code and Charts
@@ -71,32 +71,32 @@
 * [ ] **Data Profiling**:
     * [ ] Dimensionality
         * [X] Code and Charts
-        * [ ] Report
+        * [X] Report
     * [ ] Distribution
         * [X] Code and Charts
         * [ ] Report
     * [ ] Granularity
         * [X] Code and Charts
-        * [ ] Report
+        * [X] Report
     * [ ] Stationarity
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
 
 * [ ] **Data Preparation**:
     * [ ] Missing Values Imputation
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
     * [ ] Scaling
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
     * [ ] Aggregation
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
     * [ ] Smoothing
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
     * [ ] Differentiation
-        * [ ] Code and Charts
+        * [X] Code and Charts
         * [ ] Report
 
 * [ ] **Modeling and Evaluation**:
