@@ -8,8 +8,7 @@ from utils.dslabs_functions import (
 
 credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_imputed_mv_approach2.csv"  # After imputation
 credit_score_file_tag: str = "class_credit_score"
-credit_score_data: DataFrame = read_csv(
-    credit_score_filename)  # TODO , index_col="ID" - ID column was removed after encoding and I don't know why
+credit_score_data: DataFrame = read_csv(credit_score_filename)
 print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit_score_data.shape[1]}")
 
 # ------------------

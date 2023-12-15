@@ -9,8 +9,7 @@ with larger scales do not assume more importance.
 
 credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_drop_outliers.csv"
 credit_score_file_tag: str = "class_credit_score"
-credit_score_data: DataFrame = read_csv(
-    credit_score_filename)
+credit_score_data: DataFrame = read_csv(credit_score_filename)
 target: str = "Credit_Score"
 print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit_score_data.shape[1]}")
 

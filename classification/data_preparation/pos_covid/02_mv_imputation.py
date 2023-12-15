@@ -80,8 +80,6 @@ def impute_mv(df: DataFrame, strategy: str) -> DataFrame:
     return df1
 
 
-# TODO: Analyze the results of the imputation
-
 # ------------------
 # Approach 1: Only delete records with at least one missing value
 # ------------------

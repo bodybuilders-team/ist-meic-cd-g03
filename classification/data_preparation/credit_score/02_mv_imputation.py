@@ -4,11 +4,9 @@ from utils.dslabs_functions import mvi_by_dropping, mvi_by_filling
 
 credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_encoded.csv"  # After encoding
 credit_score_file_tag: str = "class_credit_score"
-credit_score_data: DataFrame = read_csv(credit_score_filename,
-                                        na_values="")  # TODO , index_col="ID" - ID column was removed after encoding and I don't know why
+credit_score_data: DataFrame = read_csv(credit_score_filename, na_values="")
 print(f"Dataset nr records={credit_score_data.shape[0]}", f"nr variables={credit_score_data.shape[1]}")
 
-# TODO: Fix
 variable_types: dict[str, list[str]] = {
     "binary": ["Credit_Score"],
     "categorical": ["CreditMix", "Payment_of_Min_Amount", "Payment_Behaviour"]

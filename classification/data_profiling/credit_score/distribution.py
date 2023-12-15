@@ -33,23 +33,6 @@ credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
 # Global boxplots
 # ------------------
 
-# if credit_score_numeric:
-#     frame = credit_score_data[credit_score_numeric]
-#     frame = frame[frame > -10e15]
-#     frame = frame[frame < 10e15]
-#
-#     ax = frame.boxplot(rot=45)
-#     ax.set_yscale('symlog')
-#
-#     plt.xticks(rotation=90)
-#     plt.tight_layout()
-#     plt.savefig(f"{credit_score_savefig_path_prefix}_global_boxplot.png")
-#     plt.show()
-#     plt.clf()
-# else:
-#     print("There are no numeric variables.")
-
-# TODO: Fix this, should show a plot like above
 
 if credit_score_numeric and run_credit_score_global_boxplot:
     print("Printing global boxplot for credit score...")

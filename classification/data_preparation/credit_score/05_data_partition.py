@@ -5,7 +5,6 @@ from sklearn.model_selection import train_test_split
 
 from utils.dslabs_functions import plot_multibar_chart
 
-# TODO: after finishing scaling, use the data from the selected scaling approach
 credit_score_filename: str = "../../data/credit_score/processed_data/class_credit_score_scaled_zscore.csv"  # After scaling
 credit_score_file_tag: str = "class_credit_score"
 credit_score_data: DataFrame = read_csv(credit_score_filename)
