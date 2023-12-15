@@ -11,7 +11,7 @@ test_filename = "../../data/credit_score/processed_data/class_credit_score_test_
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.1 if run_sampling else 1
 
 sample_tag = f"_1_{int(1 / sampling_amount)}th" if run_sampling else ""
