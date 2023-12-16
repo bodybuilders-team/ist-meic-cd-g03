@@ -45,20 +45,20 @@
         * [ ] Report
 
 * [ ] **Modeling and Evaluation**:
-    * [ ] Naive Bayes
+    * [X] Naive Bayes
         * [X] Code and Charts
+        * [X] Report
+    * [ ] KNN - run without sampling for covid
+        * [ ] Code and Charts
         * [ ] Report
-    * [ ] KNN
+    * [X] Decision Trees
         * [X] Code and Charts
-        * [ ] Report
-    * [ ] Decision Trees
+        * [X] Report
+    * [X] Random Forest
         * [X] Code and Charts
-        * [ ] Report
-    * [ ] Random Forest
-        * [X] Code and Charts
-        * [ ] Report
-    * [ ] Gradient Boosting
-        * [X] Code and Charts
+        * [X] Report
+    * [ ] Gradient Boosting - run without sampling
+        * [ ] Code and Charts
         * [ ] Report
     * [ ] MLP
         * [X] Code and Charts

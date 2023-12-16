@@ -14,7 +14,7 @@ test_filename = "../../data/pos_covid/processed_data/class_pos_covid_test_lowvar
 pos_covid_file_tag: str = "class_pos_covid"
 target = "CovidPos"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
 sample_tag = f"_1_{int(1 / sampling_amount)}th" if run_sampling else ""
