@@ -14,7 +14,7 @@ test_filename = "../../data/credit_score/processed_data/class_credit_score_test_
 credit_score_file_tag: str = "class_credit_score"
 target = "Credit_Score"
 
-run_sampling = True
+run_sampling = False
 sampling_amount = 0.01 if run_sampling else 1
 
 sample_tag = f"_1_{int(1 / sampling_amount)}th" if run_sampling else ""
@@ -50,8 +50,6 @@ if run_parameter_study:
     plt.savefig(f"images/{credit_score_file_tag}_mlp_{eval_metric}_study{sample_tag}.png")
     plt.show()
     plt.clf()
-
-# Best alternative: 750 iterations (lr_type=constant and lr=0.5)
 
 # ----------------------------
 # Performance Analysis
