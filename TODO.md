@@ -36,7 +36,7 @@
         * [X] Report
     * [X] Feature Selection
         * [X] Code and Charts
-        * [ ] Report
+        * [X] Report
     * [ ] Feature Extraction - _optional_
         * [ ] Code and Charts
         * [ ] Report
@@ -44,25 +44,25 @@
         * [ ] Code and Charts
         * [ ] Report
 
-* [ ] **Modeling and Evaluation**:
+* [X] **Modeling and Evaluation**:
     * [X] Naive Bayes
         * [X] Code and Charts
         * [X] Report
-    * [ ] KNN - run without sampling for covid
-        * [ ] Code and Charts
-        * [ ] Report
+    * [X] KNN - run without sampling for covid
+        * [X] Code and Charts
+        * [X] Report
     * [X] Decision Trees
         * [X] Code and Charts
         * [X] Report
     * [X] Random Forest
         * [X] Code and Charts
         * [X] Report
-    * [ ] Gradient Boosting - run without sampling
-        * [ ] Code and Charts
-        * [ ] Report
-    * [ ] MLP
+    * [X] Gradient Boosting
         * [X] Code and Charts
-        * [ ] Report
+        * [X] Report
+    * [X] MLP
+        * [X] Code and Charts
+        * [X] Report
 
 * [ ] **Critical Analysis**
 

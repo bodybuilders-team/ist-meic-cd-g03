@@ -9,6 +9,7 @@ from numbers import Number
 from typing import Callable, Literal
 
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
 from matplotlib.axes import Axes
 from matplotlib.container import BarContainer
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
@@ -36,7 +37,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
-import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller
 
 # from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
@@ -1204,53 +1204,7 @@ def naive_Bayes_study(trnX, trnY, tstX, tstY, metric='accuracy', file_tag='', su
     return best_model, best_params
 
 
-# receives a list of approaches to study; each approach contains train_filename, subtitle
-def data_prep_naive_bayes_study(approaches, metric='accuracy', study_title='', file_tag='', target='class',
-                                sampling_amount=0.01):
-    estimators = {
-        'GaussianNB': GaussianNB(),
-        'MultinomialNB': MultinomialNB(),
-        'BernoulliNB': BernoulliNB()
-    }
-
-    cols = len(approaches)
-    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
-    fig.suptitle(f'Naive Bayes Models ({metric}) - {study_title}')
-
-    for i in range(cols):
-        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target,
-                                                                    sample_amount=sampling_amount)
-        xvalues = []
-        yvalues = []
-        best_model = None
-        best_params = {'name': '', 'metric': metric, 'params': ()}
-        best_performance = 0
-        for clf in estimators:
-            xvalues.append(clf)
-            estimators[clf].fit(trnX, trnY)
-            prdY = estimators[clf].predict(tstX)
-            eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
-            if eval - best_performance > DELTA_IMPROVE:
-                best_performance = eval
-                best_params['name'] = clf
-                best_model = estimators[clf]
-            yvalues.append(eval)
-
-        plot_bar_chart(
-            xvalues,
-            yvalues,
-            ax=axs[0][i],
-            title=approaches[i][1],
-            ylabel=metric,
-            percentage=True
-        )
-
-    plt.tight_layout()
-    savefig(f'images/{file_tag}_nb_{metric}_study.png')
-    plt.show()
-
-
-def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_tag='', ax=None):
+def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', ax=None):
     dist = ['manhattan', 'euclidean', 'chebyshev']
 
     kvalues = [i for i in range(1, k_max + 1, lag)]
@@ -1281,44 +1235,45 @@ def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', file_t
     return best_model, best_params
 
 
-def data_prep_knn_study(approaches, k_max=19, lag=2, metric='accuracy', study_title='', file_tag='', target='class',
-                        sampling_amount=1):
+def knn_study2(trnX, trnY, tstX, tstY, k_max=19, lag=2, file_tag=''):
     dist = ['manhattan', 'euclidean', 'chebyshev']
 
-    cols = len(approaches)
-    fig, axs = subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
-    fig.suptitle(f'KNN Models ({metric}) - {study_title}')
+    kvalues = [i for i in range(1, k_max + 1, lag)]
+    best_model = None
+    best_params = {'name': 'KNN', 'params': (), 'metric': 'accuracy'}
+    best_performance = 0
 
-    for i in range(cols):
-        trnX, tstX, trnY, tstY, labels = split_train_test_from_file(approaches[i][0], target=target,
-                                                                    sample_amount=sampling_amount)
-        kvalues = [i for i in range(1, k_max + 1, lag)]
-        best_model = None
-        best_params = {'name': 'KNN', 'metric': metric, 'params': ()}
-        best_performance = 0
+    plt.figure()
+    eval_metrics = list(CLASS_EVAL_METRICS.keys())
+    cols = len(eval_metrics)
+    fig, axs = plt.subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(f"KNN Study ({file_tag})")
 
-        values = {}
-        for d in dist:
-            y_tst_values = []
-            for k in kvalues:
-                clf = KNeighborsClassifier(n_neighbors=k, metric=d)
-                clf.fit(trnX, trnY)
-                prdY = clf.predict(tstX)
+    values = {metric: {} for metric in eval_metrics}
+    # run only one KNN and study all metrics
+    for d in dist:
+        y_tst_values = {metric: [] for metric in eval_metrics}
+        for k in kvalues:
+            clf = KNeighborsClassifier(n_neighbors=k, metric=d)
+            clf.fit(trnX, trnY)
+            prdY = clf.predict(tstX)
+            for metric in eval_metrics:
                 eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
-                y_tst_values.append(eval)
+                y_tst_values[metric].append(eval)
                 if eval - best_performance > DELTA_IMPROVE:
                     best_performance = eval
                     best_params['params'] = (k, d)
                     best_model = clf
-            values[d] = y_tst_values
-        print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
+        for metric in eval_metrics:
+            values[metric][d] = y_tst_values[metric]
 
-        plot_multiline_chart(kvalues, values, ax=axs[0][i], title=approaches[i][1], xlabel='k', ylabel=metric,
-                             percentage=True)
+    for i in range(cols):
+        metric = eval_metrics[i]
+        plot_multiline_chart(kvalues, values[metric], title=f'KNN Models ({metric})', xlabel='k', ylabel=metric,
+                             percentage=True,
+                             ax=axs[0][i])
 
-    plt.tight_layout()
-    savefig(f'images/{file_tag}_knn_{metric}_study.png')
-    plt.show()
+    return best_model, best_params
 
 
 def trees_study(
