@@ -29,4 +29,3 @@ for gran, freq in grans.items():
 
     # Save aggregated data
     traffic_data_gran.to_csv(f"../../data/traffic/processed_data/forecast_traffic_{gran}_aggregated.csv")
-

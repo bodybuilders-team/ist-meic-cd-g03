@@ -184,25 +184,40 @@ def plot_multiline_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: s
     return ax
 
 
-def plot_multibar_chart(group_labels: list, yvalues: dict, ax: Axes = None, title: str = '',
-                        xlabel: str = '', ylabel: str = '', percentage: bool = False):
+def plot_multibar_chart(
+    group_labels: list,
+    yvalues: dict,
+    ax: Axes = None,  # type: ignore
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
+    percentage: bool = False,
+) -> Axes | list[Axes]:
     if ax is None:
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
     if percentage:
         ax.set_ylim(0.0, 1.0)
-    bar_labels = list(yvalues.keys())
+    bar_labels: list = list(yvalues.keys())
 
     # This is the location for each bar
-    index = arange(len(group_labels))
-    bar_width = 0.8 / len(bar_labels)
+    index: ndarray = arange(len(group_labels))
+    bar_width: float = 0.8 / len(bar_labels)
     ax.set_xticks(index + bar_width / 2, labels=group_labels)
 
     for i in range(len(bar_labels)):
-        values = ax.bar(index + i * bar_width, yvalues[bar_labels[i]], width=bar_width, label=bar_labels[i])
-        format = '%.2f'
+        bar_yvalues = yvalues[bar_labels[i]]
+        values: BarContainer = ax.bar(
+            index + i * bar_width,
+            bar_yvalues,
+            width=bar_width,
+            label=bar_labels[i],
+        )
+        format = "%.2f" if percentage else "%.0f"
         ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
-    ax.legend(fontsize=FONT_SIZE)
+        if any(y < 0 for y in bar_yvalues) and percentage:
+            ax.set_ylim(-1.0, 1.0)
+    ax.legend(fontsize="xx-small")
     return ax
 
 
@@ -953,6 +968,7 @@ def plot_forecasting_series(
 
 
 def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Series, title: str = "") -> list[Axes]:
+    print(tst, prd_tst)
     ev1: dict = {
         "RMSE": [sqrt(FORECAST_MEASURES["MSE"](trn, prd_trn)), sqrt(FORECAST_MEASURES["MSE"](tst, prd_tst))],
         "MAE": [FORECAST_MEASURES["MAE"](trn, prd_trn), FORECAST_MEASURES["MAE"](tst, prd_tst)],
@@ -966,7 +982,7 @@ def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Se
     fig.suptitle(title)
     plot_multibar_chart(["train", "test"], ev1, ax=axs[0], title="Scale-dependent error", percentage=False)
     plot_multibar_chart(["train", "test"], ev2, ax=axs[1], title="Percentage error", percentage=True)
-
+    print(ev2)
     return axs
 
 

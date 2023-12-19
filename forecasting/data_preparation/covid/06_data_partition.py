@@ -2,7 +2,7 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import series_train_test_split
 
-covid_filename: str = "../../data/covid/forecast_covid.csv"  # TODO: Get data from differentiated data
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_first_diff.csv"
 covid_file_tag: str = "forecast_covid"
 index_col: str = "date"
 target: str = "deaths"

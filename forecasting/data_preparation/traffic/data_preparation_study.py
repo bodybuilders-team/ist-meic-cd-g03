@@ -1,3 +1,5 @@
+import time
+
 from utils.dslabs_functions import run_linear_regression_study
 
 traffic_file_tag: str = "traffic"
@@ -25,6 +27,7 @@ if run_aggregation_study:
         target=target,
         title="Hourly Aggregation"
     )
+    time.sleep(5)
     run_linear_regression_study(
         filename="../../data/traffic/processed_data/forecast_traffic_daily_aggregated.csv",
         file_tag=traffic_file_tag,
@@ -32,6 +35,7 @@ if run_aggregation_study:
         target=target,
         title="Daily Aggregation"
     )
+    time.sleep(5)
     run_linear_regression_study(
         filename="../../data/traffic/processed_data/forecast_traffic_weekly_aggregated.csv",
         file_tag=traffic_file_tag,
@@ -39,6 +43,7 @@ if run_aggregation_study:
         target=target,
         title="Weekly Aggregation"
     )
+    time.sleep(5)
 
 """
 ------------------
@@ -58,6 +63,7 @@ if run_smoothing_study:
             target=target,
             title=f"Smoothing Size {sizes[i]}"
         )
+        time.sleep(5)
 
 """
 ------------------
@@ -75,6 +81,7 @@ if run_differentiation_study:
         target=target,
         title="First Differentiation"
     )
+    time.sleep(5)
     run_linear_regression_study(
         filename="../../data/traffic/processed_data/forecast_traffic_second_diff.csv",
         file_tag=traffic_file_tag,
@@ -82,3 +89,4 @@ if run_differentiation_study:
         target=target,
         title="Second Differentiation"
     )
+    time.sleep(5)

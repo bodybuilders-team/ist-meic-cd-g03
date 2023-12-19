@@ -2,7 +2,7 @@ from pandas import DataFrame, read_csv, Series
 
 from utils.dslabs_functions import series_train_test_split
 
-traffic_filename: str = "../../data/traffic/forecast_traffic.csv"  # TODO: Get data from differentiated data
+traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
 traffic_file_tag: str = "traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
