@@ -14,10 +14,10 @@ print("Nr. Records = ", series.shape[0])
 print("First timestamp", series.index[0])
 print("Last timestamp", series.index[-1])
 
-# Plot the data at the most atomic granularity - daily (not weekly - that will be studied in the granularity section)
+# Plot the data at the most atomic granularity - quarter hourly - (not weekly - that will be studied in the granularity section)
 
 # ------------------
-# Daily Total Traffic
+#  Quarter hourly Total Traffic
 # ------------------
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT / 2))
@@ -26,9 +26,9 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{traffic_file_tag} daily {target}",
+    title=f"{traffic_file_tag} quarter hourly {target}",
 )
 plt.tight_layout()
-plt.savefig(f"images/dimensionality/{traffic_file_tag}_daily_{target}.png")
+plt.savefig(f"images/dimensionality/{traffic_file_tag}_quarter_hourly_{target}.png")
 plt.show()
 plt.clf()
