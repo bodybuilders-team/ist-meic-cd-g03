@@ -4,8 +4,8 @@ from pandas import read_csv, DataFrame, Series
 from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
 from utils.dslabs_functions import series_train_test_split, lstm_study, plot_forecasting_eval, plot_forecasting_series
 
-covid_filename: str = "../../data/covid/forecast_covid_first_diff.csv"  # TODO: Get data from differentiated data (DONE?)
-covid_file_tag: str = "forecast_covid"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_second_diff.csv"
+covid_file_tag: str = "covid"
 timecol: str = "date"
 target: str = "deaths"
 measure: str = "R2"

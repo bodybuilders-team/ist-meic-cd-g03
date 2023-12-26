@@ -5,8 +5,8 @@ from statsmodels.tsa.arima.model import ARIMA
 from utils.dslabs_functions import series_train_test_split, HEIGHT, arima_study, plot_forecasting_eval, \
     plot_forecasting_series
 
-covid_filename: str = "../../data/covid/forecast_covid_first_diff.csv"  # TODO: Get data from differentiated data (DONE?)
-covid_file_tag: str = "forecast_covid"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_second_diff.csv"
+covid_file_tag: str = "covid"
 index_col: str = "date"
 target: str = "deaths"
 measure: str = "R2"

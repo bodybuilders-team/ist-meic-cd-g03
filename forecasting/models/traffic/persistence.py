@@ -4,7 +4,7 @@ from pandas import read_csv, DataFrame, Series
 from forecasting.models.PersistenceOptimistRegressor import PersistenceOptimistRegressor
 from utils.dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series
 
-traffic_filename: str = "../../data/traffic/forecast_traffic_first_diff.csv"  # TODO: Get data from differentiated data (DONE?)
+traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
 traffic_file_tag: str = "traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
