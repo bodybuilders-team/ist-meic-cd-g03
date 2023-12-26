@@ -5,7 +5,7 @@ from forecasting.models.PersistenceOptimistRegressor import PersistenceOptimistR
 from forecasting.models.PersistenceRealistRegressor import PersistenceRealistRegressor
 from utils.dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series
 
-covid_filename: str = "../../data/covid/processed_data/forecast_covid_second_diff.csv"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_first_diff.csv"
 covid_file_tag: str = "covid"
 index_col: str = "date"
 target: str = "deaths"

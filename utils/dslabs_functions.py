@@ -1067,7 +1067,8 @@ def scale_all_dataframe(data: DataFrame) -> DataFrame:
 
 def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
     # win_size = (3, 5, 10, 15, 20, 25, 30, 40, 50)
-    win_size = (12, 24, 48, 96, 192, 384, 768)
+    win_size = [size for size in (12, 24, 48, 96, 192, 384, 768) if size <= len(train)]
+
     flag = measure == "R2" or measure == "MAPE"
     best_model = None
     best_params: dict = {"name": "Rolling Mean", "metric": measure, "params": ()}

@@ -4,7 +4,7 @@ from pandas import read_csv, DataFrame, Series
 from utils.dslabs_functions import series_train_test_split, HEIGHT, rolling_mean_study, plot_forecasting_eval, \
     plot_forecasting_series
 
-covid_filename: str = "../../data/covid/processed_data/forecast_covid_second_diff.csv"
+covid_filename: str = "../../data/covid/processed_data/forecast_covid_first_diff.csv"
 covid_file_tag: str = "covid"
 index_col: str = "date"
 target: str = "deaths"
@@ -16,7 +16,7 @@ train, test = series_train_test_split(series)
 measure: str = "R2"
 
 fig = plt.figure(figsize=(HEIGHT, HEIGHT))
-best_model, best_params = rolling_mean_study(train, test)  # FIXME: This is not working
+best_model, best_params = rolling_mean_study(train, test)
 plt.tight_layout()
 plt.savefig(f"images/{covid_file_tag}_rollingmean_{measure}_study.png")
 plt.show()
@@ -28,7 +28,7 @@ prd_tst: Series = best_model.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{covid_file_tag} - Rolling Mean (win={params[0]})")
 plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_rollingmean_{measure}_win{params[0]}_eval.png")
+plt.savefig(f"images/{covid_file_tag}_rollingmean_{measure}_best_win{params[0]}_eval.png")
 plt.show()
 plt.clf()
 

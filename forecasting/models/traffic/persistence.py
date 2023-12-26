@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from pandas import read_csv, DataFrame, Series
 
 from forecasting.models.PersistenceOptimistRegressor import PersistenceOptimistRegressor
+from forecasting.models.PersistenceRealistRegressor import PersistenceRealistRegressor
 from utils.dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series
 
 traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
@@ -13,7 +14,9 @@ traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_
 series: Series = traffic_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)
 
-# ------
+# ------------------
+# Persistence Optimist Regressor
+# ------------------
 
 fr_mod = PersistenceOptimistRegressor()
 fr_mod.fit(train)
@@ -36,5 +39,33 @@ plot_forecasting_series(
 )
 plt.tight_layout()
 plt.savefig(f"images/{traffic_file_tag}_persistence_optim_forecast.png")
+plt.show()
+plt.clf()
+
+# ------------------
+# Persistence Realist Regressor
+# ------------------
+
+fr_mod = PersistenceRealistRegressor()
+fr_mod.fit(train)
+prd_trn: Series = fr_mod.predict(train)
+prd_tst: Series = fr_mod.predict(test)
+
+plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{traffic_file_tag} - Persistence Realist")
+plt.tight_layout()
+plt.savefig(f"images/{traffic_file_tag}_persistence_real_eval.png")
+plt.show()
+plt.clf()
+
+plot_forecasting_series(
+    train,
+    test,
+    prd_tst,
+    title=f"{traffic_file_tag} - Persistence Realist",
+    xlabel=index_col,
+    ylabel=target,
+)
+plt.tight_layout()
+plt.savefig(f"images/{traffic_file_tag}_persistence_real_forecast.png")
 plt.show()
 plt.clf()
