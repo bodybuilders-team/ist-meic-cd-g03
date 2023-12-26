@@ -5,7 +5,7 @@ from pandas import DataFrame, read_csv, Series
 from utils.dslabs_functions import plot_components, HEIGHT, plot_line_chart, eval_stationarity
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"
-traffic_file_tag: str = "traffic"
+traffic_file_tag: str = "traffic_Total"
 target: str = "Total"
 index_col: str = "Timestamp"
 traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)

@@ -4,7 +4,7 @@ from pandas import DataFrame, read_csv, Series
 from utils.dslabs_functions import plot_line_chart, HEIGHT
 
 covid_filename: str = "../../data/covid/forecast_covid.csv"
-covid_file_tag: str = "forecast_covid"
+covid_file_tag: str = "covid"
 index_col: str = "date"
 target: str = "deaths"
 covid_data: DataFrame = read_csv(covid_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
