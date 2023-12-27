@@ -2,6 +2,7 @@
 file:       dslabs_functions.py
 version:    2023.1
 '''
+from copy import deepcopy
 from datetime import datetime
 from itertools import product
 from math import pi, sin, cos, ceil, sqrt
@@ -39,7 +40,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from statsmodels.tsa.stattools import adfuller
 
-# from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
+from utils.dslabs_functions_prof2 import prepare_dataset_for_lstm, DS_LSTM
 from forecasting.models.RollingMeanRegressor import RollingMeanRegressor
 from utils.config import (
     ACTIVE_COLORS,
@@ -907,13 +908,13 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
 
     params_st = '' if () == model['params'] else str(model['params'])
     fig, axs = subplots(1, 2, figsize=(2 * HEIGHT, HEIGHT))
-    fig.suptitle(f'Best {model['metric']} for {model['name']} {params_st}')
+    fig.suptitle(f'Best {model["metric"]} for {model["name"]} {params_st}')
     plot_multibar_chart(['Train', 'Test'], evaluation, ax=axs[0], percentage=True)
 
     cnf_mtx_tst = confusion_matrix(tst_y, prd_tst, labels=labels)
     plot_confusion_matrix(cnf_mtx_tst, labels, ax=axs[1])
     tight_layout()
-    savefig(f'images/{file_tag}_{model['name']}_best_{model['metric']}_eval{sample_tag}.png')
+    savefig(f'images/{file_tag}_{model["name"]}_best_{model["metric"]}_eval{sample_tag}.png')
     return axs
 
 
@@ -1243,7 +1244,7 @@ def knn_study(trnX, trnY, tstX, tstY, k_max=19, lag=2, metric='accuracy', ax=Non
                 best_params['params'] = (k, d)
                 best_model = clf
         values[d] = y_tst_values
-    print(f'KNN best with k={best_params['params'][0]} and {best_params['params'][1]}')
+    print(f'KNN best with k={best_params["params"][0]} and {best_params["params"][1]}')
 
     plot_multiline_chart(kvalues, values, title=f'KNN Models ({metric})', xlabel='k', ylabel=metric, percentage=True,
                          ax=ax)
@@ -1319,7 +1320,7 @@ def trees_study(
                 best_model = clf
             # print(f'DT {c} and d={d}')
         values[c] = y_tst_values
-    print(f'DT best with {best_params['params'][0]} and d={best_params['params'][1]}')
+    print(f'DT best with {best_params["params"][0]} and d={best_params["params"][1]}')
     plot_multiline_chart(depths, values, title=f'DT Models ({metric})', xlabel='d', ylabel=metric, percentage=True,
                          ax=ax)
 
@@ -1541,3 +1542,50 @@ def run_linear_regression_study(filename: str, file_tag: str, index_col: str, ta
     plt.savefig(f"images/{file_tag}_linear_regression_forecast_{title}.png")
     plt.show()
     plt.clf()
+
+def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
+    sequence_size = [2, 4, 8]
+    nr_hidden_units = [25, 50, 100]
+
+    step: int = nr_episodes // 10
+    episodes = [1] + list(range(0, nr_episodes + 1, step))[1:]
+    flag = measure == "R2" or measure == "MAPE"
+    best_model = None
+    best_params: dict = {"name": "LSTM", "metric": measure, "params": ()}
+    best_performance: float = -100000
+
+    _, axs = subplots(1, len(sequence_size), figsize=(len(sequence_size) * HEIGHT, HEIGHT))
+
+    for i in range(len(sequence_size)):
+        length = sequence_size[i]
+        tstX, tstY = prepare_dataset_for_lstm(test, seq_length=length)
+
+        values = {}
+        for hidden in nr_hidden_units:
+            yvalues = []
+            model = DS_LSTM(train, input_size=2, hidden_size=hidden, length=2)
+            for n in range(0, nr_episodes + 1):
+                model.fit()
+                if n % step == 0:
+                    prd_tst = model.predict(tstX)
+                    eval: float = FORECAST_MEASURES[measure](test[length:], prd_tst)
+                    print(f"seq length={length} hidden_units={hidden} nr_episodes={n}", eval)
+                    if eval > best_performance and abs(eval - best_performance) > DELTA_IMPROVE:
+                        best_performance: float = eval
+                        best_params["params"] = (length, hidden, n)
+                        best_model = deepcopy(model)
+                    yvalues.append(eval)
+            values[hidden] = yvalues
+        plot_multiline_chart(
+            episodes,
+            values,
+            ax=axs[i],
+            title=f"LSTM seq length={length} ({measure})",
+            xlabel="nr episodes",
+            ylabel=measure,
+            percentage=flag,
+        )
+    print(
+        f'LSTM best results achieved with length={best_params["params"][0]} hidden_units={best_params["params"][1]} and nr_episodes={best_params["params"][2]}) ==> measure={best_performance:.2f}'
+    )
+    return best_model, best_params

@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
+import torch
 from pandas import read_csv, DataFrame, Series
 
-from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
-from utils.dslabs_functions import series_train_test_split, lstm_study, plot_forecasting_eval, plot_forecasting_series
+from utils.dslabs_functions import series_train_test_split
+from utils.dslabs_functions2 import DS_LSTM, prepare_dataset_for_lstm, lstm_study
+from utils.dslabs_functions_prof import plot_forecasting_eval, plot_forecasting_series
 
 covid_filename: str = "../../data/covid/processed_data/forecast_covid_first_diff.csv"
 covid_file_tag: str = "covid"
@@ -10,6 +12,8 @@ timecol: str = "date"
 target: str = "deaths"
 measure: str = "R2"
 covid_data: DataFrame = read_csv(covid_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
+
+torch.set_default_device('cuda')
 
 series: Series = covid_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)

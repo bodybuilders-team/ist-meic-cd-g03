@@ -1,14 +1,13 @@
-from warnings import simplefilter
-
-from cycler import cycler
-from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.pyplot import rcParams, style
+from matplotlib.colors import LinearSegmentedColormap
+from warnings import simplefilter
+from cycler import cycler
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")
 style.use('utils.dslabs')
 
-HATCHES = ['.', '..', '...', 'o']  # ['/', '+', 'X', '*'] #'oo', 'OO', '..'
+HATCHES = [".", "..", "...", "o"]  # ['/', '+', 'X', '*'] #'oo', 'OO', '..'
 
 my_palette = {
     "yellow": "#ECD474",
@@ -37,49 +36,69 @@ my_palette = {
     "red": "#FF0000"
 }
 
-colors_pale = [my_palette['salmon'], my_palette['blue2'], my_palette['acqua']]
-colors_soft = [my_palette['dark orange'], my_palette['dark blue'], my_palette['green']]
-colors_live = [my_palette['orange'], my_palette['blue3'], my_palette['olive']]
-blues = [my_palette['pale blue'], my_palette['blue2'], my_palette['blue3'], my_palette['dark blue']]
-oranges = [my_palette['pale orange'], my_palette['salmon'], my_palette['orange'], my_palette['dark orange']]
-ACTIVE_COLORS = [my_palette['blue2'], my_palette['pink'], my_palette['yellow'], my_palette['pale orange'],
-                 my_palette['acqua'], my_palette['lavender'], my_palette['salmon'], my_palette['green'],
-                 my_palette['pale pink'],
-                 my_palette['lilac'], my_palette['purple']]
+colors_pale = [my_palette["salmon"], my_palette["blue2"], my_palette["acqua"]]
+colors_soft = [my_palette["dark orange"], my_palette["dark blue"], my_palette["green"]]
+colors_live = [my_palette["orange"], my_palette["blue3"], my_palette["olive"]]
+blues = [
+    my_palette["pale blue"],
+    my_palette["blue2"],
+    my_palette["blue3"],
+    my_palette["dark blue"],
+]
+oranges = [
+    my_palette["pale orange"],
+    my_palette["salmon"],
+    my_palette["orange"],
+    my_palette["dark orange"],
+]
+ACTIVE_COLORS = [
+    my_palette["blue2"],
+    my_palette["pink"],
+    my_palette["yellow"],
+    my_palette["pale orange"],
+    my_palette["acqua"],
+    my_palette["lavender"],
+    my_palette["salmon"],
+    my_palette["green"],
+    my_palette["pale pink"],
+    my_palette["lilac"],
+    my_palette["purple"],
+
+]
 
 cmap_orange = LinearSegmentedColormap.from_list("myCMPOrange", oranges)
 cmap_blues = LinearSegmentedColormap.from_list("myCMPBlues", blues)
 cmap_active = LinearSegmentedColormap.from_list("myCMPActive", ACTIVE_COLORS)
 
-LINE_COLOR = my_palette['dark blue']
-FILL_COLOR = my_palette['pale blue']
-DOT_COLOR = my_palette['blue3']
+LINE_COLOR = my_palette["dark blue"]
+FILL_COLOR = my_palette["blue2"]  # my_palette["pale blue"]
+DOT_COLOR = my_palette["blue3"]
 
 PAST_COLOR = FILL_COLOR
 FUTURE_COLOR = my_palette['pale pink']
 PRED_PAST_COLOR = my_palette['yellow']
 PRED_FUTURE_COLOR = my_palette['red']
 
-rcParams['axes.prop_cycle'] = cycler('color', ACTIVE_COLORS)
+rcParams["axes.prop_cycle"] = cycler("color", ACTIVE_COLORS)
 
-rcParams['text.color'] = LINE_COLOR
-rcParams['patch.edgecolor'] = LINE_COLOR
-rcParams['patch.facecolor'] = FILL_COLOR
-rcParams['axes.facecolor'] = my_palette['white']
-rcParams['axes.edgecolor'] = my_palette['grey']
-rcParams['axes.labelcolor'] = my_palette['grey']
-rcParams['xtick.color'] = my_palette['grey']
-rcParams['ytick.color'] = my_palette['grey']
+rcParams["text.color"] = LINE_COLOR
+rcParams["patch.edgecolor"] = LINE_COLOR
+rcParams["patch.facecolor"] = FILL_COLOR
+rcParams["axes.facecolor"] = my_palette["white"]
+rcParams["axes.edgecolor"] = my_palette["grey"]
+rcParams["axes.labelcolor"] = my_palette["grey"]
+rcParams["xtick.color"] = my_palette["grey"]
+rcParams["ytick.color"] = my_palette["grey"]
 
-rcParams['grid.color'] = my_palette['light grey']
+rcParams["grid.color"] = my_palette["light grey"]
 
-rcParams['boxplot.boxprops.color'] = FILL_COLOR
-rcParams['boxplot.capprops.color'] = LINE_COLOR
-rcParams['boxplot.flierprops.color'] = my_palette['pink']
-rcParams['boxplot.flierprops.markeredgecolor'] = FILL_COLOR
-rcParams['boxplot.flierprops.markerfacecolor'] = FILL_COLOR
-rcParams['boxplot.whiskerprops.color'] = LINE_COLOR
-rcParams['boxplot.meanprops.color'] = my_palette['purple']
-rcParams['boxplot.meanprops.markeredgecolor'] = my_palette['purple']
-rcParams['boxplot.meanprops.markerfacecolor'] = my_palette['purple']
-rcParams['boxplot.medianprops.color'] = my_palette['green']
+rcParams["boxplot.boxprops.color"] = FILL_COLOR
+rcParams["boxplot.capprops.color"] = LINE_COLOR
+rcParams["boxplot.flierprops.color"] = my_palette["pink"]
+rcParams["boxplot.flierprops.markeredgecolor"] = FILL_COLOR
+rcParams["boxplot.flierprops.markerfacecolor"] = FILL_COLOR
+rcParams["boxplot.whiskerprops.color"] = LINE_COLOR
+rcParams["boxplot.meanprops.color"] = my_palette["purple"]
+rcParams["boxplot.meanprops.markeredgecolor"] = my_palette["purple"]
+rcParams["boxplot.meanprops.markerfacecolor"] = my_palette["purple"]
+rcParams["boxplot.medianprops.color"] = my_palette["green"]

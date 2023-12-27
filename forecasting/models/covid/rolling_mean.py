@@ -28,7 +28,7 @@ prd_tst: Series = best_model.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{covid_file_tag} - Rolling Mean (win={params[0]})")
 plt.tight_layout()
-plt.savefig(f"images/{covid_file_tag}_rollingmean_{measure}_best_win{params[0]}_eval.png")
+plt.savefig(f"images/{covid_file_tag}_rollingmean_{measure}_eval.png")
 plt.show()
 plt.clf()
 
