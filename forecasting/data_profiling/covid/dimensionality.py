@@ -17,7 +17,7 @@ print("Last timestamp", series.index[-1])
 # Plot the data at the most atomic granularity - daily (not weekly - that will be studied in the granularity section)
 
 # ------------------
-# Daily Deaths
+# Weakly deaths
 # ------------------
 
 plt.figure(figsize=(3 * HEIGHT, HEIGHT / 2))
@@ -26,7 +26,7 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{covid_file_tag} daily {target}",
+    title=f"{covid_file_tag} weakly {target}",
 )
 plt.tight_layout()
 plt.savefig(f"images/dimensionality/{covid_file_tag}_daily_{target}.png")
