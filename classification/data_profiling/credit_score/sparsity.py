@@ -7,9 +7,9 @@ from seaborn import heatmap
 from utils.dslabs_functions import HEIGHT, plot_multi_scatters_chart
 from utils.dslabs_functions import get_variable_types
 
-run_credit_score_sparsity_analysis: bool = False
+run_credit_score_sparsity_analysis: bool = True
 run_credit_score_sparsity_per_class_analysis: bool = True
-run_credit_score_correlation_analysis: bool = False
+run_credit_score_correlation_analysis: bool = True
 run_sampling: bool = False
 sampling_amount: float = 0.0001
 
@@ -27,8 +27,9 @@ credit_score_vars: list = credit_score_data.columns.to_list()
 # Sparsity analysis
 # ------------------
 
-print("Printing sparsity analysis for credit score...")
+
 if credit_score_vars and run_credit_score_sparsity_analysis:
+    print("Printing sparsity analysis for credit score...")
     n: int = len(credit_score_vars) - 1
     fig: Figure
     axs: ndarray
@@ -55,8 +56,8 @@ else:
 # Sparsity per class analysis
 # ------------------
 
-print("Printing sparsity per class analysis for credit score...")
 if credit_score_vars and run_credit_score_sparsity_per_class_analysis:
+    print("Printing sparsity per class analysis for credit score...")
     target = "Credit_Score"
 
     n: int = len(credit_score_vars) - 1
@@ -82,15 +83,17 @@ else:
 # Correlation analysis
 # ------------------
 
-print("Printing correlation analysis for credit score...")
 if credit_score_vars and run_credit_score_correlation_analysis:
-    # TODO: However, to our knowledge, there isn't a pre-existing method to compute the correlation between symbolic variables, nor between symbolic and numeric ones. The easiest way to deal with this situation is then to convert all symbolic variables to numeric ones, and then to compute the correlation matrix for the dataset. (See how to do it in the Variable Encoding lab, in the Data Preparation chapter).
+    print("Printing correlation analysis for credit score...")
 
-    credit_score_variables_types: dict[str, list] = get_variable_types(credit_score_data)
+    encoded_credit_score_filename = "../../data/credit_score/processed_data/class_credit_score_encoded.csv"
+    encoded_credit_score_data: DataFrame = read_csv(encoded_credit_score_filename, na_values="")
+
+    credit_score_variables_types: dict[str, list] = get_variable_types(encoded_credit_score_data)
     credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
-    credit_score_corr_mtx: DataFrame = credit_score_data[credit_score_numeric].corr().abs()
+    credit_score_corr_mtx: DataFrame = encoded_credit_score_data[credit_score_numeric].corr().abs()
 
-    plt.figure()
+    plt.figure(figsize=(5, 4))
     heatmap(
         abs(credit_score_corr_mtx),
         xticklabels=credit_score_numeric,
@@ -103,7 +106,7 @@ if credit_score_vars and run_credit_score_correlation_analysis:
     plt.tight_layout()
     print("Saving image for credit score correlation analysis...")
     plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.png")
-    # plt.show()
+    plt.show()
     print("Image saved")
     plt.clf()
 else:

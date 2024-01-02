@@ -13,8 +13,8 @@ pos_covid_data: DataFrame = read_csv(pos_covid_filename, na_values="")
 pos_covid_data = pos_covid_data.dropna()
 pos_covid_vars: list = pos_covid_data.columns.to_list()
 
-run_pos_covid_sparsity_analysis: bool = True
-run_pos_covid_sparsity_per_class_analysis: bool = True
+run_pos_covid_sparsity_analysis: bool = False
+run_pos_covid_sparsity_per_class_analysis: bool = False
 run_pos_covid_correlation_analysis: bool = True
 
 # ------------------
@@ -73,11 +73,12 @@ else:
 # ------------------
 
 if pos_covid_vars and run_pos_covid_correlation_analysis:
-    # TODO: However, to our knowledge, there isn't a pre-existing method to compute the correlation between symbolic variables, nor between symbolic and numeric ones. The easiest way to deal with this situation is then to convert all symbolic variables to numeric ones, and then to compute the correlation matrix for the dataset. (See how to do it in the Variable Encoding lab, in the Data Preparation chapter).
+    encoded_pos_covid_filename = "../../data/pos_covid/processed_data/class_pos_covid_encoded.csv"
+    encoded_pos_covid_data: DataFrame = read_csv(encoded_pos_covid_filename, na_values="")
 
-    pos_covid_variables_types: dict[str, list] = get_variable_types(pos_covid_data)
+    pos_covid_variables_types: dict[str, list] = get_variable_types(encoded_pos_covid_data)
     pos_covid_numeric: list[str] = pos_covid_variables_types["numeric"]
-    pos_covid_corr_mtx: DataFrame = pos_covid_data[pos_covid_numeric].corr().abs()
+    pos_covid_corr_mtx: DataFrame = encoded_pos_covid_data[pos_covid_numeric].corr().abs()
 
     plt.figure()
     heatmap(
