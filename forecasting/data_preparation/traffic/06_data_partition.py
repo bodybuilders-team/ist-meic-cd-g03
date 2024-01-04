@@ -3,7 +3,7 @@ from pandas import DataFrame, read_csv, Series
 from utils.dslabs_functions import series_train_test_split
 
 traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
-traffic_file_tag: str = "traffic"
+traffic_file_tag: str = "forecast_traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
 traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)

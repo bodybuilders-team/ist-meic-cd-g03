@@ -6,7 +6,7 @@ from utils.dslabs_functions import series_train_test_split, HEIGHT, arima_study,
     plot_forecasting_series
 
 traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
-traffic_file_tag: str = "traffic"
+traffic_file_tag: str = "forecast_traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
 measure: str = "R2"

@@ -7,7 +7,7 @@ from utils.dslabs_functions2 import DS_LSTM, prepare_dataset_for_lstm, lstm_stud
 from utils.dslabs_functions_prof import plot_forecasting_eval, plot_forecasting_series
 
 covid_filename: str = "../../data/covid/processed_data/forecast_covid_first_diff.csv"
-covid_file_tag: str = "covid"
+covid_file_tag: str = "forecast_covid"
 timecol: str = "date"
 target: str = "deaths"
 measure: str = "R2"

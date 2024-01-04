@@ -2,7 +2,7 @@ import time
 
 from utils.dslabs_functions import run_linear_regression_study
 
-traffic_file_tag: str = "traffic"
+traffic_file_tag: str = "forecast_traffic"
 index_col: str = "Timestamp"
 target: str = "Total"
 

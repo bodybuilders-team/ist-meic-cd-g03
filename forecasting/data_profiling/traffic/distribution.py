@@ -7,7 +7,7 @@ from utils.dslabs_functions import set_chart_labels, HEIGHT, ts_aggregation_by, 
     autocorrelation_study
 
 traffic_filename: str = "../../data/traffic/forecast_traffic.csv"
-traffic_file_tag: str = "traffic_Total"
+traffic_file_tag: str = "forecast_traffic_Total"
 index_col: str = "Timestamp"
 target: str = "Total"
 traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
