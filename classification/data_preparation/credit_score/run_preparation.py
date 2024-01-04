@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 # List of Python scripts to run sequentially
 scripts_to_run = [
@@ -13,8 +14,11 @@ scripts_to_run = [
     "08_feature_extraction.py"
 ]
 
+# Using sys.executable ensures the same Python interpreter is used
+python_interpreter = sys.executable
+
 for script in scripts_to_run:
     print(f"Running script: {script}")
-    subprocess.run(['python', script])
+    subprocess.run([python_interpreter, script])
 
 print("All scripts executed.")

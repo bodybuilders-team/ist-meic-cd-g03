@@ -152,7 +152,7 @@ You have to choose between those options :-)
 loan_types = ['Credit-Builder Loan', 'Home Equity Loan', 'Payday Loan', 'Debt Consolidation Loan', 'Personal Loan',
               'Auto Loan', 'Not Specified', 'Student Loan', 'Mortgage Loan']
 for loan_type in loan_types:
-    df[f"Type_of_Loan_{loan_type.replace(" ", "_")}"] = df['Type_of_Loan'].apply(
+    df[f"Type_of_Loan_{loan_type.replace(' ', '_')}"] = df['Type_of_Loan'].apply(
         lambda x: loan_type in x if isinstance(x, str) else False)
 
 print(df['Type_of_Loan'].unique())
