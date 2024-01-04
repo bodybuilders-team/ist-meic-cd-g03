@@ -24,6 +24,41 @@ credit_score_data = credit_score_data.dropna()
 credit_score_vars: list = credit_score_data.columns.to_list()
 
 # ------------------
+# Correlation analysis
+# ------------------
+
+if credit_score_vars and run_credit_score_correlation_analysis:
+    print("Printing correlation analysis for credit score...")
+
+    encoded_credit_score_filename = "../../data/credit_score/processed_data/class_credit_score_encoded.csv"
+    encoded_credit_score_data: DataFrame = read_csv(encoded_credit_score_filename, na_values="")
+
+    credit_score_corr_mtx: DataFrame = encoded_credit_score_data.corr().abs()
+
+    plt.figure(figsize=(10, 9))
+    heatmap(
+        abs(credit_score_corr_mtx),
+        xticklabels=credit_score_corr_mtx.columns,
+        yticklabels=credit_score_corr_mtx.columns,
+        annot=False,
+        cmap="Blues",
+        vmin=0,
+        vmax=1,
+    )
+    plt.tight_layout()
+    print("Saving image for credit score correlation analysis...")
+    plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.png")
+    plt.show()
+    print("Image saved")
+    plt.clf()
+else:
+    if not credit_score_vars:
+        print("Correlation analysis: there are no variables.")
+    if not run_credit_score_correlation_analysis:
+        print("Correlation analysis: skipping.")
+
+
+# ------------------
 # Sparsity analysis
 # ------------------
 
@@ -79,38 +114,3 @@ else:
     if not run_credit_score_sparsity_per_class_analysis:
         print("Sparsity per class analysis: skipping.")
 
-# ------------------
-# Correlation analysis
-# ------------------
-
-if credit_score_vars and run_credit_score_correlation_analysis:
-    print("Printing correlation analysis for credit score...")
-
-    encoded_credit_score_filename = "../../data/credit_score/processed_data/class_credit_score_encoded.csv"
-    encoded_credit_score_data: DataFrame = read_csv(encoded_credit_score_filename, na_values="")
-
-    credit_score_variables_types: dict[str, list] = get_variable_types(encoded_credit_score_data)
-    credit_score_numeric: list[str] = credit_score_variables_types["numeric"]
-    credit_score_corr_mtx: DataFrame = encoded_credit_score_data[credit_score_numeric].corr().abs()
-
-    plt.figure(figsize=(5, 4))
-    heatmap(
-        abs(credit_score_corr_mtx),
-        xticklabels=credit_score_numeric,
-        yticklabels=credit_score_numeric,
-        annot=False,
-        cmap="Blues",
-        vmin=0,
-        vmax=1,
-    )
-    plt.tight_layout()
-    print("Saving image for credit score correlation analysis...")
-    plt.savefig(f"{credit_score_savefig_path_prefix}_correlation_analysis.png")
-    plt.show()
-    print("Image saved")
-    plt.clf()
-else:
-    if not credit_score_vars:
-        print("Correlation analysis: there are no variables.")
-    if not run_credit_score_correlation_analysis:
-        print("Correlation analysis: skipping.")

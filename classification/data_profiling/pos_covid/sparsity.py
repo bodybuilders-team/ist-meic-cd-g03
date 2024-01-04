@@ -18,6 +18,37 @@ run_pos_covid_sparsity_per_class_analysis: bool = False
 run_pos_covid_correlation_analysis: bool = True
 
 # ------------------
+# Correlation analysis
+# ------------------
+
+if pos_covid_vars and run_pos_covid_correlation_analysis:
+    encoded_pos_covid_filename = "../../data/pos_covid/processed_data/class_pos_covid_encoded.csv"
+    encoded_pos_covid_data: DataFrame = read_csv(encoded_pos_covid_filename, na_values="")
+
+    pos_covid_corr_mtx: DataFrame = encoded_pos_covid_data.corr().abs()
+
+    plt.figure(figsize=(10, 10))
+
+    heatmap(
+        abs(pos_covid_corr_mtx),
+        xticklabels=pos_covid_corr_mtx.columns,
+        yticklabels=pos_covid_corr_mtx.columns,
+        annot=False,
+        cmap="Blues",
+        vmin=0,
+        vmax=1,
+    )
+    plt.tight_layout()
+    plt.savefig(f"{pos_covid_savefig_path_prefix}_correlation_analysis.png")
+    plt.show()
+    plt.clf()
+else:
+    if not pos_covid_vars:
+        print("Correlation: there are no variables.")
+    if not run_pos_covid_correlation_analysis:
+        print("Correlation analysis: skipping.")
+
+# ------------------
 # Sparsity analysis
 # ------------------
 
@@ -67,35 +98,3 @@ else:
         print("Sparsity per class: there are no variables.")
     if not run_pos_covid_sparsity_per_class_analysis:
         print("Sparsity per class analysis: skipping.")
-
-# ------------------
-# Correlation analysis
-# ------------------
-
-if pos_covid_vars and run_pos_covid_correlation_analysis:
-    encoded_pos_covid_filename = "../../data/pos_covid/processed_data/class_pos_covid_encoded.csv"
-    encoded_pos_covid_data: DataFrame = read_csv(encoded_pos_covid_filename, na_values="")
-
-    pos_covid_variables_types: dict[str, list] = get_variable_types(encoded_pos_covid_data)
-    pos_covid_numeric: list[str] = pos_covid_variables_types["numeric"]
-    pos_covid_corr_mtx: DataFrame = encoded_pos_covid_data[pos_covid_numeric].corr().abs()
-
-    plt.figure()
-    heatmap(
-        abs(pos_covid_corr_mtx),
-        xticklabels=pos_covid_numeric,
-        yticklabels=pos_covid_numeric,
-        annot=False,
-        cmap="Blues",
-        vmin=0,
-        vmax=1,
-    )
-    plt.tight_layout()
-    plt.savefig(f"{pos_covid_savefig_path_prefix}_correlation_analysis.png")
-    plt.show()
-    plt.clf()
-else:
-    if not pos_covid_vars:
-        print("Correlation: there are no variables.")
-    if not run_pos_covid_correlation_analysis:
-        print("Correlation analysis: skipping.")
