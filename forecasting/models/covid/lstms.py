@@ -13,14 +13,8 @@ target: str = "deaths"
 measure: str = "R2"
 covid_data: DataFrame = read_csv(covid_filename, index_col=timecol, parse_dates=True, infer_datetime_format=True)
 
-torch.set_default_device('cuda')
-
 series: Series = covid_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)
-
-model = DS_LSTM(train, input_size=1, hidden_size=50, num_layers=1)
-loss = model.fit()
-print(loss)
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
 

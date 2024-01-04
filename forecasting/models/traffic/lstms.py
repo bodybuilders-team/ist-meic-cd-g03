@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
+import torch
 from pandas import read_csv, DataFrame, Series
 
-from forecasting.models.DS_LSTM import DS_LSTM, prepare_dataset_for_lstm
-from utils.dslabs_functions import series_train_test_split, lstm_study, plot_forecasting_eval, plot_forecasting_series
+from utils.dslabs_functions import series_train_test_split
+from utils.dslabs_functions2 import DS_LSTM, prepare_dataset_for_lstm, lstm_study
+from utils.dslabs_functions_prof import plot_forecasting_eval, plot_forecasting_series
 
 traffic_filename: str = "../../data/traffic/processed_data/forecast_traffic_second_diff.csv"
 traffic_file_tag: str = "forecast_traffic"
@@ -13,10 +15,6 @@ traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_
 
 series: Series = traffic_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)
-
-model = DS_LSTM(train, input_size=1, hidden_size=50, num_layers=1)
-loss = model.fit()
-print(loss)
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
 
