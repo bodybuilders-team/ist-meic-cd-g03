@@ -8,7 +8,7 @@ from itertools import product
 from math import pi, sin, cos, ceil, sqrt
 from numbers import Number
 from typing import Callable, Literal
-
+import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from matplotlib.axes import Axes
@@ -39,7 +39,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from statsmodels.tsa.stattools import adfuller
-
+from  utils.dslabs_functions_prof import plot_line_chart as plot_line_chart_prof
 from utils.dslabs_functions_prof2 import prepare_dataset_for_lstm, DS_LSTM
 from forecasting.models.RollingMeanRegressor import RollingMeanRegressor
 from utils.config import (
@@ -171,8 +171,15 @@ def plot_scatter_chart(var1: list, var2: list, ax: Axes = None, title: str = '',
     return ax
 
 
-def plot_multiline_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: str = '', xlabel: str = '',
-                         ylabel: str = '', percentage: bool = False):
+def plot_multiline_chart(
+    xvalues: list,
+    yvalues: dict,
+    ax: Axes = None,  # type: ignore
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
+    percentage: bool = False,
+) -> Axes:
     if ax is None:
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
@@ -181,18 +188,20 @@ def plot_multiline_chart(xvalues: list, yvalues: dict, ax: Axes = None, title: s
     for name, y in yvalues.items():
         ax.plot(xvalues, y)
         legend.append(name)
-    ax.legend(legend)
+        if any(v < 0 for v in y) and percentage:
+            ax.set_ylim(-1.0, 1.0)
+    ax.legend(legend, fontsize="xx-small")
     return ax
 
 
 def plot_multibar_chart(
-    group_labels: list,
-    yvalues: dict,
-    ax: Axes = None,  # type: ignore
-    title: str = "",
-    xlabel: str = "",
-    ylabel: str = "",
-    percentage: bool = False,
+        group_labels: list,
+        yvalues: dict,
+        ax: Axes = None,  # type: ignore
+        title: str = "",
+        xlabel: str = "",
+        ylabel: str = "",
+        percentage: bool = False,
 ) -> Axes | list[Axes]:
     if ax is None:
         ax = gca()
@@ -925,8 +934,8 @@ def plot_evaluation_results(model, trn_y, prd_trn, tst_y, prd_tst, labels: ndarr
 from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
 
 
-def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
-    trn_size: int = int(len(data) * trn_pct)
+def series_train_test_split(data: Series, trn_pct: float = 0.90, offset: int = 0) -> tuple[Series, Series]:
+    trn_size: int = int(len(data) * trn_pct) + offset
     df_cp: Series = data.copy()
     train: Series = df_cp.iloc[:trn_size]
     test: Series = df_cp.iloc[trn_size:]
@@ -947,6 +956,7 @@ FORECAST_MEASURES = {
     "R2": r2_score,
     "MAPE": mean_absolute_percentage_error,
 }
+
 
 def plot_forecasting_series(
         trn: Series,
@@ -1066,11 +1076,8 @@ def scale_all_dataframe(data: DataFrame) -> DataFrame:
     return df
 
 
-def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
-    # win_size = (3, 5, 10, 15, 20, 25, 30, 40, 50)
-    win_size = [size for size in (12, 24, 48, 96, 192, 384, 768) if size <= len(train)]
-
-    flag = measure == "R2" or measure == "MAPE"
+def rolling_mean_study(train: Series, test: Series, measure: str = "R2", num_windows: int = 20):
+    win_size = np.linspace(1, len(train), num_windows).astype(int).tolist()
     best_model = None
     best_params: dict = {"name": "Rolling Mean", "metric": measure, "params": ()}
     best_performance: float = -100000
@@ -1090,8 +1097,8 @@ def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
         yvalues.append(eval)
 
     print(f"Rolling Mean best with win={best_params['params'][0]:.0f} -> {measure}={best_performance}")
-    plot_line_chart(
-        win_size, yvalues, title=f"Rolling Mean ({measure})", xlabel="window size", ylabel=measure, percentage=flag
+    plot_line_chart_prof(
+        win_size, yvalues, title=f"Rolling Mean ({measure})", xlabel="window size", ylabel=measure
     )
 
     return best_model, best_params
@@ -1123,6 +1130,10 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
                     best_performance: float = eval
                     best_params["params"] = (p, d, q)
                     best_model = model
+                if flag and eval > 1:
+                    eval = 1
+                elif flag and eval < -1:
+                    eval = -1
                 yvalues.append(eval)
             values[q] = yvalues
         plot_multiline_chart(
@@ -1507,6 +1518,7 @@ def mlp_study(
 
     return best_model, best_params
 
+
 def run_linear_regression_study(filename: str, file_tag: str, index_col: str, target: str, title: str):
     data: DataFrame = read_csv(filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
@@ -1542,6 +1554,7 @@ def run_linear_regression_study(filename: str, file_tag: str, index_col: str, ta
     plt.savefig(f"images/{file_tag}_linear_regression_forecast_{title}.png")
     plt.show()
     plt.clf()
+
 
 def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
     sequence_size = [2, 4, 8]

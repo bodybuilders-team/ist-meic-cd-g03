@@ -12,7 +12,7 @@ target: str = "Total"
 traffic_data: DataFrame = read_csv(traffic_filename, index_col=index_col, parse_dates=True, infer_datetime_format=True)
 
 series: Series = traffic_data[target]
-train, test = series_train_test_split(series, trn_pct=0.90)
+train, test = series_train_test_split(series)
 
 # ------------------
 # Persistence Optimist Regressor

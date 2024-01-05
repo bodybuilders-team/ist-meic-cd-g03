@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from pandas import read_csv, DataFrame, Series
-
+import numpy as np
 from utils.dslabs_functions import series_train_test_split, HEIGHT, rolling_mean_study, plot_forecasting_eval, \
     plot_forecasting_series
 
