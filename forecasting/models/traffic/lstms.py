@@ -17,6 +17,10 @@ series: Series = traffic_data[target]
 train, test = series_train_test_split(series, trn_pct=0.90)
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
+plt.tight_layout()
+plt.savefig(f"images/{traffic_file_tag}_lstms_{measure}_study.png")
+plt.show()
+plt.clf()
 
 params = best_params["params"]
 best_length = params[0]
