@@ -10,8 +10,8 @@ from utils.dslabs_functions import get_variable_types
 run_credit_score_sparsity_analysis: bool = True
 run_credit_score_sparsity_per_class_analysis: bool = True
 run_credit_score_correlation_analysis: bool = True
-run_sampling: bool = False
-sampling_amount: float = 0.0001
+run_sampling: bool = True
+sampling_amount: float = 0.001
 
 credit_score_filename = "../../data/credit_score/class_credit_score.csv"
 credit_score_savefig_path_prefix = "images/sparsity/class_credit_score"
